@@ -1,4 +1,4 @@
-﻿import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
+import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_ORDERS } from "@/lib/seed-data";
 import { FirestoreSync } from "@/lib/firestore-sync";
 
@@ -228,6 +228,9 @@ export const DataService = {
     const updated = [newSession, ...sessions];
     setLocal(CHATS_KEY, updated);
 
+    // Sync to Firestore
+    FirestoreSync.saveChatSession(newSession);
+
     if (initialMessage) {
       this.sendChatMessage(newSession.id, {
         chatId: newSession.id,
@@ -267,6 +270,9 @@ export const DataService = {
     allMessages[chatId] = [...chatMsgs, newMsg];
     setLocal(MESSAGES_KEY, allMessages);
 
+    // Sync to Firestore
+    FirestoreSync.saveChatMessage(chatId, newMsg);
+
     // Update parent session
     const sessions = this.getChatSessions();
     const sIndex = sessions.findIndex((s) => s.id === chatId);
@@ -277,6 +283,7 @@ export const DataService = {
         sessions[sIndex].unreadAdmin += 1;
       }
       setLocal(CHATS_KEY, sessions);
+      FirestoreSync.saveChatSession(sessions[sIndex]);
     }
 
     return newMsg;
