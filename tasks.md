@@ -76,3 +76,5 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 21/21, `pnpm
 - [x] **T7.9**: Retirar reseñas, pedidos, chats, pagos, garantías y plazos simulados de la experiencia visible.
 - [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: chat implementado localmente con identidad temporal, validación, rate limiting y autorización por conversación; el registro servidor de pedidos sigue pendiente.
 - [x] **T7.11**: Configurar Cashea en landing, detalle, checkout y mensaje de WhatsApp, con condiciones y aprobación explícitas.
+
+Evidencia de integracion OIDC (2026-08-26): proveedor GCP ACTIVE con issuer y audiencia de Vercel restringidos; condicion por owner/proyecto/production; la cuenta `multiogar-vercel-chat` tiene solo `roles/datastore.user` y solo el subject de produccion puede impersonarla. Variables `GCP_*` configuradas unicamente en Vercel Production.
