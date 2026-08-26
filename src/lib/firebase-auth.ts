@@ -55,7 +55,9 @@ export function clearLegacyAuthState(): void {
 async function createAuthState(user: User | null): Promise<AuthState> {
   if (!user) return UNAUTHENTICATED_STATE;
 
-  const token = await getIdTokenResult(user);
+  // Refresh claims so role changes from the Firebase console/API take effect
+  // without requiring a full sign-out cycle.
+  const token = await getIdTokenResult(user, true);
   return {
     user,
     role: resolveRole(user.email, token.claims),
