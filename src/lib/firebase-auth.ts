@@ -67,6 +67,16 @@ async function createAuthState(user: User | null): Promise<AuthState> {
   };
 }
 
+async function syncAssignedRole(user: User): Promise<void> {
+  if (typeof window === "undefined") return;
+  const token = await user.getIdToken(true);
+  const response = await fetch("/api/auth/role-sync", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (response.ok) await getIdTokenResult(user, true);
+}
+
 function getErrorCode(error: unknown): string | null {
   if (typeof error !== "object" || error === null || !("code" in error)) {
     return null;
@@ -156,7 +166,13 @@ export async function loginWithFirebase(
     );
     try {
       const state = await createAuthState(credential.user);
-      return { success: true, role: state.role };
+      try {
+        await syncAssignedRole(credential.user);
+      } catch {
+        // A temporary sync outage must not block an otherwise valid login.
+      }
+      const finalState = await createAuthState(credential.user);
+      return { success: true, role: finalState.role ?? state.role };
     } catch {
       await signOut(auth);
       return {
@@ -187,7 +203,13 @@ export async function loginWithGoogle(): Promise<LoginResult> {
     const credential = await signInWithPopup(auth, provider);
     try {
       const state = await createAuthState(credential.user);
-      return { success: true, role: state.role };
+      try {
+        await syncAssignedRole(credential.user);
+      } catch {
+        // A temporary sync outage must not block an otherwise valid login.
+      }
+      const finalState = await createAuthState(credential.user);
+      return { success: true, role: finalState.role ?? state.role };
     } catch {
       await signOut(auth);
       return {

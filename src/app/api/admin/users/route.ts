@@ -5,10 +5,21 @@ import { getAdminAuth, getAdminFirestore, FirebaseAdminConfigurationError } from
 import { isAppRole, type AppRole } from "@/lib/auth-roles";
 import { consumeRateLimit } from "@/lib/server/rate-limit";
 import { ChatRequestError, jsonError, readJsonBody } from "@/lib/server/chat-http";
+import {
+  getPendingRoleAssignment,
+  normalizeAssignmentEmail,
+  readPendingAssignment,
+  roleAssignmentId,
+} from "@/lib/server/role-assignments";
 
 const updateUserSchema = z.object({
   uid: z.string().trim().min(1).max(128),
   role: z.enum(["superadmin", "vendedor", "cliente"]),
+}).strict();
+
+const assignRoleSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(254),
+  role: z.enum(["superadmin", "vendedor"]),
 }).strict();
 
 type VerifiedAdmin = {
@@ -90,12 +101,65 @@ function errorResponse(error: unknown) {
 export async function GET(request: Request) {
   try {
     await requireSuperadmin(request);
-    const result = await getAdminAuth().listUsers(1_000);
+    const auth = getAdminAuth();
+    const result = await auth.listUsers(1_000);
+    const pendingSnapshot = await (await getAdminFirestore()).collection("roleAssignments").get();
+    const pending = pendingSnapshot.docs
+      .map((document) => readPendingAssignment(document.data() as Record<string, unknown>))
+      .filter((assignment): assignment is NonNullable<typeof assignment> => assignment !== null)
+      .sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
     return NextResponse.json(
-      { users: result.users.map(publicUser) },
+      { users: result.users.map(publicUser), pending },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
+    return errorResponse(error);
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const admin = await requireSuperadmin(request);
+    const body = assignRoleSchema.parse(await readJsonBody(request, 2_048));
+    const email = normalizeAssignmentEmail(body.email);
+    const auth = getAdminAuth();
+    const db = await getAdminFirestore();
+    const assignmentRef = db.collection("roleAssignments").doc(roleAssignmentId(email));
+
+    try {
+      const user = await auth.getUserByEmail(email);
+      if (user.uid === admin.uid && body.role !== "superadmin") {
+        return jsonError("No puedes quitarte el permiso de admin desde esta pantalla.", 409);
+      }
+      await auth.setCustomUserClaims(user.uid, { role: body.role });
+      await assignmentRef.delete();
+      return NextResponse.json(
+        { user: publicUser(await auth.getUser(user.uid)), pending: null },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    } catch (error) {
+      if (!(error && typeof error === "object" && "code" in error && error.code === "auth/user-not-found")) {
+        throw error;
+      }
+    }
+
+    const now = new Date().toISOString();
+    const existing = await getPendingRoleAssignment(db, email);
+    await assignmentRef.set({
+      email,
+      role: body.role,
+      assignedByUid: admin.uid,
+      createdAt: existing?.createdAt || now,
+      updatedAt: now,
+    });
+    return NextResponse.json(
+      { user: null, pending: { email, role: body.role, createdAt: existing?.createdAt || now, updatedAt: now } },
+      { status: 201, headers: { "Cache-Control": "no-store" } },
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return jsonError("Indica un correo y un rol válido.", 400);
+    }
     return errorResponse(error);
   }
 }

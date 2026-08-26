@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { AlertCircle, CheckCircle2, LoaderCircle, RefreshCw, Save, ShieldCheck, UsersRound } from "lucide-react";
+import { AlertCircle, CheckCircle2, LoaderCircle, RefreshCw, Save, ShieldCheck, UserPlus, UsersRound } from "lucide-react";
 import { getIdToken } from "firebase/auth";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { auth } from "@/lib/firebase";
@@ -14,6 +14,13 @@ type ManagedUser = {
   photoURL: string | null;
   disabled: boolean;
   role: AppRole;
+};
+
+type PendingAssignment = {
+  email: string;
+  role: Exclude<AppRole, "cliente">;
+  createdAt: string;
+  updatedAt: string;
 };
 
 const roleLabels: Record<AppRole, string> = {
@@ -38,9 +45,13 @@ async function requestWithToken(path: string, init?: RequestInit): Promise<Respo
 export default function AdminUsersPage() {
   const { role } = useAuth();
   const [users, setUsers] = useState<ManagedUser[]>([]);
+  const [pending, setPending] = useState<PendingAssignment[]>([]);
   const [pendingRoles, setPendingRoles] = useState<Record<string, AppRole>>({});
+  const [assignmentEmail, setAssignmentEmail] = useState("");
+  const [assignmentRole, setAssignmentRole] = useState<Exclude<AppRole, "cliente">>("vendedor");
   const [loading, setLoading] = useState(true);
   const [savingUid, setSavingUid] = useState<string | null>(null);
+  const [assigning, setAssigning] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -49,10 +60,11 @@ export default function AdminUsersPage() {
     setError("");
     try {
       const response = await requestWithToken("/api/admin/users");
-      const payload = await response.json() as { users?: ManagedUser[]; error?: string };
+      const payload = await response.json() as { users?: ManagedUser[]; pending?: PendingAssignment[]; error?: string };
       if (!response.ok) throw new Error(payload.error || "No fue posible cargar las cuentas.");
       const nextUsers = payload.users ?? [];
       setUsers(nextUsers);
+      setPending(payload.pending ?? []);
       setPendingRoles(Object.fromEntries(nextUsers.map((user) => [user.uid, user.role])));
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "No fue posible cargar las cuentas.");
@@ -60,6 +72,28 @@ export default function AdminUsersPage() {
       setLoading(false);
     }
   }, []);
+
+  const addAssignment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setAssigning(true);
+    setError("");
+    setNotice("");
+    try {
+      const response = await requestWithToken("/api/admin/users", {
+        method: "POST",
+        body: JSON.stringify({ email: assignmentEmail, role: assignmentRole }),
+      });
+      const payload = await response.json() as { user?: ManagedUser | null; pending?: PendingAssignment | null; error?: string };
+      if (!response.ok) throw new Error(payload.error || "No fue posible asignar el permiso.");
+      setAssignmentEmail("");
+      setNotice(payload.user ? `Permiso actualizado para ${payload.user.email ?? "la cuenta"}.` : `Permiso reservado para ${payload.pending?.email ?? "el correo"}.`);
+      await loadUsers();
+    } catch (assignmentError) {
+      setError(assignmentError instanceof Error ? assignmentError.message : "No fue posible asignar el permiso.");
+    } finally {
+      setAssigning(false);
+    }
+  };
 
   useEffect(() => {
     if (role === "superadmin") {
@@ -127,6 +161,18 @@ export default function AdminUsersPage() {
       {error && <div role="alert" className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200"><AlertCircle className="h-4 w-4 shrink-0" />{error}</div>}
       {notice && <div role="status" className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs font-semibold text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-200"><CheckCircle2 className="h-4 w-4 shrink-0" />{notice}</div>}
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-5">
+        <div className="mb-4 flex items-start gap-3">
+          <UserPlus className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
+          <div><h2 className="text-sm font-black text-slate-900 dark:text-white">Asignar acceso por correo</h2><p className="mt-1 text-xs text-slate-500">Si la cuenta aún no existe, quedará reservada y recibirá el permiso cuando inicie sesión.</p></div>
+        </div>
+        <form onSubmit={addAssignment} className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px_auto] sm:items-end">
+          <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Correo electrónico<input type="email" required maxLength={254} value={assignmentEmail} onChange={(event) => setAssignmentEmail(event.target.value)} placeholder="persona@ejemplo.com" className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 font-normal text-slate-900 outline-none ring-blue-500 focus:ring-2 dark:border-slate-700 dark:bg-slate-800 dark:text-white" /></label>
+          <label className="text-xs font-bold text-slate-700 dark:text-slate-300">Permiso<select value={assignmentRole} onChange={(event) => setAssignmentRole(event.target.value as Exclude<AppRole, "cliente">)} className="mt-1 h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-slate-900 outline-none ring-blue-500 focus:ring-2 dark:border-slate-700 dark:bg-slate-800 dark:text-white"><option value="vendedor">Vendedor</option><option value="superadmin">Admin</option></select></label>
+          <button type="submit" disabled={assigning || !assignmentEmail.trim()} className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white hover:bg-blue-700 disabled:cursor-wait disabled:opacity-50"><UserPlus className="h-4 w-4" />{assigning ? "Asignando..." : "Asignar"}</button>
+        </form>
+      </section>
+
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="border-b border-slate-100 px-4 py-3 dark:border-slate-800 sm:px-6">
           <h2 className="text-sm font-black text-slate-900 dark:text-white">Cuentas registradas <span className="ml-1 font-normal text-slate-400">({users.length})</span></h2>
@@ -160,6 +206,13 @@ export default function AdminUsersPage() {
           </div>
         )}
       </section>
+
+      {pending.length > 0 && (
+        <section className="overflow-hidden rounded-2xl border border-amber-200 bg-amber-50 shadow-sm dark:border-amber-900/60 dark:bg-amber-950/20">
+          <div className="border-b border-amber-200 px-4 py-3 dark:border-amber-900/60 sm:px-6"><h2 className="text-sm font-black text-amber-900 dark:text-amber-100">Asignaciones pendientes <span className="ml-1 font-normal text-amber-700 dark:text-amber-300">({pending.length})</span></h2></div>
+          <ul className="divide-y divide-amber-200/70 dark:divide-amber-900/50">{pending.map((assignment) => <li key={assignment.email} className="flex flex-col gap-1 px-4 py-3 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-6"><span className="font-semibold text-amber-950 dark:text-amber-100">{assignment.email}</span><span className="font-bold text-amber-700 dark:text-amber-300">{roleLabels[assignment.role]} al iniciar sesión</span></li>)}</ul>
+        </section>
+      )}
     </div>
   );
 }
