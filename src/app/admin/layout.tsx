@@ -1,9 +1,8 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
 import { 
   LayoutDashboard, 
   Package, 
@@ -14,56 +13,77 @@ import {
   Menu, 
   X, 
   ShieldCheck, 
-  UserCheck, 
   Store, 
   ExternalLink,
-  Bell
+  LoaderCircle,
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
+import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
+import { getAdminRouteRedirect, isAdminRole } from "@/lib/auth-roles";
 import { DataService } from "@/lib/data-service";
+import { logoutFromFirebase } from "@/lib/firebase-auth";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
+  return (
+    <AuthProvider>
+      <AdminShell>{children}</AdminShell>
+    </AuthProvider>
+  );
+}
+
+function AdminShell({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [role, setRole] = useState<"superadmin" | "vendedor">("superadmin");
+  const { status, role, email, isAuthenticated } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [unreadChats, setUnreadChats] = useState(0);
   const [pendingOrders, setPendingOrders] = useState(0);
-
-  // If on login page, don't show admin chrome
-  if (pathname === "/admin/login") {
-    return <>{children}</>;
-  }
+  const [logoutError, setLogoutError] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
-    const savedRole = localStorage.getItem("multiogar_admin_role") as "superadmin" | "vendedor";
-    if (savedRole) setRole(savedRole);
+    if (isLoginPage || status !== "ready") return;
 
-    const checkBadges = () => {
-      const chats = DataService.getChatSessions();
-      const orders = DataService.getOrders();
+    const redirect = getAdminRouteRedirect(pathname, role, isAuthenticated);
+    if (redirect) {
+      router.replace(redirect);
+    }
+  }, [isAuthenticated, isLoginPage, pathname, role, router, status]);
+
+  useEffect(() => {
+    if (isLoginPage || status !== "ready" || !isAdminRole(role)) return;
+
+    const updateChats = (chats: ReturnType<typeof DataService.getChatSessions>) => {
       setUnreadChats(chats.filter((c) => c.status === "abierto" || c.unreadAdmin > 0).length);
+    };
+    const updateOrders = (orders: ReturnType<typeof DataService.getOrders>) => {
       setPendingOrders(orders.filter((o) => o.status === "pendiente").length);
     };
 
-    checkBadges();
-    const interval = setInterval(checkBadges, 3000);
-    return () => clearInterval(interval);
-  }, []);
+    const unsubscribeChats = DataService.subscribeChatSessions(updateChats);
+    const unsubscribeOrders = DataService.subscribeOrders(updateOrders);
+    return () => {
+      unsubscribeChats();
+      unsubscribeOrders();
+    };
+  }, [isLoginPage, role, status]);
 
-  const handleRoleChange = (newRole: "superadmin" | "vendedor") => {
-    setRole(newRole);
-    localStorage.setItem("multiogar_admin_role", newRole);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("multiogar_admin_auth");
-    router.push("/admin/login");
+  const handleLogout = async () => {
+    setLogoutError("");
+    setIsLoggingOut(true);
+    try {
+      await logoutFromFirebase();
+      window.location.replace("/admin/login");
+    } catch {
+      setLogoutError("No fue posible cerrar la sesión. Intenta nuevamente.");
+      setIsLoggingOut(false);
+    }
   };
 
   const navItems = [
@@ -103,6 +123,26 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     },
   ];
 
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  const redirect =
+    status === "ready"
+      ? getAdminRouteRedirect(pathname, role, isAuthenticated)
+      : "/admin/login";
+
+  if (status === "loading" || redirect || !isAdminRole(role)) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center">
+        <div className="flex items-center gap-2 text-sm font-semibold">
+          <LoaderCircle className="w-5 h-5 animate-spin text-blue-400" />
+          <span>Verificando sesión...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col md:flex-row text-slate-900 dark:text-slate-100">
       
@@ -126,39 +166,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="p-5 space-y-6">
           {/* Logo */}
           <div className="pb-4 border-b border-slate-800 flex items-center justify-between">
-            <BrandLogo size="md" />
+            <BrandLogo size="md" variant="light" />
           </div>
 
-          {/* Role Pill Switcher (Interactive RBAC Demo) */}
-          <div className="p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-bold">
-              <span className="text-slate-400">Rol Activo:</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-                role === "superadmin" ? "bg-amber-500/20 text-amber-300" : "bg-blue-500/20 text-blue-300"
-              }`}>
+          <div className="p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 space-y-1.5">
+            <div className="flex items-center gap-2 text-[11px] font-bold">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span className="text-slate-300">
                 {role === "superadmin" ? "SuperAdmin" : "Vendedor"}
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-1 text-[11px] font-bold">
-              <button
-                type="button"
-                onClick={() => handleRoleChange("superadmin")}
-                className={`py-1 rounded-lg transition-colors ${
-                  role === "superadmin" ? "bg-amber-500 text-slate-950 font-extrabold shadow-xs" : "bg-slate-700/60 hover:bg-slate-700 text-slate-300"
-                }`}
-              >
-                SuperAdmin
-              </button>
-              <button
-                type="button"
-                onClick={() => handleRoleChange("vendedor")}
-                className={`py-1 rounded-lg transition-colors ${
-                  role === "vendedor" ? "bg-blue-600 text-white font-extrabold shadow-xs" : "bg-slate-700/60 hover:bg-slate-700 text-slate-300"
-                }`}
-              >
-                Vendedor
-              </button>
-            </div>
+            <p className="text-[10px] text-slate-500 truncate" title={email ?? undefined}>
+              {email}
+            </p>
           </div>
 
           {/* Navigation Links */}
@@ -209,12 +229,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </Link>
 
           <button
-            onClick={handleLogout}
+            type="button"
+            onClick={() => void handleLogout()}
+            disabled={isLoggingOut}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-rose-400 hover:bg-rose-950/40 transition-colors font-semibold text-left"
           >
-            <LogOut className="w-4 h-4" />
-            <span>Cerrar Sesión</span>
+            {isLoggingOut ? (
+              <LoaderCircle className="w-4 h-4 animate-spin" />
+            ) : (
+              <LogOut className="w-4 h-4" />
+            )}
+            <span>{isLoggingOut ? "Cerrando..." : "Cerrar Sesión"}</span>
           </button>
+          {logoutError && (
+            <p role="alert" className="text-[10px] leading-relaxed text-rose-300">
+              {logoutError}
+            </p>
+          )}
         </div>
 
       </aside>

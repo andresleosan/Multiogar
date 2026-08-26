@@ -1,29 +1,25 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { 
-  Package, 
   Plus, 
   Search, 
   Edit, 
   Trash2, 
-  CheckCircle2, 
-  AlertCircle, 
   X, 
-  Layers, 
-  Sparkles, 
-  Save,
-  SlidersHorizontal
+  Save
 } from "lucide-react";
 import { DataService } from "@/lib/data-service";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { isAdminRole } from "@/lib/auth-roles";
 import { Product, ProductVariant, Category } from "@/types";
 import { formatCurrency, slugify } from "@/lib/utils";
 
 export default function AdminProductsPage() {
+  const { role } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [role, setRole] = useState<"superadmin" | "vendedor">("superadmin");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -47,16 +43,20 @@ export default function AdminProductsPage() {
   const [formHasVariants, setFormHasVariants] = useState(false);
   const [formVariants, setFormVariants] = useState<ProductVariant[]>([]);
 
-  useEffect(() => {
-    loadData();
-    const savedRole = (localStorage.getItem("multiogar_admin_role") as "superadmin" | "vendedor") || "superadmin";
-    setRole(savedRole);
-  }, []);
-
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setProducts(DataService.getProducts());
     setCategories(DataService.getCategories());
-  };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeProducts = DataService.subscribeProducts(setProducts);
+    const unsubscribeCategories = DataService.subscribeCategories(setCategories);
+
+    return () => {
+      unsubscribeProducts();
+      unsubscribeCategories();
+    };
+  }, []);
 
   const handleOpenCreateModal = () => {
     setEditingProduct(null);
@@ -69,7 +69,7 @@ export default function AdminProductsPage() {
     setFormOriginalPrice(0);
     setFormStock(10);
     setFormDescription("");
-    setFormImages(["https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop&q=80"]);
+    setFormImages(["/hero-tools.jpg"]);
     setFormIsFeatured(false);
     setFormIsOffer(false);
     setFormHasVariants(false);
@@ -98,6 +98,7 @@ export default function AdminProductsPage() {
   };
 
   const handleQuickStockChange = (productId: string, newStock: number) => {
+    if (!isAdminRole(role)) return;
     DataService.updateProductStock(productId, Math.max(0, newStock));
     loadData();
   };
@@ -121,7 +122,11 @@ export default function AdminProductsPage() {
     setFormVariants([...formVariants, newVariant]);
   };
 
-  const handleUpdateVariant = (index: number, field: keyof ProductVariant, value: any) => {
+  const handleUpdateVariant = <K extends keyof ProductVariant,>(
+    index: number,
+    field: K,
+    value: ProductVariant[K],
+  ) => {
     const updated = [...formVariants];
     updated[index] = { ...updated[index], [field]: value };
     setFormVariants(updated);
@@ -194,7 +199,7 @@ export default function AdminProductsPage() {
           <p className="text-xs text-slate-500">
             {role === "superadmin"
               ? "Control total de catálogo, precios, variantes y altas de nuevos productos."
-              : "Modo Vendedor: Actualización express de stock y disponibilidad en 1 clic."}
+              : "Modo vendedor: puedes actualizar stock y disponibilidad."}
           </p>
         </div>
 
@@ -435,7 +440,7 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Precio Base (COP) *</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300">Precio Base (USD) *</label>
                   <input
                     type="number"
                     required
@@ -471,7 +476,7 @@ export default function AdminProductsPage() {
                 <label className="font-bold text-slate-700 dark:text-slate-300">Descripción Detallada</label>
                 <textarea
                   rows={3}
-                  placeholder="Especificaciones, usos recomendados, potencia y garantía..."
+                  placeholder="Especificaciones, usos recomendados, potencia y materiales..."
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   className="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white resize-none"

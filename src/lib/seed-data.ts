@@ -1,4 +1,4 @@
-﻿import { Category, Product, Order } from "@/types";
+import { Category, Product } from "@/types";
 
 export const INITIAL_CATEGORIES: Category[] = [
   {
@@ -7,7 +7,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "herramientas-manuales",
     description: "Discos abrasivos Fortek, Atouan, discos diamantados, llaves, alicates y destornilladores.",
     icon: "Wrench",
-    image: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=800&auto=format&fit=crop&q=80",
+    image: "/product-hand-tools.jpg",
     order: 1,
     productCount: 42,
     featured: true,
@@ -18,7 +18,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "herramientas-electricas",
     description: "Pistolas de calor Ingco, taladros percutores 20V Total, amoladoras y rotomartillos.",
     icon: "Zap",
-    image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop&q=80",
+    image: "/hero-tools.jpg",
     order: 2,
     productCount: 28,
     featured: true,
@@ -29,7 +29,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "plomeria-tuberias",
     description: "Fregaderos Faguax en acero inoxidable, tuberías PVC Pavco/Tubrica y riego por goteo.",
     icon: "Droplets",
-    image: "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&auto=format&fit=crop&q=80",
+    image: "/product-sink.jpg",
     order: 3,
     productCount: 36,
     featured: true,
@@ -40,7 +40,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "pinturas-selladores",
     description: "Esmalte sintético brillante Prisma Clase A, pinturas Montana, brochas y rodillos.",
     icon: "Paintbrush",
-    image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&auto=format&fit=crop&q=80",
+    image: "/product-paint.jpg",
     order: 4,
     productCount: 24,
     featured: true,
@@ -51,7 +51,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "electricidad-iluminacion",
     description: "Protectores Lumistar 220V/110V, linternas LED recargables, reflectores y cables.",
     icon: "Lightbulb",
-    image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=80",
+    image: "/product-plumbing.jpg",
     order: 5,
     productCount: 30,
     featured: true,
@@ -62,7 +62,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "cerrajeria-herrajes",
     description: "Candados anticizalla ZOE 90mm, cerraduras de embutir 35mm y manillas de acero inoxidable.",
     icon: "Lock",
-    image: "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&auto=format&fit=crop&q=80",
+    image: "/product-security.jpg",
     order: 6,
     productCount: 22,
     featured: true,
@@ -73,7 +73,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "construccion",
     description: "Mastique Magic Gypsum para Drywall, cemento gris Vencemos y materiales para obras.",
     icon: "HardHat",
-    image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80",
+    image: "/product-construction.jpg",
     order: 7,
     productCount: 32,
     featured: true,
@@ -84,7 +84,7 @@ export const INITIAL_CATEGORIES: Category[] = [
     slug: "repuestos-electrodomesticos",
     description: "Dispositivos de riego por goteo Powerfik, mangueras y acoples de jardinería.",
     icon: "Cpu",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80",
+    image: "/product-electric.jpg",
     order: 8,
     productCount: 16,
     featured: false,
@@ -105,7 +105,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 24.00,
     originalPrice: 28.00,
     images: [
-      "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&auto=format&fit=crop&q=80",
+      "/product-paint.jpg",
     ],
     hasVariants: true,
     variants: [
@@ -137,7 +137,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-pistola-calor-ingco-2000w",
     name: "Pistola de Calor Industrial 2000W Ingco con 4 Boquillas",
     slug: "pistola-de-calor-industrial-2000w-ingco-boquillas",
-    description: "Pistola de calor profesional de 2000 Watts con 2 niveles de flujo de aire y temperatura graduable. Ideal para remoción de pinturas y barnices, termoencogibles, moldeado de tuberías plásticas y despegado de adhesivos. ¡Cashealo!",
+    description: "Pistola de calor profesional de 2000 Watts con 2 niveles de flujo de aire y temperatura graduable. Ideal para remoción de pinturas y barnices, termoencogibles, moldeado de tuberías plásticas y despegado de adhesivos.",
     category: "herramientas-electricas",
     categoryName: "Herramientas Eléctricas",
     brand: "INGCO",
@@ -145,7 +145,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 28.00,
     originalPrice: 35.00,
     images: [
-      "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop&q=80",
+      "/hero-tools.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -171,7 +171,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-fregadero-acero-faguax",
     name: "Fregadero de Acero Inoxidable con Escurridor Marca FAGUAX (Para Empotrar)",
     slug: "fregadero-acero-inoxidable-escurridor-faguax-empotrar",
-    description: "Fregadero para cocina fabricado en acero inoxidable 304 de alta durabilidad y resistencia al óxido. Cuenta con acabado satinado higiénico, amplia ponchera profunda y práctico escurridor estriado. ¡Cashealo!",
+    description: "Fregadero para cocina fabricado en acero inoxidable 304 de alta durabilidad y resistencia al óxido. Cuenta con acabado satinado higiénico, amplia ponchera profunda y práctico escurridor estriado.",
     category: "plomeria-tuberias",
     categoryName: "Plomería, Fregaderos y Riego",
     brand: "FAGUAX",
@@ -179,7 +179,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 35.00,
     originalPrice: 42.00,
     images: [
-      "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&auto=format&fit=crop&q=80",
+      "/product-sink.jpg",
     ],
     hasVariants: true,
     variants: [
@@ -208,7 +208,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-protector-lumistar-220v-aire",
     name: "Protector de Voltaje 220V Lumistar para Aires Acondicionados y Refrigeración",
     slug: "protector-voltaje-220v-lumistar-aires-acondicionados-refrigeracion",
-    description: "Protector inteligente de voltaje con sistema de retardo automático de 3 a 5 minutos para evitar encendidos abruptos y proteger tu compresor ante apagones, caídas de tensión y sobrevoltajes en Venezuela. ¡Cashealo!",
+    description: "Protector inteligente de voltaje con sistema de retardo automático de 3 a 5 minutos para evitar encendidos abruptos y proteger tu compresor ante apagones, caídas de tensión y sobrevoltajes en Venezuela.",
     category: "electricidad-iluminacion",
     categoryName: "Electricidad, Protectores e Iluminación",
     brand: "LUMISTAR",
@@ -216,7 +216,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 14.50,
     originalPrice: 18.00,
     images: [
-      "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=80",
+      "/product-plumbing.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -242,7 +242,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-cerradura-seguridad-embutir-35mm",
     name: "Cerradura / Mecanismo de Embutir para Puertas de Seguridad (35 mm)",
     slug: "cerradura-mecanismo-embutir-puertas-seguridad-35mm",
-    description: "Cerradura de alta seguridad con caja de 35 mm y frontal en acero cepillado de gran resistencia mecánica. Diseñada para puertas de seguridad residenciales y comerciales. Incluye cilindro europerfil y 3 llaves multipunto. ¡Cashealo!",
+    description: "Cerradura de alta seguridad con caja de 35 mm y frontal en acero cepillado de gran resistencia mecánica. Diseñada para puertas de seguridad residenciales y comerciales. Incluye cilindro europerfil y 3 llaves multipunto.",
     category: "cerrajeria-herrajes",
     categoryName: "Cerrajería & Seguridad",
     brand: "MULTIOGAR SEGURIDAD",
@@ -250,7 +250,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 18.00,
     originalPrice: 22.00,
     images: [
-      "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&auto=format&fit=crop&q=80",
+      "/product-security.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -275,7 +275,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-candado-anticizalla-zoe-90mm",
     name: "Candado Anticizalla ZOE 90mm en Bronce Cepillado (ZCE-35818U)",
     slug: "candado-anticizalla-zoe-90mm-bronce-cepillado",
-    description: "Candado de máxima seguridad tipo monobloque con cuerpo macizo de bronce cepillado y perno pasador de acero cementado resistente a cizallas, palancas y seguetas. Incluye 3 llaves de seguridad. ¡Cashealo!",
+    description: "Candado de máxima seguridad tipo monobloque con cuerpo macizo de bronce cepillado y perno pasador de acero cementado resistente a cizallas, palancas y seguetas. Incluye 3 llaves de seguridad.",
     category: "cerrajeria-herrajes",
     categoryName: "Cerrajería & Seguridad",
     brand: "ZOE",
@@ -283,7 +283,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 12.00,
     originalPrice: 15.00,
     images: [
-      "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&auto=format&fit=crop&q=80",
+      "/product-security.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -308,7 +308,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-linterna-recargable-led-potencia",
     name: "Linterna Recargable LED de Alta Potencia y Largo Alcance",
     slug: "linterna-recargable-led-alta-potencia-largo-alcance",
-    description: "Linterna táctica recargable con chip LED de alta eficiencia y bajo consumo (0.5W ultra brillante). Cuerpo compacto y resistente con batería de larga duración integrada y cable de carga USB. ¡Cashealo!",
+    description: "Linterna táctica recargable con chip LED de alta eficiencia y bajo consumo (0.5W ultra brillante). Cuerpo compacto y resistente con batería de larga duración integrada y cable de carga USB.",
     category: "electricidad-iluminacion",
     categoryName: "Electricidad, Protectores e Iluminación",
     brand: "MULTIOGAR LED",
@@ -316,7 +316,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 6.50,
     originalPrice: 9.00,
     images: [
-      "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=80",
+      "/product-plumbing.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -348,7 +348,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sku: "MOG-MAN-SS",
     basePrice: 14.00,
     images: [
-      "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&auto=format&fit=crop&q=80",
+      "/product-security.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -372,7 +372,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     id: "prod-protector-lumistar-equipos-tv",
     name: "Protector de Voltaje / Regleta Lumistar para TV y Equipos Electrónicos",
     slug: "protector-voltaje-regleta-lumistar-tv-equipos-electronicos",
-    description: "Diseñado especialmente para prolongar la vida útil de tus equipos de entretenimiento: Televisores y Smart TV, sistemas de audio y sonido, reproductores, decodificadores y consolas de videojuegos. ¡Cashealo!",
+    description: "Diseñado especialmente para prolongar la vida útil de tus equipos de entretenimiento: Televisores y Smart TV, sistemas de audio y sonido, reproductores, decodificadores y consolas de videojuegos.",
     category: "electricidad-iluminacion",
     categoryName: "Electricidad, Protectores e Iluminación",
     brand: "LUMISTAR",
@@ -380,7 +380,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 11.00,
     originalPrice: 14.00,
     images: [
-      "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=800&auto=format&fit=crop&q=80",
+      "/product-plumbing.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -412,7 +412,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sku: "MG-MAST-5KG",
     basePrice: 12.50,
     images: [
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80",
+      "/product-construction.jpg",
     ],
     hasVariants: true,
     variants: [
@@ -447,7 +447,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 1.00,
     originalPrice: 1.50,
     images: [
-      "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=800&auto=format&fit=crop&q=80",
+      "/product-hand-tools.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -480,7 +480,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sku: "DSC01-FORTEK",
     basePrice: 1.00,
     images: [
-      "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=800&auto=format&fit=crop&q=80",
+      "/product-hand-tools.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -511,7 +511,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sku: "ATN-CRTE-01",
     basePrice: 1.00,
     images: [
-      "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?w=800&auto=format&fit=crop&q=80",
+      "/product-hand-tools.jpg",
     ],
     hasVariants: true,
     variants: [
@@ -547,7 +547,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     basePrice: 58.00,
     originalPrice: 68.00,
     images: [
-      "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop&q=80",
+      "/hero-tools.jpg",
     ],
     hasVariants: true,
     variants: [
@@ -582,7 +582,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sku: "TUB-PVC-12",
     basePrice: 3.50,
     images: [
-      "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?w=800&auto=format&fit=crop&q=80",
+      "/product-sink.jpg",
     ],
     hasVariants: true,
     variants: [
@@ -617,7 +617,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     sku: "CEM-VENC-42",
     basePrice: 7.50,
     images: [
-      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&auto=format&fit=crop&q=80",
+      "/product-construction.jpg",
     ],
     hasVariants: false,
     variants: [],
@@ -633,78 +633,5 @@ export const INITIAL_PRODUCTS: Product[] = [
     tags: ["cemento", "vencemos", "construccion", "obra", "albañileria"],
     createdAt: "2026-08-12T07:00:00Z",
     updatedAt: "2026-08-25T20:30:00Z",
-  },
-];
-
-export const INITIAL_ORDERS: Order[] = [
-  {
-    id: "ord-1001",
-    orderNumber: "MH-2026-1001",
-    customer: {
-      name: "Alejandro Mendoza",
-      phone: "04141234567",
-      city: "Caracas",
-      address: "Av. Francisco de Miranda, Edif. Centro Plaza",
-      notes: "Método de pago: Zelle",
-    },
-    items: [
-      {
-        productId: "prod-esmalte-prisma-brillante",
-        productName: "Pintura Esmalte Sintético Acabado Brillante Clase \"A\" Prisma",
-        slug: "pintura-esmalte-sintetico-acabado-brillante-clase-a-prisma",
-        sku: "PRS-BLA-1G",
-        image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&auto=format&fit=crop&q=80",
-        price: 24.00,
-        quantity: 2,
-        variantId: "v-prs-1g-bla",
-        variantName: "Blanco Brillante - 1 Galón",
-        maxStock: 35,
-      },
-      {
-        productId: "prod-pistola-calor-ingco-2000w",
-        productName: "Pistola de Calor Industrial 2000W Ingco",
-        slug: "pistola-de-calor-industrial-2000w-ingco-boquillas",
-        sku: "HG200028",
-        image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&auto=format&fit=crop&q=80",
-        price: 28.00,
-        quantity: 1,
-        maxStock: 24,
-      },
-    ],
-    subtotal: 76.00,
-    total: 76.00,
-    status: "completado",
-    channel: "whatsapp_web",
-    createdAt: "2026-08-24T15:20:00Z",
-    updatedAt: "2026-08-24T17:40:00Z",
-  },
-  {
-    id: "ord-1002",
-    orderNumber: "MH-2026-1002",
-    customer: {
-      name: "Taller Mecánico Los Próceres",
-      phone: "04249876543",
-      city: "Valencia",
-      address: "Zona Industrial El Bosque, Galpón 8",
-      notes: "Método de pago: Pago Móvil",
-    },
-    items: [
-      {
-        productId: "prod-candado-anticizalla-zoe-90mm",
-        productName: "Candado Anticizalla ZOE 90mm en Bronce Cepillado",
-        slug: "candado-anticizalla-zoe-90mm-bronce-cepillado",
-        sku: "ZCE-35818U-90",
-        image: "https://images.unsplash.com/photo-1558002038-1055907df827?w=800&auto=format&fit=crop&q=80",
-        price: 12.00,
-        quantity: 3,
-        maxStock: 50,
-      },
-    ],
-    subtotal: 36.00,
-    total: 36.00,
-    status: "atendido",
-    channel: "whatsapp_web",
-    createdAt: "2026-08-25T09:10:00Z",
-    updatedAt: "2026-08-25T10:15:00Z",
   },
 ];

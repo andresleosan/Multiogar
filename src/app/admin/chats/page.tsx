@@ -1,28 +1,21 @@
 ﻿"use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { 
   MessageSquare, 
   Send, 
   Phone, 
-  Search, 
-  User, 
-  CheckCircle2, 
-  Clock, 
-  Sparkles, 
-  MessageCircle,
-  MoreVertical,
-  CheckCheck
+  Search
 } from "lucide-react";
 import { DataService } from "@/lib/data-service";
+import { normalizeVenezuelanPhoneForWhatsApp } from "@/lib/utils";
 import { ChatMessage, ChatSession } from "@/types";
 
 const QUICK_REPLIES = [
-  "¡Hola! Con gusto te colaboro con la cotización de materiales.",
-  "Tenemos stock disponible para entrega inmediata hoy.",
-  "El despacho a tu dirección toma entre 24 y 48 horas.",
-  "Para facturación electrónica por favor compártenos tu RIF o Cédula.",
+  "¡Hola! Con gusto reviso tu cotización de materiales.",
+  "Voy a validar el stock antes de confirmarte disponibilidad.",
+  "Compárteme tu ciudad para consultar las opciones de despacho.",
+  "Indícame las medidas, cantidades o marcas que necesitas.",
 ];
 
 export default function AdminChatsPage() {
@@ -33,27 +26,22 @@ export default function AdminChatsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    loadSessions();
-    const interval = setInterval(() => {
-      loadSessions();
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadSessions = () => {
+  const loadSessions = useCallback(() => {
     const list = DataService.getChatSessions();
     setSessions(list);
-    if (!selectedSessionId && list.length > 0) {
-      setSelectedSessionId(list[0].id);
-      setMessages(DataService.getChatMessages(list[0].id));
-    }
-  };
+    setSelectedSessionId((current) => current ?? list[0]?.id ?? null);
+  }, []);
 
   useEffect(() => {
-    if (selectedSessionId) {
-      setMessages(DataService.getChatMessages(selectedSessionId));
-    }
+    return DataService.subscribeChatSessions((list) => {
+      setSessions(list);
+      setSelectedSessionId((current) => current ?? list[0]?.id ?? null);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!selectedSessionId) return;
+    return DataService.subscribeChatMessages(selectedSessionId, setMessages);
   }, [selectedSessionId]);
 
   // Safe internal scroll — does NOT scroll the browser window or viewport
@@ -170,6 +158,19 @@ export default function AdminChatsPage() {
               </button>
             );
           })}
+          {filteredSessions.length === 0 && (
+            <div className="px-6 py-12 text-center">
+              <MessageSquare className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
+              <p className="mt-3 text-xs font-bold text-slate-700 dark:text-slate-200">
+                {sessions.length === 0 ? "Sin conversaciones registradas" : "Sin coincidencias"}
+              </p>
+              <p className="mt-1 text-[11px] text-slate-500">
+                {sessions.length === 0
+                  ? "El chat público está desactivado hasta contar con un ingreso seguro."
+                  : "Prueba con otro nombre o contenido del mensaje."}
+              </p>
+            </div>
+          )}
         </div>
 
       </div>
@@ -197,8 +198,7 @@ export default function AdminChatsPage() {
 
             <div className="flex items-center gap-2">
               {activeSession.customerPhone && (() => {
-                const clean = activeSession.customerPhone.replace(/\D/g, "");
-                const wa = clean.startsWith("58") ? clean : clean.startsWith("0") ? "58" + clean.slice(1) : "58" + clean;
+                const wa = normalizeVenezuelanPhoneForWhatsApp(activeSession.customerPhone);
                 return (
                   <a
                     href={`https://wa.me/${wa}`}
@@ -283,7 +283,9 @@ export default function AdminChatsPage() {
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
           <MessageSquare className="w-12 h-12 mb-2 opacity-30" />
           <p className="font-bold text-sm">Selecciona una conversación para responder</p>
-          <p className="text-xs">Los mensajes enviados por los clientes desde la web aparecerán aquí.</p>
+          <p className="max-w-sm text-xs">
+            El chat público está desactivado hasta implementar identidad, validación y protección contra abuso.
+          </p>
         </div>
       )}
 

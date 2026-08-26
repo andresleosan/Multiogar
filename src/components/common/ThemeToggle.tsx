@@ -2,37 +2,35 @@
 
 import React, { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
+import { useHydrated } from "@/hooks/use-hydrated";
+
+function getInitialTheme(): boolean {
+  if (typeof window === "undefined") return false;
+  const stored = localStorage.getItem("multiogar_theme");
+  return stored === "dark" ||
+    (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+}
 
 export const ThemeToggle: React.FC = () => {
-  const [isDark, setIsDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(getInitialTheme);
+  const hydrated = useHydrated();
 
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem("multiogar_theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (stored === "dark" || (!stored && prefersDark)) {
-      setIsDark(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      setIsDark(false);
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    if (nextDark) {
+    if (isDark) {
       document.documentElement.classList.add("dark");
       localStorage.setItem("multiogar_theme", "dark");
     } else {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("multiogar_theme", "light");
     }
+  }, [isDark]);
+
+  const toggleTheme = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
   };
 
-  if (!mounted) return <div className="w-9 h-9" />;
+  if (!hydrated) return <div className="w-9 h-9" />;
 
   return (
     <button

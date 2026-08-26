@@ -72,6 +72,7 @@ export interface Order {
   subtotal: number;
   deliveryFee?: number;
   total: number;
+  paymentMethod?: 'cashea' | 'por_coordinar';
   status: 'pendiente' | 'atendido' | 'enviado' | 'completado' | 'cancelado';
   channel: 'web' | 'whatsapp_web' | 'direct' | 'chat_web';
   whatsappUrl?: string;

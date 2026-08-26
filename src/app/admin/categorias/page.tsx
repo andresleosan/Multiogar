@@ -1,23 +1,8 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { 
-  Layers, 
-  Plus, 
-  Search, 
-  Edit, 
-  X, 
-  CheckCircle2, 
-  Zap, 
-  Wrench, 
-  Droplets, 
-  Paintbrush, 
-  Lightbulb, 
-  Cpu, 
-  Lock, 
-  HardHat 
-} from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { Plus, X } from "lucide-react";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { DataService } from "@/lib/data-service";
 import { Category, Product } from "@/types";
 import { slugify } from "@/lib/utils";
@@ -25,6 +10,7 @@ import { slugify } from "@/lib/utils";
 const iconOptions = ["Zap", "Wrench", "Droplets", "Paintbrush", "Lightbulb", "Cpu", "Lock", "HardHat"];
 
 export default function AdminCategoriesPage() {
+  const { role } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,18 +20,24 @@ export default function AdminCategoriesPage() {
   const [icon, setIcon] = useState("Wrench");
   const [image, setImage] = useState("");
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setCategories(DataService.getCategories());
     setProducts(DataService.getProducts());
-  };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeCategories = DataService.subscribeCategories(setCategories);
+    const unsubscribeProducts = DataService.subscribeProducts(setProducts);
+
+    return () => {
+      unsubscribeCategories();
+      unsubscribeProducts();
+    };
+  }, []);
 
   const handleCreateCategory = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (role !== "superadmin" || !name.trim()) return;
 
     DataService.createCategory({
       name: name.trim(),
@@ -79,13 +71,15 @@ export default function AdminCategoriesPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Nueva Categoría</span>
-        </button>
+        {role === "superadmin" && (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Nueva Categoría</span>
+          </button>
+        )}
       </div>
 
       {/* Categories Grid */}
@@ -103,7 +97,7 @@ export default function AdminCategoriesPage() {
                     {cat.icon}
                   </div>
                   <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-mono text-[10px] text-slate-500 font-bold">
-                    {count} productos
+                    {count} {count === 1 ? "producto" : "productos"}
                   </span>
                 </div>
 
@@ -125,7 +119,7 @@ export default function AdminCategoriesPage() {
       </div>
 
       {/* Modal Nueva Categoría */}
-      {isModalOpen && (
+      {isModalOpen && role === "superadmin" && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-md p-6 space-y-5 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">

@@ -12,18 +12,28 @@
 | Capa / Módulo | Tecnología Seleccionada | Justificación Técnica |
 | :--- | :--- | :--- |
 | **Package Manager** | pnpm (Estricto) | Velocidad de instalación, deduplicación de módulos y reproducibilidad determinista. |
-| **Framework Full-stack** | Next.js 15 (App Router, React 19, TypeScript) | Server Components para SSR/ISR ultra rápido en catálogo y SEO; Client Components para interactividad (carrito, filtros, chat). |
-| **Estilos & UI** | Tailwind CSS v4 + Shadcn UI + Lucide Icons | Sistema de diseño atómico ultra ligero, componentes de alta accesibilidad (Radix UI) y consistencia visual. |
+| **Framework Full-stack** | Next.js 16.3 (App Router, React 19, TypeScript) | Render estático para el catálogo inicial y componentes cliente para datos remotos e interacción. |
+| **Estilos & UI** | Tailwind CSS v4 + Lucide Icons | Implementación directa con controles nativos y componentes propios. |
 | **Animaciones & UX** | Framer Motion | Micro-interacciones de alta fluidez en drawers, modales, banners y tarjetas de productos. |
-| **Autenticación** | Firebase Auth (Client & Admin SDK) | Gestión segura de sesiones de personal (Vendedor / SuperAdmin) con tokens JWT y verificación en middleware de Next.js. |
-| **Base de Datos Principal** | Cloud Firestore | Base de datos NoSQL documental con suscripciones en tiempo real (onSnapshot) para chats, sincronización de stock y pedidos. |
-| **Almacenamiento de Medios** | Cloudflare R2 / Firebase Storage (S3-compatible) | Almacenamiento distribuido de bajo costo y entrega CDN de alto rendimiento para fotos de productos y adjuntos de chat. |
+| **Autenticación** | Firebase Auth Client SDK | Sesiones firmadas y resolución de roles por custom claim, con allowlist temporal exacta para las cuentas de prueba. |
+| **Base de Datos Principal** | Cloud Firestore | Suscripciones `onSnapshot` para catálogo y datos operativos del personal. Las escrituras públicas permanecen bloqueadas. |
+| **Almacenamiento de Medios** | Archivos locales en `public/` | Las imágenes actuales son referenciales. La carga administrada a Storage está pendiente. |
 | **Visualización & Métricas** | Recharts | Renderizado declarativo de gráficas estadísticas ligeras y reactivas en el dashboard administrativo. |
-| **Validación de Esquemas** | Zod | Validación tipada en formularios de frontend, endpoints de API y estructuras de Firestore. |
+| **Validación de Esquemas** | Zod | Validación del formulario de autenticación; los futuros endpoints públicos deben ampliar esta capa. |
 | **Despliegue** | Vercel (Production Ready) | Soporte nativo para Next.js con Edge Network, optimización de imágenes (
 ext/image) y despliegues atómicos. |
 
 ---
+
+## 2.1 Identidad visual
+
+- **Referencias estructurales:** EPA Venezuela, Promart Perú y Homecenter Colombia. Se toman sus convenciones de búsqueda prioritaria, categorías visibles, precio/stock escaneables y acceso directo a asesoría; no se replica su contenido ni su composición exacta.
+- **Paleta:** azul Multiogar `#1F47FE` para navegación y acciones principales; naranja `#FF6B00` para precio, oferta y urgencia; blanco `#FFFFFF` para superficies de catálogo; gris técnico `#172033` y `#64748B` para texto y datos operativos.
+- **Tipografía:** sans del sistema con pesos 600-900. Titulares directos, texto compacto y datos de SKU/precio con jerarquía tabular; no se usa una serif editorial porque el producto requiere lectura rápida de mostrador.
+- **Tono:** técnico y resolutivo. El copy nombra producto, disponibilidad, moneda y siguiente acción sin promesas grandilocuentes.
+- **Concepto de layout:** un mostrador digital venezolano: marca, búsqueda, categorías, producto y WhatsApp aparecen en ese orden.
+- **Elemento firma:** franja azul/naranja de disponibilidad y cotización que reutiliza el ángulo del isotipo sin convertirlo en decoración abstracta.
+- **Se evita:** hero oscuro tipo bento, degradados y orbes decorativos, píldoras excesivas, reseñas simuladas y textos genéricos de “experiencia premium”.
 
 ## 3. Arquitectura del Sistema
 
@@ -69,7 +79,7 @@ interface Product {
   categoryName: string;
   brand: string;
   sku: string;
-  basePrice: number; // Precio base en COP/USD
+  basePrice: number; // Precio de referencia en USD
   images: string[]; // URLs CDN
   hasVariants: boolean;
   variants: Array<{

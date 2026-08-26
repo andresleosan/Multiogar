@@ -4,23 +4,19 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { 
-  Search, 
-  ShoppingCart, 
-  Menu, 
-  X, 
-  Phone, 
-  ChevronDown, 
-  Sparkles, 
-  Wrench, 
-  Zap, 
-  Droplets, 
-  Paintbrush, 
-  HardHat,
-  CheckCircle2,
+import {
   AlertCircle,
-  Truck,
-  ShieldCheck
+  CheckCircle2,
+  Droplets,
+  HardHat,
+  Menu,
+  Paintbrush,
+  Phone,
+  Search,
+  ShoppingCart,
+  Wrench,
+  X,
+  Zap,
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
@@ -28,37 +24,33 @@ import { useCartStore } from "@/store/cart-store";
 import { DataService } from "@/lib/data-service";
 import { Product } from "@/types";
 import { formatCurrency, OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED } from "@/lib/utils";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { toggleCart, getTotalItems } = useCartStore();
-  const [mounted, setMounted] = useState(false);
+  const hydrated = useHydrated();
   const [searchQuery, setSearchQuery] = useState("");
+  const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-
-  if (pathname && pathname.startsWith("/admin")) {
-    return null;
-  }
+  const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (isAdminRoute) return;
+    return DataService.subscribeProducts(setCatalogProducts);
+  }, [isAdminRoute]);
 
   // Predictive search with debounce
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setSearchResults([]);
-      return;
-    }
+    if (isAdminRoute || !searchQuery.trim()) return;
 
     const timer = setTimeout(() => {
-      const allProducts = DataService.getProducts();
       const query = searchQuery.toLowerCase().trim();
-      const filtered = allProducts.filter((p) =>
+      const filtered = catalogProducts.filter((p) =>
         p.name.toLowerCase().includes(query) ||
         p.brand.toLowerCase().includes(query) ||
         p.sku.toLowerCase().includes(query) ||
@@ -70,10 +62,12 @@ export const Navbar: React.FC = () => {
     }, 180);
 
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [catalogProducts, isAdminRoute, searchQuery]);
 
   // Close search dropdown on click outside
   useEffect(() => {
+    if (isAdminRoute) return;
+
     function handleClickOutside(event: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false);
@@ -81,7 +75,7 @@ export const Navbar: React.FC = () => {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isAdminRoute]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,39 +85,30 @@ export const Navbar: React.FC = () => {
     }
   };
 
-  const totalItems = mounted ? getTotalItems() : 0;
+  const totalItems = hydrated ? getTotalItems() : 0;
+  const visibleSearchResults = searchQuery.trim() ? searchResults : [];
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-xs">
-      {/* Top Notification Bar */}
-      <div className="bg-slate-950 text-white text-xs font-medium py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="bg-gradient-to-r from-orange-500 to-amber-400 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase">
-              Venezuela
-            </span>
-            <span className="hidden sm:inline-flex items-center gap-1 text-slate-300">
-              <Truck className="w-3.5 h-3.5 text-blue-400" /> Envíos a todo el país
-            </span>
-            <span className="hidden md:inline-flex items-center gap-1 text-slate-300">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Precios en Dólares (USD)
-            </span>
-            <span className="inline-flex items-center gap-1 text-slate-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Pago al Recibir / Zelle
-            </span>
-          </div>
-          <div className="flex items-center gap-4 text-slate-300">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="bg-blue-700 px-4 py-2 text-xs font-semibold text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+          <span className="hidden sm:inline">Atención y cotizaciones para toda Venezuela</span>
+          <div className="ml-auto flex items-center gap-4">
             <a 
               href={`https://wa.me/${OFFICIAL_STORE_PHONE}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors font-medium"
+              className="flex items-center gap-1.5 transition-colors hover:text-orange-200"
             >
-              <Phone className="w-3 h-3 text-emerald-400" />
+              <Phone className="h-3.5 w-3.5" />
               <span>WhatsApp: {OFFICIAL_STORE_PHONE_FORMATTED}</span>
             </a>
-            <span className="hidden md:inline text-slate-600">|</span>
-            <Link href="/admin/login" className="hidden md:inline hover:text-white transition-colors">
+            <span className="hidden text-blue-300 md:inline">|</span>
+            <Link href="/admin/login" className="hidden transition-colors hover:text-orange-200 md:inline">
               Acceso Empleados
             </Link>
           </div>
@@ -132,10 +117,10 @@ export const Navbar: React.FC = () => {
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+        <div className="flex h-20 items-center justify-between gap-4">
           
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          <div className="flex shrink-0 items-center">
             <BrandLogo size="md" />
           </div>
 
@@ -152,12 +137,12 @@ export const Navbar: React.FC = () => {
                     setIsSearchOpen(true);
                   }}
                   onFocus={() => setIsSearchOpen(true)}
-                  className="w-full h-11 pl-11 pr-24 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white dark:focus:bg-slate-900 transition-all shadow-inner"
+                  className="h-11 w-full rounded-md border border-slate-300 bg-slate-50 pl-11 pr-24 text-sm text-slate-900 placeholder-slate-500 transition-colors focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:bg-slate-900"
                 />
                 <Search className="absolute left-4 w-4 h-4 text-slate-400" />
                 <button
                   type="submit"
-                  className="absolute right-1.5 px-4 h-8 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition-colors flex items-center gap-1 shadow-sm"
+                  className="absolute right-1.5 flex h-8 items-center gap-1 rounded bg-blue-700 px-4 text-xs font-bold text-white transition-colors hover:bg-blue-800"
                 >
                   Buscar
                 </button>
@@ -178,9 +163,9 @@ export const Navbar: React.FC = () => {
                   </Link>
                 </div>
 
-                {searchResults.length > 0 ? (
+                {visibleSearchResults.length > 0 ? (
                   <div className="divide-y divide-slate-100 dark:divide-slate-700/50 max-h-96 overflow-y-auto">
-                    {searchResults.map((product) => (
+                    {visibleSearchResults.map((product) => (
                       <Link
                         key={product.id}
                         href={`/producto/${product.slug}`}
@@ -245,9 +230,9 @@ export const Navbar: React.FC = () => {
               href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("Hola Multiogar Ferretería, me gustaría solicitar asesoría y cotización.")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden lg:flex items-center gap-2 px-3.5 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02]"
+              className="hidden min-h-10 items-center gap-2 rounded-md border border-emerald-600 px-3.5 py-2 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950 lg:flex"
             >
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <Phone className="h-4 w-4" />
               <span>Asesoría WhatsApp</span>
             </a>
 
@@ -258,7 +243,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={toggleCart}
               aria-label="Ver carrito"
-              className="relative p-2.5 rounded-xl bg-slate-100 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-600 shadow-xs"
+              className="relative rounded-md bg-slate-100 p-2.5 text-slate-800 transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
             >
               <ShoppingCart className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               {totalItems > 0 && (
@@ -272,7 +257,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Abrir menú"
-              className="md:hidden p-2.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="rounded-md p-2.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 md:hidden"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

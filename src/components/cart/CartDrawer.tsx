@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { 
   X, 
   Trash2, 
@@ -16,29 +15,14 @@ import {
   MapPin, 
   User, 
   CheckCircle2, 
-  CreditCard,
-  Banknote,
-  DollarSign,
-  Globe,
   MessageCircle,
-  FileText,
   Copy,
-  Check
+  Check,
+  WalletCards
 } from "lucide-react";
-import confetti from "canvas-confetti";
 import { useCartStore } from "@/store/cart-store";
-import { formatCurrency, generateOrderNumber, generateWhatsAppOrderMessage, OFFICIAL_STORE_PHONE } from "@/lib/utils";
-import { DataService } from "@/lib/data-service";
+import { formatCurrency, generateOrderId, generateOrderNumber, generateWhatsAppOrderMessage, OFFICIAL_STORE_PHONE } from "@/lib/utils";
 import { Order } from "@/types";
-
-const PAYMENT_METHODS = [
-  "Pago Móvil",
-  "Zelle",
-  "Efectivo USD",
-  "Cashea",
-  "Transferencia Bancaria",
-  "Pago al recibir",
-];
 
 export const CartDrawer: React.FC = () => {
   const { 
@@ -57,9 +41,9 @@ export const CartDrawer: React.FC = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerCity, setCustomerCity] = useState("Caracas");
   const [customerAddress, setCustomerAddress] = useState("");
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Pago Móvil");
   const [customerNotes, setCustomerNotes] = useState("");
-  const [checkoutMode, setCheckoutMode] = useState<"web" | "whatsapp">("web");
+  const [wantsCashea, setWantsCashea] = useState(true);
+  const [formError, setFormError] = useState("");
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [lastOrderUrl, setLastOrderUrl] = useState("");
   const [copied, setCopied] = useState(false);
@@ -76,57 +60,39 @@ export const CartDrawer: React.FC = () => {
 
   const handleProcessOrder = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName.trim() || !customerPhone.trim()) {
-      alert("Por favor ingresa tu nombre y número de teléfono.");
+    const phoneDigits = customerPhone.replace(/\D/g, "");
+    if (customerName.trim().length < 2 || phoneDigits.length < 10 || phoneDigits.length > 15) {
+      setFormError("Ingresa un nombre y un teléfono válido de 10 a 15 dígitos.");
       return;
     }
+    setFormError("");
 
     const orderNumber = generateOrderNumber();
-    const fullNotes = `Método de pago: ${selectedPaymentMethod}. ${customerNotes ? `Notas: ${customerNotes}` : ""}`.trim();
 
     const newOrder: Order = {
-      id: `ord-${Date.now()}`,
+      id: generateOrderId(orderNumber),
       orderNumber: orderNumber,
       customer: {
         name: customerName.trim(),
         phone: customerPhone.trim(),
         city: customerCity.trim() || "Venezuela",
         address: customerAddress.trim(),
-        notes: fullNotes,
+        notes: customerNotes.trim(),
       },
       items: [...items],
       subtotal: subtotal,
       total: subtotal,
+      paymentMethod: wantsCashea ? "cashea" : "por_coordinar",
       status: "pendiente",
-      channel: checkoutMode === "web" ? "web" : "whatsapp_web",
+      channel: "whatsapp_web",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    // Save in persistent DataService and Firestore
-    DataService.createOrder(newOrder);
-
-    // Generate WhatsApp Link
     const waUrl = generateWhatsAppOrderMessage(newOrder, OFFICIAL_STORE_PHONE);
     setLastOrder(newOrder);
     setLastOrderUrl(waUrl);
-
-    // Trigger celebratory confetti 🎉
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-
     setStep("success");
-    clearCart();
-
-    // If customer selected WhatsApp mode, open WhatsApp tab
-    if (checkoutMode === "whatsapp") {
-      setTimeout(() => {
-        window.open(waUrl, "_blank");
-      }, 600);
-    }
   };
 
   const handleCopyOrderNumber = () => {
@@ -249,7 +215,7 @@ export const CartDrawer: React.FC = () => {
                     Tu carrito está vacío
                   </h4>
                   <p className="text-xs text-slate-500 max-w-xs">
-                    Explora nuestros productos con precios en USD, entrega en Venezuela y pago por Pago Móvil, Zelle o Cashea.
+                    Explora el catálogo, arma tu lista y confirma disponibilidad y despacho con ventas.
                   </p>
                   <button
                     onClick={closeCart}
@@ -282,7 +248,7 @@ export const CartDrawer: React.FC = () => {
                     onClick={handleProceedToCheckout}
                     className="w-full py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all active:scale-98"
                   >
-                    <span>Proceder al Checkout (Web o WhatsApp)</span>
+                    <span>Preparar pedido para WhatsApp</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -290,7 +256,7 @@ export const CartDrawer: React.FC = () => {
             </>
           )}
 
-          {/* STEP 2: CHECKOUT FORM (WEB OR WHATSAPP OPTION) */}
+          {/* STEP 2: ORDER REQUEST FORM */}
           {step === "checkout" && (
             <form onSubmit={handleProcessOrder} className="flex-1 flex flex-col justify-between p-4 sm:p-5 overflow-y-auto">
               <div className="space-y-4">
@@ -307,49 +273,31 @@ export const CartDrawer: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Mode Selector: Direct Web Checkout vs WhatsApp Checkout */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
-                    ¿Cómo deseas completar tu compra?
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutMode("web")}
-                      className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between gap-1.5 ${
-                        checkoutMode === "web"
-                          ? "bg-blue-50 dark:bg-blue-950/60 border-blue-600 text-blue-900 dark:text-blue-200 ring-2 ring-blue-600/30"
-                          : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400"
-                      }`}
-                    >
-                      <div className="flex items-center gap-1.5 font-bold text-xs">
-                        <Globe className="w-4 h-4 text-blue-600" />
-                        <span>Compra en la Web</span>
-                      </div>
-                      <span className="text-[10px] leading-tight text-slate-500 dark:text-slate-400">
-                        Registro directo en panel y comprobante digital.
-                      </span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutMode("whatsapp")}
-                      className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between gap-1.5 ${
-                        checkoutMode === "whatsapp"
-                          ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-600 text-emerald-900 dark:text-emerald-200 ring-2 ring-emerald-600/30"
-                          : "bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400"
-                      }`}
-                    >
-                      <div className="flex items-center gap-1.5 font-bold text-xs">
-                        <MessageCircle className="w-4 h-4 text-emerald-600" />
-                        <span>Vía WhatsApp</span>
-                      </div>
-                      <span className="text-[10px] leading-tight text-slate-500 dark:text-slate-400">
-                        Atención directa con asesor comercial por chat.
-                      </span>
-                    </button>
-                  </div>
+                <div className="flex gap-3 rounded-md border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-100">
+                  <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  <p>El pedido se enviará a ventas por WhatsApp para confirmar stock, precio final y despacho.</p>
                 </div>
+
+                <fieldset className="space-y-2">
+                  <legend className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Forma de pago solicitada
+                  </legend>
+                  <label className="flex cursor-pointer items-start gap-3 rounded-md border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+                    <input
+                      type="checkbox"
+                      checked={wantsCashea}
+                      onChange={(event) => setWantsCashea(event.target.checked)}
+                      className="mt-0.5 h-4 w-4 accent-blue-700"
+                    />
+                    <WalletCards className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-400" />
+                    <span>
+                      <strong className="block text-xs text-slate-900 dark:text-white">Quiero pagar con Cashea</strong>
+                      <span className="mt-1 block text-[11px] leading-4 text-slate-500 dark:text-slate-400">
+                        Pago inicial y cuotas quincenales sin intereses. Sujeto a aprobación, nivel y condiciones de Cashea.
+                      </span>
+                    </span>
+                  </label>
+                </fieldset>
 
                 {/* Customer Name */}
                 <div className="space-y-1.5">
@@ -359,6 +307,7 @@ export const CartDrawer: React.FC = () => {
                   <input
                     type="text"
                     required
+                    maxLength={100}
                     placeholder="Ej: Carlos Rodríguez"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
@@ -374,6 +323,7 @@ export const CartDrawer: React.FC = () => {
                   <input
                     type="tel"
                     required
+                    maxLength={25}
                     placeholder="Ej: 0414-1234567 / 0424-9876543"
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
@@ -389,6 +339,7 @@ export const CartDrawer: React.FC = () => {
                   <input
                     type="text"
                     required
+                    maxLength={80}
                     placeholder="Ej: Caracas, Valencia, Maracay, Barquisimeto..."
                     value={customerCity}
                     onChange={(e) => setCustomerCity(e.target.value)}
@@ -403,34 +354,12 @@ export const CartDrawer: React.FC = () => {
                   </label>
                   <input
                     type="text"
+                    maxLength={180}
                     placeholder="Calle, sector, edificio o punto de referencia"
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
                     className="w-full h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
                   />
-                </div>
-
-                {/* Payment Method Selector */}
-                <div className="space-y-2 pt-1">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <CreditCard className="w-3.5 h-3.5 text-amber-500" /> Método de Pago:
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                    {PAYMENT_METHODS.map((pm) => (
-                      <button
-                        key={pm}
-                        type="button"
-                        onClick={() => setSelectedPaymentMethod(pm)}
-                        className={`p-2 rounded-xl border text-[11px] font-bold text-center transition-all ${
-                          selectedPaymentMethod === pm
-                            ? "bg-slate-900 text-white border-slate-900 dark:bg-blue-600 dark:border-blue-600 shadow-xs scale-[1.02]"
-                            : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-400"
-                        }`}
-                      >
-                        {pm}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
                 {/* Notes */}
@@ -440,12 +369,24 @@ export const CartDrawer: React.FC = () => {
                   </label>
                   <textarea
                     rows={2}
+                    maxLength={500}
                     placeholder="Detalles de facturación, horario preferido de entrega..."
                     value={customerNotes}
                     onChange={(e) => setCustomerNotes(e.target.value)}
                     className="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
                   />
                 </div>
+
+                <div className="flex gap-3 rounded-md border border-orange-200 bg-orange-50 p-3 text-xs text-orange-950 dark:border-orange-900 dark:bg-orange-950/30 dark:text-orange-100">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+                  <p>No realices pagos hasta que un asesor confirme los datos oficiales y la disponibilidad.</p>
+                </div>
+
+                {formError && (
+                  <p role="alert" className="text-xs font-semibold text-rose-600 dark:text-rose-400">
+                    {formError}
+                  </p>
+                )}
               </div>
 
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2 mt-4">
@@ -454,28 +395,18 @@ export const CartDrawer: React.FC = () => {
                   <span>{formatCurrency(subtotal)} USD</span>
                 </div>
 
-                {checkoutMode === "web" ? (
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all active:scale-98"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Confirmar y Registrar Pedido en la Web</span>
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all active:scale-98"
-                  >
-                    <Send className="w-4 h-4" />
-                    <span>Enviar Pedido a WhatsApp</span>
-                  </button>
-                )}
+                <button
+                  type="submit"
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-emerald-600 py-3.5 text-xs font-extrabold text-white transition-colors hover:bg-emerald-700 sm:text-sm"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>Revisar pedido antes de enviarlo</span>
+                </button>
               </div>
             </form>
           )}
 
-          {/* STEP 3: SUCCESS CONFIRMATION & PAYMENT INSTRUCTIONS */}
+          {/* STEP 3: WHATSAPP HANDOFF */}
           {step === "success" && lastOrder && (
             <div className="flex-1 flex flex-col justify-between p-5 overflow-y-auto space-y-5 text-center">
               <div className="space-y-4">
@@ -485,7 +416,7 @@ export const CartDrawer: React.FC = () => {
                 
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-black text-slate-900 dark:text-white">
-                    ¡Pedido Registrado con Éxito!
+                    Pedido listo para enviar
                   </h3>
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-mono font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                     <span>N° Orden: {lastOrder.orderNumber}</span>
@@ -498,7 +429,7 @@ export const CartDrawer: React.FC = () => {
                     </button>
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-                    Tu pedido ya ha sido registrado en nuestro panel administrativo para preparación y despacho.
+                    Abre WhatsApp y envía el mensaje. El pedido queda confirmado cuando ventas te responda.
                   </p>
                 </div>
 
@@ -517,38 +448,22 @@ export const CartDrawer: React.FC = () => {
                     <span>{lastOrder.customer.city}</span>
                   </div>
                   <div className="flex justify-between text-slate-600 dark:text-slate-300">
-                    <span>Método de Pago:</span>
-                    <span className="font-semibold text-blue-600 dark:text-blue-400">{selectedPaymentMethod}</span>
+                    <span>Forma de pago:</span>
+                    <span className="font-bold">
+                      {lastOrder.paymentMethod === "cashea" ? "Cashea" : "Por coordinar"}
+                    </span>
                   </div>
                   <div className="flex justify-between font-black text-sm text-slate-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-700">
-                    <span>Total a Pagar:</span>
+                    <span>Total estimado:</span>
                     <span>{formatCurrency(lastOrder.total)} USD</span>
                   </div>
                 </div>
 
-                {/* Bank / Payment instructions */}
-                <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 text-left text-xs space-y-1.5 text-blue-900 dark:text-blue-200">
+                <div className="p-3.5 rounded-md bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/60 text-left text-xs space-y-1.5 text-orange-950 dark:text-orange-100">
                   <span className="font-bold flex items-center gap-1.5 text-blue-700 dark:text-blue-300">
-                    <ShieldCheck className="w-4 h-4" /> Datos de Pago:
+                    <ShieldCheck className="w-4 h-4" /> Antes de pagar
                   </span>
-                  {selectedPaymentMethod === "Pago Móvil" && (
-                    <div className="text-[11px] space-y-0.5">
-                      <p>• Banco: Banesco (0134) / Mercantil (0105)</p>
-                      <p>• Teléfono: 0424-2811289</p>
-                      <p>• RIF: J-40812345-0</p>
-                    </div>
-                  )}
-                  {selectedPaymentMethod === "Zelle" && (
-                    <div className="text-[11px] space-y-0.5">
-                      <p>• Correo Zelle: pagos@multiogar.com</p>
-                      <p>• Titular: Multiogar Ferretería C.A.</p>
-                    </div>
-                  )}
-                  {selectedPaymentMethod !== "Pago Móvil" && selectedPaymentMethod !== "Zelle" && (
-                    <p className="text-[11px]">
-                      Un asesor comercial te contactará para coordinar la entrega y recepción del pago.
-                    </p>
-                  )}
+                  <p className="text-[11px]">Solicita los datos de pago oficiales durante la conversación. No se muestran cuentas bancarias en esta web.</p>
                 </div>
               </div>
 
@@ -558,10 +473,11 @@ export const CartDrawer: React.FC = () => {
                   href={lastOrderUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={clearCart}
                   className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span>Notificar / Enviar Comprobante por WhatsApp</span>
+                  <span>Abrir WhatsApp y enviar pedido</span>
                 </a>
 
                 <button

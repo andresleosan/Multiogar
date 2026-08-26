@@ -11,9 +11,6 @@ import {
   Search, 
   X, 
   SlidersHorizontal, 
-  Sparkles, 
-  ArrowUpDown, 
-  CheckCircle2, 
   RotateCcw 
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
@@ -38,21 +35,23 @@ function CatalogContent() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    setProducts(DataService.getProducts());
-    setCategories(DataService.getCategories());
+    const unsubscribeProducts = DataService.subscribeProducts(setProducts);
+    const unsubscribeCategories = DataService.subscribeCategories(setCategories);
+
+    return () => {
+      unsubscribeProducts();
+      unsubscribeCategories();
+    };
   }, []);
 
   useEffect(() => {
-    setSelectedCategory(categoryParam);
-  }, [categoryParam]);
-
-  useEffect(() => {
-    setSearchQuery(queryParam);
-  }, [queryParam]);
-
-  useEffect(() => {
-    if (offerParam) setOnlyOffers(true);
-  }, [offerParam]);
+    const syncUrlFilters = window.setTimeout(() => {
+      setSelectedCategory(categoryParam);
+      setSearchQuery(queryParam);
+      setOnlyOffers(offerParam);
+    }, 0);
+    return () => clearTimeout(syncUrlFilters);
+  }, [categoryParam, offerParam, queryParam]);
 
   // Extract unique brands
   const allBrands = useMemo(() => {
@@ -324,7 +323,7 @@ function CatalogContent() {
                 <span className="font-semibold text-slate-700 dark:text-slate-300">Ordenar por:</span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
+                  onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                   className="h-8 px-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none"
                 >
                   <option value="relevant">Más Populares</option>

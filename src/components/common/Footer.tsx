@@ -1,190 +1,120 @@
-﻿"use client";
+"use client";
 
-import React from "react";
 import Link from "next/link";
+import { CircleDollarSign, MessageCircle, PackageCheck, Phone } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "@/components/common/BrandLogo";
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
-  ShieldCheck, 
-  Truck, 
-  Headphones, 
-  CreditCard 
-} from "lucide-react";
-import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/components/common/SocialIcons";
-import { OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED, SOCIAL_LINKS } from "@/lib/utils";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  TikTokIcon,
+  WhatsAppIcon,
+} from "@/components/common/SocialIcons";
+import {
+  OFFICIAL_STORE_PHONE,
+  OFFICIAL_STORE_PHONE_FORMATTED,
+  SOCIAL_LINKS,
+} from "@/lib/utils";
 
-export const Footer: React.FC = () => {
+const serviceFacts = [
+  {
+    title: "Precios de referencia",
+    description: "Catálogo expresado en USD.",
+    icon: CircleDollarSign,
+  },
+  {
+    title: "Stock por confirmar",
+    description: "Ventas valida cada pedido.",
+    icon: PackageCheck,
+  },
+  {
+    title: "Atención por WhatsApp",
+    description: "Cotización y despacho coordinados.",
+    icon: MessageCircle,
+  },
+];
+
+const socialLinks = [
+  { href: SOCIAL_LINKS.instagram, label: "Instagram", icon: InstagramIcon },
+  { href: SOCIAL_LINKS.facebook, label: "Facebook", icon: FacebookIcon },
+  { href: SOCIAL_LINKS.tiktok, label: "TikTok", icon: TikTokIcon },
+  { href: SOCIAL_LINKS.whatsapp, label: "WhatsApp", icon: WhatsAppIcon },
+];
+
+export function Footer() {
   const pathname = usePathname();
 
-  // Hide public store footer on admin routes
-  if (pathname && pathname.startsWith("/admin")) {
-    return null;
-  }
+  if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Top Feature Highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-slate-800/80">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500 flex-shrink-0">
-              <Truck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-sm">Envíos a Toda Venezuela</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Entregas rápidas y seguras.</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-orange-600/10 border border-orange-500/20 flex items-center justify-center text-orange-500 flex-shrink-0">
-              <Headphones className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-sm">Asesoría Técnica en Vivo</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Te ayudamos por WhatsApp.</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-500 flex-shrink-0">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-sm">Pago al Recibir / Zelle</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Pago Móvil, Efectivo USD, Cashea.</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 flex-shrink-0">
-              <CreditCard className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold text-sm">Precios en Dólares (USD)</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Ahorra con los mejores precios.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Footer Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 py-12">
-          
-          {/* Brand Info */}
-          <div className="lg:col-span-2 space-y-4">
-            <BrandLogo size="lg" />
-            <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
-              Multiogar Ferretería es tu aliado comercial en Venezuela para herramientas industriales, discos de corte, plomería, electricidad y materiales de construcción con pedidos directos por WhatsApp y catálogo en USD.
-            </p>
-            
-            {/* Social Media Links with Custom Clean Icons */}
-            <div className="pt-2">
-              <span className="text-xs font-semibold text-slate-400 block mb-2">Síguenos en nuestras redes:</span>
-              <div className="flex items-center gap-3">
-                <a
-                  href={SOCIAL_LINKS.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
-                  title="Instagram Multiogar"
-                >
-                  <InstagramIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href={SOCIAL_LINKS.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-blue-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
-                  title="Facebook Multiogar"
-                >
-                  <FacebookIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href={SOCIAL_LINKS.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 hover:border-slate-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
-                  title="TikTok Multiogar"
-                >
-                  <TikTokIcon className="w-4 h-4" />
-                </a>
-                <a
-                  href={SOCIAL_LINKS.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-emerald-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
-                  title="WhatsApp Multiogar"
-                >
-                  <WhatsAppIcon className="w-4 h-4" />
-                </a>
+    <footer className="border-t border-slate-800 bg-slate-950 text-slate-300">
+      <div className="border-b border-slate-800">
+        <div className="mx-auto grid max-w-7xl divide-y divide-slate-800 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
+          {serviceFacts.map(({ title, description, icon: Icon }) => (
+            <div key={title} className="flex min-h-24 items-center gap-4 py-5 sm:px-5 sm:first:pl-0">
+              <Icon className="h-5 w-5 shrink-0 text-orange-500" />
+              <div>
+                <h2 className="text-sm font-extrabold text-white">{title}</h2>
+                <p className="mt-1 text-xs text-slate-400">{description}</p>
               </div>
             </div>
-          </div>
-
-          {/* Quick Categories */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">Categorías</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link href="/catalogo?categoria=herramientas-manuales" className="hover:text-blue-400 transition-colors">Discos de Corte y Manuales</Link></li>
-              <li><Link href="/catalogo?categoria=herramientas-electricas" className="hover:text-blue-400 transition-colors">Herramientas Eléctricas</Link></li>
-              <li><Link href="/catalogo?categoria=plomeria-tuberias" className="hover:text-blue-400 transition-colors">Plomería y Tuberías</Link></li>
-              <li><Link href="/catalogo?categoria=pinturas-selladores" className="hover:text-blue-400 transition-colors">Pinturas y Selladores</Link></li>
-              <li><Link href="/catalogo?categoria=electricidad-iluminacion" className="hover:text-blue-400 transition-colors">Electricidad e Iluminación</Link></li>
-              <li><Link href="/catalogo?categoria=construccion" className="hover:text-blue-400 transition-colors">Construcción y Albañilería</Link></li>
-            </ul>
-          </div>
-
-          {/* Store Links */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">Navegación</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link href="/catalogo" className="hover:text-blue-400 transition-colors">Catálogo General (USD)</Link></li>
-              <li><Link href="/catalogo?ofertas=true" className="hover:text-orange-400 transition-colors">Ofertas y Promociones</Link></li>
-              <li><Link href="/nosotros" className="hover:text-blue-400 transition-colors">Sobre Multiogar</Link></li>
-              <li><Link href="/contacto" className="hover:text-blue-400 transition-colors">Contacto & Ubicación</Link></li>
-              <li><Link href="/admin/login" className="text-slate-500 hover:text-slate-300 transition-colors">Acceso a Empleados</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact Details */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-white">Contacto Oficial</h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
-                <span>Venezuela 🇻🇪 (Envíos a nivel nacional)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <a href={`https://wa.me/${OFFICIAL_STORE_PHONE}`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
-                  {OFFICIAL_STORE_PHONE_FORMATTED}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                <span>Lun - Sáb: 8:00 AM - 6:00 PM</span>
-              </li>
-            </ul>
-          </div>
-
+          ))}
         </div>
+      </div>
 
-        {/* Bottom Strip */}
-        <div className="pt-8 mt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} Multiogar Ferretería C.A. Todos los derechos reservados.</p>
-          <div className="flex items-center gap-4">
-            <span>Precios expresados en Dólares Americanos (USD)</span>
-            <span>•</span>
-            <span>Venezuela</span>
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-11 sm:px-6 md:grid-cols-12 lg:px-8">
+        <div className="md:col-span-5">
+          <BrandLogo size="lg" variant="light" />
+          <p className="mt-4 max-w-md text-sm leading-6 text-slate-400">
+            Catálogo ferretero para armar pedidos y revisarlos directamente con el equipo de ventas.
+          </p>
+          <div className="mt-5 flex items-center gap-2">
+            {socialLinks.map(({ href, label, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                title={label}
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-700 text-slate-300 transition-colors hover:border-blue-500 hover:text-white"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
           </div>
         </div>
 
+        <nav className="md:col-span-3" aria-label="Enlaces del pie de página">
+          <h2 className="text-xs font-extrabold uppercase text-white">Explorar</h2>
+          <ul className="mt-4 space-y-3 text-sm text-slate-400">
+            <li><Link href="/catalogo" className="hover:text-white">Catálogo</Link></li>
+            <li><Link href="/catalogo?ofertas=true" className="hover:text-white">Ofertas</Link></li>
+            <li><Link href="/nosotros" className="hover:text-white">Nosotros</Link></li>
+            <li><Link href="/contacto" className="hover:text-white">Contacto</Link></li>
+          </ul>
+        </nav>
+
+        <div className="md:col-span-4">
+          <h2 className="text-xs font-extrabold uppercase text-white">Contacto</h2>
+          <a
+            href={`https://wa.me/${OFFICIAL_STORE_PHONE}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex min-h-11 items-center gap-3 rounded-md bg-emerald-600 px-4 py-3 text-sm font-extrabold text-white transition-colors hover:bg-emerald-700"
+          >
+            <Phone className="h-4 w-4" />
+            {OFFICIAL_STORE_PHONE_FORMATTED}
+          </a>
+          <p className="mt-3 text-xs leading-5 text-slate-500">
+            Consulta disponibilidad, cobertura y condiciones de entrega antes de pagar.
+          </p>
+        </div>
+      </div>
+
+      <div className="border-t border-slate-800 px-4 py-5 text-center text-xs text-slate-500">
+        © {new Date().getFullYear()} Multiogar Ferretería. Precios de referencia en USD.
       </div>
     </footer>
   );
-};
+}

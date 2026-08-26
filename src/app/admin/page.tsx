@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { 
   ShoppingBag, 
@@ -8,47 +8,47 @@ import {
   Package, 
   MessageSquare, 
   TrendingUp, 
-  ArrowRight, 
-  CheckCircle2, 
-  Clock, 
   AlertTriangle, 
   Plus,
   Phone
 } from "lucide-react";
-import { DataService } from "@/lib/data-service";
+import { DataService, type DashboardMetrics } from "@/lib/data-service";
 import { Order, Product } from "@/types";
-import { formatCurrency, OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { formatCurrency, normalizeVenezuelanPhoneForWhatsApp } from "@/lib/utils";
 import { 
   BarChart, 
   Bar, 
   XAxis, 
   YAxis, 
   Tooltip, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
-  Cell 
+  ResponsiveContainer
 } from "recharts";
 
-const COLORS = ["#1F47FE", "#FF6B00", "#FFC700", "#10B981", "#8B5CF6", "#EC4899", "#3B82F6", "#F97316"];
-
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardMetrics | null>(null);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [lowStockProducts, setLowStockProducts] = useState<Product[]>([]);
 
-  useEffect(() => {
-    const loadData = () => {
-      const s = DataService.getDashboardStats();
-      setStats(s);
-      const orders = DataService.getOrders();
-      setRecentOrders(orders.slice(0, 5));
-      const products = DataService.getProducts();
-      setLowStockProducts(products.filter((p) => p.stock <= 15).slice(0, 4));
-    };
-
-    loadData();
+  const loadData = useCallback(() => {
+    const nextStats = DataService.getDashboardStats();
+    setStats(nextStats);
+    setRecentOrders(DataService.getOrders().slice(0, 5));
+    setLowStockProducts(
+      DataService.getProducts().filter((product) => product.stock <= 15).slice(0, 4),
+    );
   }, []);
+
+  useEffect(() => {
+    const unsubscribeProducts = DataService.subscribeProducts(loadData);
+    const unsubscribeOrders = DataService.subscribeOrders(loadData);
+    const unsubscribeChats = DataService.subscribeChatSessions(loadData);
+
+    return () => {
+      unsubscribeProducts();
+      unsubscribeOrders();
+      unsubscribeChats();
+    };
+  }, [loadData]);
 
   const handleUpdateOrderStatus = (orderId: string, status: Order["status"]) => {
     DataService.updateOrderStatus(orderId, status);
@@ -63,13 +63,13 @@ export default function AdminDashboardPage() {
     <div className="space-y-8">
       
       {/* Welcome Banner */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900 via-slate-900 to-slate-950 text-white border border-blue-800/40 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="flex flex-col items-center justify-between gap-6 rounded-md border border-slate-200 border-l-4 border-l-blue-700 bg-white p-6 text-slate-950 shadow-sm dark:border-slate-800 dark:border-l-blue-500 dark:bg-slate-900 dark:text-white md:flex-row">
         <div className="space-y-1 text-center md:text-left">
           <h1 className="text-xl sm:text-2xl font-black">
-            Panel de Operaciones Multiogar Ferretería 🛠️
+            Panel de operaciones Multiogar
           </h1>
-          <p className="text-xs text-blue-200">
-            Resumen en tiempo real de pedidos de WhatsApp, catálogo, stock e interacciones de chat.
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Resumen del inventario y de los registros disponibles en Firestore.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -85,7 +85,7 @@ export default function AdminDashboardPage() {
             className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md"
           >
             <MessageSquare className="w-4 h-4" />
-            <span>Atender Chats</span>
+            <span>Revisar conversaciones</span>
           </Link>
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
 
         <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Chats en Vivo</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Conversaciones</span>
             <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
               <MessageSquare className="w-5 h-5" />
             </div>
@@ -173,22 +173,30 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="h-72 w-full pt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={stats.categorySales}>
-                <XAxis dataKey="name" stroke="#888888" fontSize={10} tickLine={false} />
-                <YAxis 
-                  stroke="#888888" 
-                  fontSize={10} 
-                  tickLine={false} 
-                  tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`} 
-                />
-                <Tooltip 
-                  formatter={(value: any) => [formatCurrency(Number(value)), "Ventas"]}
-                  contentStyle={{ backgroundColor: "#0f172a", border: "none", borderRadius: "12px", color: "#fff", fontSize: "12px" }}
-                />
-                <Bar dataKey="value" fill="#1F47FE" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {stats.categorySales.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={stats.categorySales}>
+                  <XAxis dataKey="name" stroke="#888888" fontSize={10} tickLine={false} />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={10}
+                    tickLine={false}
+                    tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`}
+                  />
+                  <Tooltip
+                    formatter={(value: unknown) => [formatCurrency(Number(value)), "Ventas"]}
+                    contentStyle={{ backgroundColor: "#0f172a", border: "none", borderRadius: "8px", color: "#fff", fontSize: "12px" }}
+                  />
+                  <Bar dataKey="value" fill="#1F47FE" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center rounded-md border border-dashed border-slate-200 px-6 text-center dark:border-slate-700">
+                <ShoppingBag className="mb-3 h-8 w-8 text-slate-300 dark:text-slate-600" />
+                <p className="text-sm font-bold text-slate-700 dark:text-slate-200">Sin pedidos registrados</p>
+                <p className="mt-1 max-w-sm text-xs text-slate-500">La distribución por categoría aparecerá cuando existan pedidos reales.</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -215,6 +223,9 @@ export default function AdminDashboardPage() {
                   </span>
                 </div>
               ))}
+              {lowStockProducts.length === 0 && (
+                <p className="py-8 text-center text-xs text-slate-500">No hay productos con stock bajo.</p>
+              )}
             </div>
           </div>
 
@@ -222,7 +233,7 @@ export default function AdminDashboardPage() {
             href="/admin/productos"
             className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs text-center transition-colors block"
           >
-            Ajustar Inventario en 1 Clic &rarr;
+            Abrir inventario &rarr;
           </Link>
         </div>
 
@@ -233,7 +244,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-              Últimos Pedidos Recibidos por WhatsApp
+              Últimos pedidos registrados
             </h3>
             <p className="text-[11px] text-slate-400">Control de estado y seguimiento de despachos</p>
           </div>
@@ -267,7 +278,7 @@ export default function AdminDashboardPage() {
                   <td className="p-3">
                     <span className="font-bold text-slate-800 dark:text-slate-200 block">{ord.customer.name}</span>
                     <a
-                      href={`https://wa.me/57${ord.customer.phone}`}
+                      href={`https://wa.me/${normalizeVenezuelanPhoneForWhatsApp(ord.customer.phone)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[11px] text-emerald-600 hover:underline flex items-center gap-1"
@@ -318,6 +329,13 @@ export default function AdminDashboardPage() {
                   </td>
                 </tr>
               ))}
+              {recentOrders.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-xs text-slate-500">
+                    No hay pedidos registrados en Firestore.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -1,104 +1,89 @@
-﻿import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { 
-  Building2, 
-  ShieldCheck, 
-  Truck, 
-  Award, 
-  Wrench, 
-  Users, 
-  ArrowRight,
-  Sparkles,
-  Phone
-} from "lucide-react";
+import { ArrowRight, MessageCircle, PackageSearch, Wrench } from "lucide-react";
 import { OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED } from "@/lib/utils";
+
+const purchaseSupport = [
+  {
+    title: "Catálogo por rubro",
+    description: "Herramientas, materiales, plomería, electricidad, pinturas y seguridad organizados para buscar rápido.",
+    icon: Wrench,
+  },
+  {
+    title: "Disponibilidad revisada",
+    description: "El stock y el precio de la web sirven como referencia hasta que ventas confirme el pedido.",
+    icon: PackageSearch,
+  },
+  {
+    title: "Atención directa",
+    description: "Puedes enviar medidas, marcas, cantidades y ciudad al equipo de ventas por WhatsApp.",
+    icon: MessageCircle,
+  },
+];
 
 export default function AboutPage() {
   return (
-    <div className="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-        
-        {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-extrabold uppercase tracking-wider text-orange-600 dark:text-orange-400">
-            Sobre Nosotros
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-            Multiogar Ferretería: <br />
-            Tu Aliado en Construcción y Hogar
+    <div className="bg-white dark:bg-slate-950">
+      <section
+        className="relative flex min-h-[380px] items-end bg-cover bg-center"
+        style={{ backgroundImage: "url('/hero-tools.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-slate-950/75" />
+        <div className="relative mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 sm:pb-14 lg:px-8">
+          <p className="text-xs font-extrabold uppercase text-orange-400">Sobre nosotros</p>
+          <h1 className="mt-2 max-w-3xl text-3xl font-black text-white sm:text-5xl">
+            Multiogar Ferretería
           </h1>
-          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
-            Somos una empresa ferretera venezolana comprometida con el suministro de herramientas profesionales, materiales de construcción, plomería, cerrajería y pinturas con los mejores precios en Dólares (USD) y despacho en todo el país.
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 sm:text-base">
+            Una tienda ferretera venezolana con catálogo digital y atención comercial por WhatsApp.
           </p>
         </div>
+      </section>
 
-        {/* Pillars Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-blue-600/10 text-blue-600 flex items-center justify-center">
-              <Award className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-              Marcas 100% Originales
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Distribuimos marcas líderes como Fortek, Atouan, Powerfik, Total Tools, Ingco, DeWalt, Cisa, Pavco, Montana y Vencemos con garantía respaldada.
-            </p>
+      <section className="border-b border-slate-200 py-14 dark:border-slate-800 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="text-xs font-extrabold uppercase text-orange-600">Cómo compramos contigo</p>
+            <h2 className="mt-2 text-2xl font-black text-slate-950 dark:text-white sm:text-3xl">
+              Información clara antes de cerrar el pedido
+            </h2>
           </div>
 
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-orange-600/10 text-orange-600 flex items-center justify-center">
-              <Truck className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-              Cobertura en Venezuela
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Facilitamos la entrega de tus materiales directamente en tu obra, taller o residencia con opción de pago al recibir.
-            </p>
-          </div>
-
-          <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-600 flex items-center justify-center">
-              <Phone className="w-6 h-6" />
-            </div>
-            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-              Asesoría Humana en WhatsApp
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Nuestros asesores ferreteros te guían paso a paso para seleccionar la medida correcta, compatibilidad de roscas y rendimiento de pinturas.
-            </p>
+          <div className="mt-9 grid border-y border-slate-300 dark:border-slate-700 md:grid-cols-3 md:divide-x md:divide-slate-300 md:dark:divide-slate-700">
+            {purchaseSupport.map(({ title, description, icon: Icon }) => (
+              <article key={title} className="border-b border-slate-300 py-7 last:border-b-0 dark:border-slate-700 md:border-b-0 md:px-7 md:first:pl-0">
+                <Icon className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+                <h3 className="mt-4 text-base font-extrabold text-slate-950 dark:text-white">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
+              </article>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* Call to Action */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-slate-900 text-white text-center space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-black">
-            ¿Listo para cotizar tus materiales?
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
-            Explora nuestro catálogo con precios actualizados en USD o escríbenos directamente a nuestra línea de WhatsApp.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
+      <section className="bg-blue-700 py-11 text-white">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-4 sm:px-6 md:flex-row md:items-center lg:px-8">
+          <div>
+            <h2 className="text-2xl font-black">¿Qué necesitas para tu proyecto?</h2>
+            <p className="mt-2 text-sm text-blue-100">Arma la lista en el catálogo o consúltala directamente con ventas.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/catalogo"
-              className="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 font-bold text-xs shadow-md transition-all"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-extrabold text-blue-800 hover:bg-blue-50"
             >
-              Ver Catálogo General
+              Ver catálogo <ArrowRight className="h-4 w-4" />
             </Link>
             <a
               href={`https://wa.me/${OFFICIAL_STORE_PHONE}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 font-bold text-xs shadow-md transition-all"
+              className="inline-flex min-h-11 items-center rounded-md border border-blue-300 px-5 py-3 text-sm font-extrabold text-white hover:bg-blue-800"
             >
-              WhatsApp: {OFFICIAL_STORE_PHONE_FORMATTED}
+              {OFFICIAL_STORE_PHONE_FORMATTED}
             </a>
           </div>
         </div>
-
-      </div>
+      </section>
     </div>
   );
 }

@@ -28,10 +28,28 @@ export function slugify(text: string): string {
     .replace(/-+/g, "-");
 }
 
+export function sanitizeProductDescription(description: string): string {
+  return description.replace(/\s*¡?cashealo!?\s*$/iu, "").trim();
+}
+
+export function normalizeVenezuelanPhoneForWhatsApp(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+
+  if (digits.startsWith("58")) return digits;
+  if (digits.startsWith("0")) return `58${digits.slice(1)}`;
+  if (digits.length === 10 && digits.startsWith("4")) return `58${digits}`;
+
+  return digits;
+}
+
 export function generateOrderNumber(): string {
   const year = new Date().getFullYear();
   const randomNum = Math.floor(1000 + Math.random() * 9000);
   return `MH-${year}-${randomNum}`;
+}
+
+export function generateOrderId(orderNumber: string): string {
+  return `ord-${orderNumber.toLowerCase()}-${globalThis.crypto.randomUUID()}`;
 }
 
 // Datos Reales de Contacto Multiogar Ferretería (Venezuela)
@@ -39,6 +57,7 @@ export const OFFICIAL_STORE_PHONE = "584242811289"; // +58 424 281 1289
 export const OFFICIAL_STORE_PHONE_FORMATTED = "+58 424 281 1289";
 export const OFFICIAL_STORE_NAME = "Multiogar Ferretería";
 export const OFFICIAL_STORE_LOCATION = "Venezuela";
+export const OFFICIAL_SITE_URL = "https://multiogar.vercel.app";
 
 // Redes Sociales Oficiales
 export const SOCIAL_LINKS = {
@@ -56,6 +75,10 @@ export function generateWhatsAppOrderMessage(order: Order, phone: string = OFFIC
     })
     .join("\n");
 
+  const paymentText = order.paymentMethod === "cashea"
+    ? "Cashea (sujeto a aprobación y condiciones de la aplicación)"
+    : "Por coordinar con ventas";
+
   const message = `🛠️ *¡HOLA MULTIOGAR! DESEO REALIZAR UN PEDIDO* 🛠️\n\n` +
     `📋 *N° de Pedido:* ${order.orderNumber}\n` +
     `👤 *Cliente:* ${order.customer.name}\n` +
@@ -63,10 +86,10 @@ export function generateWhatsAppOrderMessage(order: Order, phone: string = OFFIC
     `📍 *Ciudad / Estado:* ${order.customer.city}\n` +
     (order.customer.address ? `🏠 *Dirección de Entrega:* ${order.customer.address}\n` : "") +
     (order.customer.notes ? `📝 *Notas:* ${order.customer.notes}\n` : "") +
+    `💳 *Forma de pago solicitada:* ${paymentText}\n` +
     `\n📦 *DETALLE DE PRODUCTOS:*\n${itemsText}\n\n` +
-    `💵 *TOTAL A PAGAR:* *${formatCurrency(order.total)} USD*\n\n` +
-    `_Método de pago preferido: (Pago Móvil / Zelle / Efectivo USD / Transferencia / Pago al recibir)_\n` +
-    `_Quedo atento a la confirmación de disponibilidad y despacho. ¡Muchas gracias!_`;
+    `💵 *TOTAL ESTIMADO:* *${formatCurrency(order.total)} USD*\n\n` +
+    `_Quedo atento a la confirmación de stock, precio final y despacho. No realizaré pagos antes de recibir los datos oficiales._`;
 
   const encoded = encodeURIComponent(message);
   return `https://wa.me/${phone}?text=${encoded}`;
@@ -83,7 +106,7 @@ export function generateWhatsAppProductInquiry(
   const message = `Hola *Multiogar Ferretería* 🛠️, deseo consultar información y disponibilidad sobre:\n\n` +
     `📌 *Producto:* ${product.name}${variantText}\n` +
     `💵 *Precio:* ${priceText} USD\n` +
-    `🔗 *Ver en web:* https://multiogar.com/producto/${product.slug}\n\n` +
+    `🔗 *Ver en web:* ${OFFICIAL_SITE_URL}/producto/${product.slug}\n\n` +
     `¿Tienen disponibilidad para entrega / envío en Venezuela? Gracias.`;
 
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;

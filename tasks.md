@@ -31,13 +31,13 @@
 - [x] **T3.1**: Implementar Store global del carrito (Zustand con persistencia en `localStorage`).
 - [x] **T3.2**: Desarrollar Drawer lateral deslizable de carrito (resumen de items, cantidades, variantes, subtotal).
 - [x] **T3.3**: Desarrollar formulario de checkout rápido (Nombre, Teléfono, Ciudad/Dirección, Notas de entrega).
-- [x] **T3.4**: Implementar generador de mensaje enriquecido de WhatsApp y almacenamiento automático de la orden en Firestore / DataService (`orders`).
-- [x] **T3.5**: Integrar modal de confirmación con redirección fluida a `wa.me/` y efecto confetti.
+- [x] **T3.4**: Implementar generador de mensaje de WhatsApp con total estimado y advertencia de confirmación.
+- [x] **T3.5**: Integrar revisión previa y apertura explícita de `wa.me/` sin afirmar que el pedido ya fue registrado.
 
 ## Fase 4: Widget de Chat en Vivo para Clientes
-- [x] **T4.1**: Diseñar y programar Widget de Chat flotante en la esquina inferior.
-- [x] **T4.2**: Implementar persistencia de sesión de chat anónimo/cliente con sincronización en tiempo real.
-- [x] **T4.3**: Añadir soporte para envío de mensajes de texto, selección rápida de temas y botón alternativo para saltar a WhatsApp.
+- [ ] **T4.1**: Reactivar el widget de chat solo después de crear un ingreso público seguro.
+- [ ] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo.
+- [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso.
 
 ## Fase 5: Panel Administrativo y CMS (Vendedor & SuperAdmin)
 - [x] **T5.1**: Implementar pantalla de Login de Administración (`/admin/login`) con selector interactivo de rol RBAC.
@@ -61,3 +61,16 @@
 - [x] **T6.1**: **Sombrero de Seguridad**: Auditoría con checklist `security-baseline` (Reglas Firestore, RBAC, validación Zod, sanitización de inputs).
 - [x] **T6.2**: **Sombrero de QA**: Compilación limpia con Next.js Turbopack (`pnpm build`), verificación de 21 rutas estáticas/SSG.
 - [x] **T6.3**: **Sombrero de Rendimiento**: Optimización de carga de imágenes con `next/image` y remotePatterns en `next.config.ts`.
+
+## Fase 7: Remediación correctiva de autenticación y estabilidad
+- [x] **T7.1**: Eliminar el acceso de demostración, la creación automática de usuarios y los roles controlados desde `localStorage`.
+- [x] **T7.2**: Aplicar guardas de rutas para Cliente, Vendedor y SuperAdmin usando el estado firmado de Firebase Auth.
+- [x] **T7.3**: Corregir hooks condicionales, métricas del dashboard, hidratación del catálogo y errores bloqueantes de ESLint.
+- [x] **T7.4**: Definir reglas Firestore con denegación predeterminada y permisos mínimos por rol.
+- [x] **T7.5**: Validar localmente con 12 pruebas automatizadas, ESLint sin advertencias, build de 29 rutas y recorridos E2E de los tres roles.
+- [ ] **T7.6**: Rotar credenciales expuestas, asignar custom claims y desplegar/probar reglas con Firebase Emulator Suite. Estado: bloqueada hasta confirmación del operador y acceso al proyecto Firebase.
+- [x] **T7.7**: Rediseñar landing, contacto, nosotros y acceso con identidad específica de Multiogar y copy verificable.
+- [x] **T7.8**: Conectar inicio, catálogo, detalle, buscador y panel a suscripciones Firestore con respaldo local.
+- [x] **T7.9**: Retirar reseñas, pedidos, chats, pagos, garantías y plazos simulados de la experiencia visible.
+- [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: requiere diseño de identidad, rate limiting y configuración de backend.
+- [x] **T7.11**: Configurar Cashea en landing, detalle, checkout y mensaje de WhatsApp, con condiciones y aprobación explícitas.

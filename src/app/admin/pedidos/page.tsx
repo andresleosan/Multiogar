@@ -1,27 +1,25 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { 
-  ShoppingBag, 
   Search, 
-  Phone, 
   MessageCircle, 
   Eye, 
   CheckCircle2, 
   Clock, 
   XCircle, 
   X,
-  FileText,
-  MapPin,
   Globe,
   Printer,
-  CreditCard,
-  Truck
+  Truck,
+  Phone,
+  MapPin,
+  WalletCards
 } from "lucide-react";
 import { DataService } from "@/lib/data-service";
 import { Order } from "@/types";
-import { formatCurrency, OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { formatCurrency, normalizeVenezuelanPhoneForWhatsApp } from "@/lib/utils";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -30,15 +28,13 @@ export default function AdminOrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  useEffect(() => {
-    loadOrders();
-    const interval = setInterval(loadOrders, 2500);
-    return () => clearInterval(interval);
+  const loadOrders = useCallback(() => {
+    setOrders(DataService.getOrders());
   }, []);
 
-  const loadOrders = () => {
-    setOrders(DataService.getOrders());
-  };
+  useEffect(() => {
+    return DataService.subscribeOrders(setOrders);
+  }, []);
 
   const handleUpdateStatus = (orderId: string, newStatus: Order["status"]) => {
     DataService.updateOrderStatus(orderId, newStatus);
@@ -274,7 +270,7 @@ export default function AdminOrdersPage() {
                         </button>
 
                         <a
-                          href={`https://wa.me/${order.customer.phone.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(`Hola ${order.customer.name}, te contactamos de Multiogar Ferretería con respecto a tu pedido #${order.orderNumber}.`)}`}
+                          href={`https://wa.me/${normalizeVenezuelanPhoneForWhatsApp(order.customer.phone)}?text=${encodeURIComponent(`Hola ${order.customer.name}, te contactamos de Multiogar Ferretería con respecto a tu pedido #${order.orderNumber}.`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-colors"
@@ -346,8 +342,18 @@ export default function AdminOrdersPage() {
                   </span>
                   <div className="space-y-1">
                     <p className="font-bold text-sm text-slate-900 dark:text-white">{selectedOrder.customer.name}</p>
-                    <p className="text-slate-600 dark:text-slate-300 font-mono">📱 {selectedOrder.customer.phone}</p>
-                    <p className="text-slate-600 dark:text-slate-300">📍 {selectedOrder.customer.city} {selectedOrder.customer.address ? `- ${selectedOrder.customer.address}` : ""}</p>
+                    <p className="flex items-center gap-1.5 font-mono text-slate-600 dark:text-slate-300">
+                      <Phone className="h-3.5 w-3.5" />
+                      {selectedOrder.customer.phone}
+                    </p>
+                    <p className="flex items-start gap-1.5 text-slate-600 dark:text-slate-300">
+                      <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                      <span>{selectedOrder.customer.city} {selectedOrder.customer.address ? `- ${selectedOrder.customer.address}` : ""}</span>
+                    </p>
+                    <p className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                      <WalletCards className="h-3.5 w-3.5" />
+                      Forma de pago: {selectedOrder.paymentMethod === "cashea" ? "Cashea" : "Por coordinar"}
+                    </p>
                     {selectedOrder.customer.notes && (
                       <p className="pt-2 text-slate-500 italic border-t border-slate-200 dark:border-slate-700">
                         &quot;{selectedOrder.customer.notes}&quot;

@@ -1,28 +1,23 @@
-﻿import React from "react";
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { DataService } from "@/lib/data-service";
-import { ProductDetailClient } from "./ProductDetailClient";
-import { Product } from "@/types";
+import type { Metadata } from "next";
+import { INITIAL_PRODUCTS } from "@/lib/seed-data";
+import { ProductDetailLoader } from "./ProductDetailLoader";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const products = DataService.getProducts();
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
+  return INITIAL_PRODUCTS.map((product) => ({ slug: product.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = DataService.getProductBySlug(slug);
+  const product = INITIAL_PRODUCTS.find((item) => item.slug === slug);
 
   if (!product) {
     return {
-      title: "Producto no encontrado | Multiogar Ferretería",
+      title: "Producto | Multiogar Ferretería",
+      description: "Consulta disponibilidad, precio de referencia y opciones del catálogo Multiogar.",
     };
   }
 
@@ -31,18 +26,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${product.name} | Multiogar Ferretería`,
     description: product.description.slice(0, 160),
-    keywords: [product.brand, product.categoryName, product.name, "Multiogar Ferretería", "Medellín"],
+    keywords: [product.brand, product.categoryName, product.name, "Multiogar Ferretería"],
     openGraph: {
-      title: `${product.name} - $${product.basePrice.toLocaleString("es-CO")} COP`,
+      title: `${product.name} - USD ${product.basePrice.toFixed(2)}`,
       description: product.description.slice(0, 160),
-      images: [
-        {
-          url: imageUrl,
-          width: 800,
-          height: 800,
-          alt: product.name,
-        },
-      ],
+      images: [{ url: imageUrl, width: 800, height: 800, alt: product.name }],
       type: "website",
     },
     twitter: {
@@ -56,49 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = DataService.getProductBySlug(slug);
+  const product = INITIAL_PRODUCTS.find((item) => item.slug === slug) ?? null;
 
-  if (!product) {
-    notFound();
-  }
-
-  const allProducts = DataService.getProducts();
-  const relatedProducts = allProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
-
-  // Schema.org Product JSON-LD
-  const productSchema = {
-    "@context": "https://schema.org/",
-    "@type": "Product",
-    "name": product.name,
-    "image": product.images,
-    "description": product.description,
-    "sku": product.sku,
-    "brand": {
-      "@type": "Brand",
-      "name": product.brand,
-    },
-    "offers": {
-      "@type": "Offer",
-      "url": `https://multiogar.com/producto/${product.slug}`,
-      "priceCurrency": "COP",
-      "price": product.basePrice,
-      "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      "seller": {
-        "@type": "Organization",
-        "name": "Multiogar Ferretería",
-      },
-    },
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      />
-      <ProductDetailClient product={product} relatedProducts={relatedProducts} />
-    </>
-  );
+  return <ProductDetailLoader slug={slug} initialProduct={product} />;
 }

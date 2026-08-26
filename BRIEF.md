@@ -1,10 +1,11 @@
 ﻿# BRIEF: Multiogar Ferretería — E-Commerce & Catálogo Interactivo
 
 ## 1. Visión y Objetivos del Negocio
-Desarrollar la plataforma web oficial para **Multiogar Ferretería**, combinando un catálogo digital de alto rendimiento, optimizado para SEO y conversión, con un sistema de venta asistida vía **WhatsApp** y **Chat en tiempo real**.
+Desarrollar la plataforma web de **Multiogar Ferretería**, combinando un catálogo digital rápido con venta asistida vía **WhatsApp** y un panel de inventario para el personal.
 
-- **Propósito:** Digitalizar el inventario ferretero, brindar asesoría técnica en vivo y canalizar compras ágiles sin la fricción de pasarelas de pago tradicionales, manteniendo el trato personalizado ferretero.
-- **Diferenciador:** Asesoría técnica inmediata (chat web + WhatsApp), catálogo con variantes técnicas detalladas (medidas, voltajes, calibres) y experiencia visual industrial-moderna.
+- **Propósito:** Digitalizar el inventario ferretero y canalizar solicitudes de compra sin mostrar condiciones de pago o entrega que no hayan sido confirmadas por ventas.
+- **Diferenciador:** Catálogo con variantes técnicas detalladas (medidas, voltajes, calibres), stock visible y continuidad directa hacia WhatsApp.
+- **Forma de pago confirmada:** Multiogar acepta solicitudes de compra con Cashea. La aprobación, inicial, nivel y calendario de cuotas dependen de las condiciones vigentes de Cashea.
 
 ---
 
@@ -12,8 +13,8 @@ Desarrollar la plataforma web oficial para **Multiogar Ferretería**, combinando
 
 | Rol | Descripción | Permisos Clave |
 | :--- | :--- | :--- |
-| **Cliente / Visitante** | Usuario que navega la tienda buscando herramientas, materiales o repuestos. | Navegación de catálogo, filtros por categoría/marca/precio, selección de variantes, armado de carrito, checkout vía WhatsApp, chat en vivo con la tienda. |
-| **Vendedor** | Asesor comercial y de mostrador de Multiogar. | Atención de chats en tiempo real (bandeja tipo inbox), actualización rápida de stock/disponibilidad, consulta y cambio de estado de pedidos. Sin permisos de eliminación ni gestión de usuarios. |
+| **Cliente / Visitante** | Usuario que navega la tienda buscando herramientas, materiales o repuestos. | Navegación de catálogo, filtros, selección de variantes, armado de carrito y envío del pedido por WhatsApp. |
+| **Vendedor** | Asesor comercial y de mostrador de Multiogar. | Actualización rápida de stock, consulta de pedidos compartidos y atención de conversaciones cuando exista un canal seguro de ingreso. Sin permisos de eliminación ni gestión de usuarios. |
 | **SuperAdmin** | Administrador general de la ferretería. | Control total: CRUD completo de productos y variantes, gestión de categorías, subida de medios a R2/Storage, métricas en dashboard (Recharts), gestión de roles y configuración de tienda. |
 
 ---
@@ -25,7 +26,7 @@ Desarrollar la plataforma web oficial para **Multiogar Ferretería**, combinando
    - Hero banner interactivo con llamadas a la acción (CTA) claras.
    - Acceso visual directo a categorías con iconografía y microanimaciones.
    - Carrusel/Grid de productos destacados y ofertas ferreteras.
-   - Bloque de confianza y valor (Envíos a todo el país, Asesoría técnica, Retiro en tienda, Stock garantizado).
+   - Bloques operativos verificables: moneda, stock de referencia y coordinación con ventas.
 2. **Catálogo y Búsqueda Inteligente:**
    - Buscador predictivo con debounce, soporte para búsqueda por nombre, marca o SKU.
    - Filtros dinámicos por categoría, rango de precios, marcas y disponibilidad de stock.
@@ -40,21 +41,20 @@ Desarrollar la plataforma web oficial para **Multiogar Ferretería**, combinando
    - Drawer deslizable accesible desde cualquier vista con persistencia local (localStorage).
    - Modificación de cantidades y visualización de variantes seleccionadas.
    - Formulario de datos básicos del cliente (Nombre, Teléfono, Ciudad/Dirección, Notas adicionales).
-   - Generación estructurada del pedido: almacena la orden en Firestore y redirige a la API de WhatsApp con mensaje formateado.
-5. **Widget de Chat en Vivo:**
-   - Botón flotante accesible en todo el sitio.
-   - Mensajería instantánea en tiempo real sincronizada con Firestore.
-   - Posibilidad de enviar fotos/referencias de repuestos dañados o necesidades específicas.
-   - Enlace directo a WhatsApp como canal alternativo.
+   - Generación estructurada del pedido y apertura de WhatsApp con un mensaje formateado. La orden no se considera confirmada hasta recibir respuesta de ventas.
+   - Selección de Cashea como forma de pago solicitada, sujeta a aprobación y condiciones de la aplicación.
+5. **Chat en Vivo (diferido):**
+   - No se expone al público mientras no exista un Route Handler con validación, rate limiting e identidad de propietario.
+   - WhatsApp funciona como canal público de atención durante esta etapa.
 
 ### B. Panel Administrativo (Dashboard & CMS)
 1. **Autenticación y Seguridad (RBAC):**
    - Acceso con correo y contraseña vía Firebase Auth.
-   - Middleware de protección de rutas /admin/* con validación de roles (superadmin vs endedor).
+   - Guardas de interfaz para rutas `/admin/*` con validación de roles (`superadmin` y `vendedor`).
 2. **Gestión de Catálogo (Productos y Categorías):**
    - Formulario modal / página dedicada para creación y edición de productos con validación Zod.
    - Creador dinámico de variantes múltiples (nombre, precio diferenciado, stock y SKU propio).
-   - Carga de imágenes optimizada hacia Cloudflare R2 / Firebase Storage con previsualización drag-and-drop.
+   - Imágenes locales de referencia. La carga a Firebase Storage queda fuera del alcance actual.
    - Reordenamiento y gestión de categorías principales.
 3. **Bandeja de Pedidos:**
    - Listado en tiempo real de órdenes recibidas por WhatsApp.

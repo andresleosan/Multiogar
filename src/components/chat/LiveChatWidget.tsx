@@ -8,11 +8,6 @@ import {
   X, 
   Send, 
   Phone, 
-  MessageCircle, 
-  Sparkles, 
-  Bot, 
-  UserCheck, 
-  Clock 
 } from "lucide-react";
 import { DataService } from "@/lib/data-service";
 import { ChatMessage, ChatSession } from "@/types";
@@ -27,26 +22,28 @@ export const LiveChatWidget: React.FC = () => {
   const [customerName, setCustomerName] = useState("");
   const [isStarted, setIsStarted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Hide live chat widget inside admin dashboard
-  if (pathname && pathname.startsWith("/admin")) {
-    return null;
-  }
+  const isAdminRoute = pathname.startsWith("/admin");
 
   // Load or create customer session
   useEffect(() => {
-    const storedSessionId = localStorage.getItem("multiogar_chat_session_id");
-    if (storedSessionId) {
-      const allSessions = DataService.getChatSessions();
-      const existing = allSessions.find((s) => s.id === storedSessionId);
-      if (existing) {
-        setSession(existing);
-        setCustomerName(existing.customerName);
-        setIsStarted(true);
-        setMessages(DataService.getChatMessages(existing.id));
+    if (isAdminRoute) return;
+
+    const initialLoad = window.setTimeout(() => {
+      const storedSessionId = localStorage.getItem("multiogar_chat_session_id");
+      if (storedSessionId) {
+        const allSessions = DataService.getChatSessions();
+        const existing = allSessions.find((item) => item.id === storedSessionId);
+        if (existing) {
+          setSession(existing);
+          setCustomerName(existing.customerName);
+          setIsStarted(true);
+          setMessages(DataService.getChatMessages(existing.id));
+        }
       }
-    }
-  }, []);
+    }, 0);
+
+    return () => clearTimeout(initialLoad);
+  }, [isAdminRoute]);
 
   // Poll for messages in session
   useEffect(() => {
@@ -119,6 +116,10 @@ export const LiveChatWidget: React.FC = () => {
   const handleQuickTopic = (topic: string) => {
     setInputText(topic);
   };
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40">

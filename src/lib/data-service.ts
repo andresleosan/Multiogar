@@ -1,15 +1,28 @@
 import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
-import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_ORDERS } from "@/lib/seed-data";
+import { INITIAL_PRODUCTS, INITIAL_CATEGORIES } from "@/lib/seed-data";
 import { FirestoreSync } from "@/lib/firestore-sync";
+import type { Unsubscribe } from "firebase/firestore";
 
 // Versión del catálogo para forzar refresco de datos en clientes existentes
-const DATA_VERSION = "multiogar_v5_firebase_connected";
+const DATA_VERSION = "multiogar_v6_no_mock_operations";
 const VERSION_KEY = "multiogar_data_version";
 const PRODUCTS_KEY = "multiogar_db_products";
 const CATEGORIES_KEY = "multiogar_db_categories";
 const ORDERS_KEY = "multiogar_db_orders";
 const CHATS_KEY = "multiogar_db_chats";
 const MESSAGES_KEY = "multiogar_db_messages";
+
+export interface DashboardMetrics {
+  totalSales: number;
+  totalOrders: number;
+  pendingOrders: number;
+  completedOrders: number;
+  totalActiveProducts: number;
+  lowStockProducts: number;
+  openChats: number;
+  categorySales: Array<{ name: string; value: number }>;
+  recentOrders: Order[];
+}
 
 function checkAndSyncVersion() {
   if (typeof window === "undefined") return;
@@ -19,6 +32,9 @@ function checkAndSyncVersion() {
       localStorage.setItem(VERSION_KEY, DATA_VERSION);
       localStorage.setItem(PRODUCTS_KEY, JSON.stringify(INITIAL_PRODUCTS));
       localStorage.setItem(CATEGORIES_KEY, JSON.stringify(INITIAL_CATEGORIES));
+      localStorage.setItem(ORDERS_KEY, "[]");
+      localStorage.setItem(CHATS_KEY, "[]");
+      localStorage.setItem(MESSAGES_KEY, "{}");
     }
   } catch (e) {
     console.error("Error syncing data version:", e);
@@ -64,6 +80,14 @@ export const DataService = {
   getProductById(id: string): Product | undefined {
     const products = this.getProducts();
     return products.find((p) => p.id === id);
+  },
+
+  subscribeProducts(callback: (products: Product[]) => void): Unsubscribe {
+    const fallback = this.getProducts();
+    return FirestoreSync.subscribeProducts(fallback, (products) => {
+      setLocal(PRODUCTS_KEY, products);
+      callback(products);
+    });
   },
 
   createProduct(productData: Omit<Product, "id" | "createdAt" | "updatedAt">): Product {
@@ -137,6 +161,14 @@ export const DataService = {
     return categories.find((c) => c.slug === slug);
   },
 
+  subscribeCategories(callback: (categories: Category[]) => void): Unsubscribe {
+    const fallback = this.getCategories();
+    return FirestoreSync.subscribeCategories(fallback, (categories) => {
+      setLocal(CATEGORIES_KEY, categories);
+      callback(categories);
+    });
+  },
+
   createCategory(categoryData: Omit<Category, "id">): Category {
     const categories = this.getCategories();
     const newCat: Category = {
@@ -145,17 +177,26 @@ export const DataService = {
     };
     const updated = [...categories, newCat];
     setLocal(CATEGORIES_KEY, updated);
+    FirestoreSync.saveCategory(newCat);
     return newCat;
   },
 
   // ORDERS
   getOrders(): Order[] {
-    return getLocal<Order[]>(ORDERS_KEY, INITIAL_ORDERS);
+    return getLocal<Order[]>(ORDERS_KEY, []);
   },
 
   getOrderById(id: string): Order | undefined {
     const orders = this.getOrders();
     return orders.find((o) => o.id === id);
+  },
+
+  subscribeOrders(callback: (orders: Order[]) => void): Unsubscribe {
+    const fallback = this.getOrders();
+    return FirestoreSync.subscribeOrders(fallback, (orders) => {
+      setLocal(ORDERS_KEY, orders);
+      callback(orders);
+    });
   },
 
   createOrder(order: Order): Order {
@@ -185,31 +226,15 @@ export const DataService = {
 
   // CHAT SESSIONS & MESSAGES
   getChatSessions(): ChatSession[] {
-    const initialChats: ChatSession[] = [
-      {
-        id: "chat-sample-1",
-        customerName: "Pedro Ramírez",
-        customerPhone: "04141234567",
-        lastMessage: "¿Tienen disponible la pistola de calor Ingco y el protector Lumistar 220V?",
-        lastMessageAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-        unreadAdmin: 1,
-        unreadCustomer: 0,
-        status: "abierto",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-      },
-      {
-        id: "chat-sample-2",
-        customerName: "Construcciones Ávila",
-        customerPhone: "04245558899",
-        lastMessage: "Buenas tardes, ¿precio por bulto del mastique Magic Gypsum y esmalte Prisma?",
-        lastMessageAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-        unreadAdmin: 0,
-        unreadCustomer: 0,
-        status: "en_atencion",
-        createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-      },
-    ];
-    return getLocal<ChatSession[]>(CHATS_KEY, initialChats);
+    return getLocal<ChatSession[]>(CHATS_KEY, []);
+  },
+
+  subscribeChatSessions(callback: (sessions: ChatSession[]) => void): Unsubscribe {
+    const fallback = this.getChatSessions();
+    return FirestoreSync.subscribeChatSessions(fallback, (sessions) => {
+      setLocal(CHATS_KEY, sessions);
+      callback(sessions);
+    });
   },
 
   createChatSession(customerName: string, customerPhone?: string, initialMessage?: string): ChatSession {
@@ -244,19 +269,18 @@ export const DataService = {
   },
 
   getChatMessages(chatId: string): ChatMessage[] {
-    const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {
-      "chat-sample-1": [
-        {
-          id: "m-1",
-          chatId: "chat-sample-1",
-          sender: "customer",
-          senderName: "Pedro Ramírez",
-          text: "¿Tienen disponible la pistola de calor Ingco y el protector Lumistar 220V?",
-          createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-        },
-      ],
-    });
+    const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {});
     return allMessages[chatId] || [];
+  },
+
+  subscribeChatMessages(chatId: string, callback: (messages: ChatMessage[]) => void): Unsubscribe {
+    const fallback = this.getChatMessages(chatId);
+    return FirestoreSync.subscribeChatMessages(chatId, fallback, (messages) => {
+      const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {});
+      allMessages[chatId] = messages;
+      setLocal(MESSAGES_KEY, allMessages);
+      callback(messages);
+    });
   },
 
   sendChatMessage(chatId: string, message: Omit<ChatMessage, "id" | "createdAt">): ChatMessage {
@@ -294,34 +318,33 @@ export const DataService = {
     return this.getDashboardMetrics();
   },
 
-  getDashboardMetrics() {
+  getDashboardMetrics(): DashboardMetrics {
     const products = this.getProducts();
     const orders = this.getOrders();
     const chats = this.getChatSessions();
 
-    const totalSales = orders.reduce((acc, curr) => acc + (curr.total || 0), 0);
-    const totalProducts = products.length;
-    const lowStockCount = products.filter((p) => p.stock <= 5).length;
-    const openChatsCount = chats.filter((c) => c.status === "abierto").length;
+    const activeOrders = orders.filter((order) => order.status !== "cancelado");
+    const totalSales = activeOrders.reduce((total, order) => total + (order.total || 0), 0);
+    const productById = new Map(products.map((product) => [product.id, product]));
+    const salesByCategory = new Map<string, number>();
 
-    // Categories Breakdown
-    const categoriesMap: Record<string, number> = {};
-    products.forEach((p) => {
-      categoriesMap[p.categoryName] = (categoriesMap[p.categoryName] || 0) + 1;
-    });
-
-    const categoryDistribution = Object.keys(categoriesMap).map((catName) => ({
-      name: catName,
-      count: categoriesMap[catName],
-    }));
+    for (const order of activeOrders) {
+      for (const item of order.items) {
+        const categoryName = productById.get(item.productId)?.categoryName ?? "Otros";
+        const current = salesByCategory.get(categoryName) ?? 0;
+        salesByCategory.set(categoryName, current + item.price * item.quantity);
+      }
+    }
 
     return {
       totalSales,
       totalOrders: orders.length,
-      totalProducts,
-      lowStockCount,
-      openChatsCount,
-      categoryDistribution,
+      pendingOrders: orders.filter((order) => order.status === "pendiente").length,
+      completedOrders: orders.filter((order) => order.status === "completado").length,
+      totalActiveProducts: products.length,
+      lowStockProducts: products.filter((product) => product.stock <= 15).length,
+      openChats: chats.filter((chat) => chat.status === "abierto").length,
+      categorySales: Array.from(salesByCategory, ([name, value]) => ({ name, value })),
       recentOrders: orders.slice(0, 5),
     };
   },

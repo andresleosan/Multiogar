@@ -3,11 +3,11 @@ import "./globals.css";
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
-import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
 import { BottomNavigation } from "@/components/common/BottomNavigation";
+import { OFFICIAL_SITE_URL } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://multiogar.com"),
+  metadataBase: new URL(OFFICIAL_SITE_URL),
   title: "Multiogar Ferretería | Herramientas, Discos de Corte, Construcción y Plomería en Venezuela",
   description:
     "Catálogo oficial de Multiogar Ferretería en Venezuela. Discos de corte Fortek, herramientas Total e Ingco, tuberías Pavco, cerraduras Cisa y materiales con precios en Dólares (USD) y pedidos directos por WhatsApp.",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: "Multiogar Ferretería | Todo para tu obra, taller y hogar en Venezuela",
     description:
       "Herramientas profesionales, discos de corte, plomería, pinturas y materiales de construcción con pedidos directos por WhatsApp y precios en Dólares (USD).",
-    url: "https://multiogar.com",
+    url: OFFICIAL_SITE_URL,
     siteName: "Multiogar Ferretería",
     images: [
       {
@@ -64,30 +64,12 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "HardwareStore",
     "name": "Multiogar Ferretería",
-    "image": "https://multiogar.com/og-image.png",
-    "logo": "https://multiogar.com/LogoMultiogar.png",
-    "@id": "https://multiogar.com",
-    "url": "https://multiogar.com",
+    "image": `${OFFICIAL_SITE_URL}/og-image.png`,
+    "logo": `${OFFICIAL_SITE_URL}/LogoMultiogar.png`,
+    "@id": OFFICIAL_SITE_URL,
+    "url": OFFICIAL_SITE_URL,
     "telephone": "+584242811289",
-    "priceRange": "$",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Zona Comercial Multiogar",
-      "addressLocality": "Caracas",
-      "addressRegion": "Distrito Capital",
-      "addressCountry": "VE"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 10.4806,
-      "longitude": -66.9036
-    },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      "opens": "08:00",
-      "closes": "18:00"
-    }
+    "priceRange": "$"
   };
 
   return (
@@ -103,7 +85,6 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <CartDrawer />
-        <LiveChatWidget />
         <BottomNavigation />
       </body>
     </html>

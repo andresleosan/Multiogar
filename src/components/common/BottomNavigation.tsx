@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
@@ -12,17 +12,13 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 export const BottomNavigation: React.FC = () => {
   const pathname = usePathname();
   const { toggleCart, getTotalItems } = useCartStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const totalItems = mounted ? getTotalItems() : 0;
+  const hydrated = useHydrated();
+  const totalItems = hydrated ? getTotalItems() : 0;
 
   // Do not show bottom nav inside admin dashboard to preserve workstation space
   if (pathname.startsWith("/admin")) {

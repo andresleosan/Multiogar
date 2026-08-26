@@ -1,135 +1,165 @@
-import React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { HeroBanner } from "@/components/storefront/HeroBanner";
-import { CategoryGrid } from "@/components/storefront/CategoryGrid";
-import { FeaturedProducts } from "@/components/storefront/FeaturedProducts";
-import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from "@/lib/seed-data";
-import { 
-  ShieldCheck, 
-  Truck, 
-  Headphones, 
-  CreditCard, 
-  BadgeCheck, 
-  ArrowRight, 
-  CheckCircle, 
-  Wrench, 
-  Building 
+import {
+  ArrowRight,
+  CircleDollarSign,
+  ExternalLink,
+  MessageCircle,
+  PackageCheck,
+  Search,
+  ShoppingCart,
+  Truck,
+  WalletCards,
 } from "lucide-react";
-import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { HeroBanner } from "@/components/storefront/HeroBanner";
+import { HomeCatalogSections } from "@/components/storefront/HomeCatalogSections";
+
+const serviceFacts = [
+  {
+    title: "Stock visible",
+    description: "Consulta unidades antes de agregar.",
+    icon: PackageCheck,
+  },
+  {
+    title: "Precios en USD",
+    description: "Referencia clara por presentación.",
+    icon: CircleDollarSign,
+  },
+  {
+    title: "Despacho coordinado",
+    description: "Confirma destino y entrega con ventas.",
+    icon: Truck,
+  },
+];
+
+const buyingSteps = [
+  {
+    title: "Busca el producto",
+    description: "Usa el buscador, una categoría o el SKU.",
+    icon: Search,
+  },
+  {
+    title: "Arma el pedido",
+    description: "Elige presentación y cantidad en el carrito.",
+    icon: ShoppingCart,
+  },
+  {
+    title: "Confirma con ventas",
+    description: "Envía la orden por WhatsApp para validar disponibilidad y entrega.",
+    icon: MessageCircle,
+  },
+];
+
+const distributedBrands = [
+  "FORTEK",
+  "INGCO",
+  "TOTAL",
+  "PRISMA",
+  "PAVCO",
+  "FAGUAX",
+  "LUMISTAR",
+  "ZOE",
+  "VENCEMOS",
+];
 
 export default function HomePage() {
-  const categories = INITIAL_CATEGORIES;
-  const products = INITIAL_PRODUCTS;
-
   return (
-    <div className="space-y-0">
-      
-      {/* 1. Hero Banner */}
+    <div>
       <HeroBanner />
 
-      {/* 2. Brand Partners Strip (Top Venezuelan & Global Brands) */}
-      <section className="bg-slate-900 border-b border-slate-800 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
-              Marcas Líderes Distribuidas:
-            </span>
-            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-7 text-slate-400 font-black text-xs sm:text-sm uppercase tracking-wider">
-              <span className="hover:text-white transition-colors">PRISMA</span>
-              <span className="hover:text-amber-400 transition-colors">INGCO</span>
-              <span className="hover:text-cyan-400 transition-colors">FAGUAX</span>
-              <span className="hover:text-blue-400 transition-colors">LUMISTAR</span>
-              <span className="hover:text-yellow-400 transition-colors">ZOE</span>
-              <span className="hover:text-emerald-400 transition-colors">MAGIC GYPSUM</span>
-              <span className="hover:text-orange-400 transition-colors">FORTEK</span>
-              <span className="hover:text-blue-500 transition-colors">TOTAL</span>
-              <span className="hover:text-cyan-500 transition-colors">PAVCO</span>
-              <span className="hover:text-pink-400 transition-colors">MONTANA</span>
-              <span className="hover:text-emerald-500 transition-colors">VENCEMOS</span>
+      <section className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <div className="mx-auto grid max-w-7xl divide-y divide-slate-200 px-4 dark:divide-slate-800 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
+          {serviceFacts.map(({ title, description, icon: Icon }) => (
+            <div key={title} className="flex min-h-24 items-center gap-4 py-5 sm:px-5 sm:first:pl-0">
+              <Icon className="h-6 w-6 shrink-0 text-blue-700 dark:text-blue-400" />
+              <div>
+                <h2 className="text-sm font-extrabold text-slate-950 dark:text-white">{title}</h2>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{description}</p>
+              </div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-b border-slate-200 bg-white py-5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 sm:px-6 lg:flex-row lg:items-center lg:px-8">
+          <p className="shrink-0 text-xs font-extrabold uppercase text-slate-500">Marcas del catálogo</p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-black text-slate-800 dark:text-slate-200">
+            {distributedBrands.map((brand) => (
+              <span key={brand}>{brand}</span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 3. Category Grid */}
-      <CategoryGrid categories={categories} />
-
-      {/* 4. Featured Products & Promo Tabs */}
-      <FeaturedProducts products={products} />
-
-      {/* 5. Interactive How It Works (WhatsApp Direct Shopping) */}
-      <section className="py-16 bg-slate-50 dark:bg-slate-950/40 border-t border-slate-200/80 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-orange-600 dark:text-orange-400">
-              Experiencia Ágil & Sin Complicaciones
+      <section className="border-b border-slate-200 bg-blue-50 dark:border-slate-800 dark:bg-slate-900">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div className="flex max-w-3xl items-start gap-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-blue-700 text-white">
+              <WalletCards className="h-5 w-5" />
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              ¿Cómo comprar en Multiogar Ferretería?
+            <div>
+              <p className="text-xs font-extrabold uppercase text-orange-700 dark:text-orange-400">Forma de pago disponible</p>
+              <h2 className="mt-1 text-xl font-black text-slate-950 dark:text-white">Compra con Cashea en Multiogar</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                Paga una inicial y divide el saldo en cuotas quincenales sin intereses desde la aplicación. La compra está sujeta a aprobación, nivel y condiciones de Cashea.
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://www.cashea.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-md border border-blue-700 px-5 py-3 text-sm font-extrabold text-blue-800 transition-colors hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-blue-400 dark:text-blue-300 dark:hover:bg-blue-600 dark:hover:text-white"
+          >
+            Conocer Cashea
+            <ExternalLink className="h-4 w-4" />
+          </a>
+        </div>
+      </section>
+
+      <HomeCatalogSections />
+
+      <section className="border-t border-slate-200 bg-slate-50 py-14 dark:border-slate-800 dark:bg-slate-950 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="mb-2 text-xs font-extrabold uppercase text-orange-600">Compra asistida</p>
+            <h2 className="text-2xl font-black text-slate-950 dark:text-white sm:text-3xl">
+              Del catálogo a WhatsApp en tres pasos
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Catálogo digital con precios en Dólares (USD), asesoría en vivo y pagos en Venezuela (Pago Móvil, Zelle, Efectivo USD o Pago al Recibir).
+            <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              La web organiza el pedido; el equipo de Multiogar confirma existencias, pago y despacho.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            {/* Step 1 */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs relative">
-              <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white font-black text-lg flex items-center justify-center mb-5 shadow-md shadow-blue-600/30">
-                1
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Selecciona tus Materiales
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Navega discos de corte, herramientas, plomería o pinturas y agrégalos a tu carrito.
-              </p>
-            </div>
+          <ol className="mt-9 grid border-y border-slate-300 dark:border-slate-700 md:grid-cols-3 md:divide-x md:divide-slate-300 md:dark:divide-slate-700">
+            {buyingSteps.map(({ title, description, icon: Icon }, index) => (
+              <li
+                key={title}
+                className="flex gap-4 border-b border-slate-300 py-6 last:border-b-0 dark:border-slate-700 md:border-b-0 md:px-6 md:first:pl-0"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-blue-700 text-sm font-black text-white">
+                  {index + 1}
+                </span>
+                <div>
+                  <Icon className="mb-3 h-5 w-5 text-orange-600" />
+                  <h3 className="text-base font-extrabold text-slate-950 dark:text-white">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
 
-            {/* Step 2 */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs relative">
-              <div className="w-12 h-12 rounded-2xl bg-orange-600 text-white font-black text-lg flex items-center justify-center mb-5 shadow-md shadow-orange-600/30">
-                2
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Envía tu Pedido a WhatsApp
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Ingresa tus datos de entrega y el sistema generará tu orden formateada al instante.
-              </p>
-            </div>
-
-            {/* Step 3 */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs relative">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-black text-lg flex items-center justify-center mb-5 shadow-md shadow-emerald-600/30">
-                3
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Despacho & Pago Seguro
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Coordinamos tu entrega y pagas con el método de tu preferencia (Pago Móvil, Zelle, Efectivo o Pago al recibir).
-              </p>
-            </div>
-
-          </div>
-
-          <div className="mt-10 text-center">
+          <div className="mt-8">
             <Link
               href="/catalogo"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20 transition-all hover:scale-105"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-blue-700 px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
-              <span>Ver Catálogo Completo (USD)</span>
-              <ArrowRight className="w-4 h-4" />
+              Empezar pedido
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-
         </div>
       </section>
-
     </div>
   );
 }

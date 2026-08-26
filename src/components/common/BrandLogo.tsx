@@ -12,28 +12,59 @@ interface BrandLogoProps {
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({
   className,
+  variant = "auto",
+  showText = true,
   size = "md",
 }) => {
   const sizeClasses = {
-    sm: "h-8 w-auto",
-    md: "h-11 w-auto",
-    lg: "h-16 w-auto",
-    xl: "h-24 w-auto",
+    sm: "h-8 w-8",
+    md: "h-11 w-11",
+    lg: "h-16 w-16",
+    xl: "h-20 w-20",
+  };
+  const imageSizes = {
+    sm: 32,
+    md: 44,
+    lg: 64,
+    xl: 80,
+  };
+  const textClasses = {
+    sm: "text-sm",
+    md: "text-base",
+    lg: "text-xl",
+    xl: "text-2xl",
+  };
+  const colorClass = {
+    light: "text-white",
+    dark: "text-slate-950",
+    auto: "text-slate-950 dark:text-white",
   };
 
   return (
-    <Link href="/" className={cn("inline-flex items-center gap-2.5 transition-opacity hover:opacity-90", className)}>
-      <div className="relative flex items-center">
-        {/* Next.js Image with LogoMultiogar.png */}
-        <Image
-          src="/LogoMultiogar.png"
-          alt="Multiogar Ferretería"
-          width={size === "xl" ? 280 : size === "lg" ? 220 : size === "md" ? 170 : 130}
-          height={size === "xl" ? 80 : size === "lg" ? 60 : size === "md" ? 44 : 34}
-          priority
-          className={cn("object-contain drop-shadow-sm", sizeClasses[size])}
-        />
-      </div>
+    <Link
+      href="/"
+      aria-label="Ir al inicio de Multiogar Ferretería"
+      className={cn(
+        "inline-flex items-center gap-2.5 transition-opacity hover:opacity-85",
+        className,
+      )}
+    >
+      <Image
+        src="/LogoMultiogar.png"
+        alt=""
+        width={imageSizes[size]}
+        height={imageSizes[size]}
+        priority
+        className={cn("shrink-0 object-contain", sizeClasses[size])}
+      />
+      {showText && (
+        <span className={cn("flex flex-col leading-none", colorClass[variant])}>
+          <strong className={cn("font-black uppercase", textClasses[size])}>Multiogar</strong>
+          <span className="mt-1 text-[10px] font-bold uppercase text-orange-600">
+            Ferretería
+          </span>
+        </span>
+      )}
     </Link>
   );
 };

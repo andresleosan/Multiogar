@@ -7,18 +7,17 @@ import {
   ShoppingCart, 
   Check, 
   MessageCircle, 
-  Star, 
-  ShieldCheck, 
+  CircleDollarSign,
+  PackageCheck,
   Truck, 
-  Clock, 
   CheckCircle2, 
   AlertCircle, 
   Share2, 
   Plus, 
   Minus, 
   Sparkles,
-  ArrowRight,
-  Info
+  Info,
+  WalletCards
 } from "lucide-react";
 import { Product, ProductVariant } from "@/types";
 import { formatCurrency, generateWhatsAppProductInquiry, OFFICIAL_STORE_PHONE } from "@/lib/utils";
@@ -34,7 +33,7 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   product,
   relatedProducts,
 }) => {
-  const { addItem, openCart } = useCartStore();
+  const { addItem } = useCartStore();
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariantId, setSelectedVariantId] = useState<string | undefined>(
@@ -76,8 +75,6 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
   const handleBuyNowWhatsApp = () => {
     if (isOutOfStock) return;
     
-    // Also add to cart for tracking
-    handleAddToCart();
     const waUrl = generateWhatsAppProductInquiry(product, selectedVariant, OFFICIAL_STORE_PHONE);
     window.open(waUrl, "_blank");
   };
@@ -136,7 +133,7 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                 )}
                 {product.isFeatured && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400 text-slate-900 shadow-xs">
-                    <Sparkles className="w-3.5 h-3.5" /> RECOMENDADO
+                    <Sparkles className="w-3.5 h-3.5" /> IMAGEN REFERENCIAL
                   </span>
                 )}
               </div>
@@ -170,22 +167,22 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
               </div>
             )}
 
-            {/* Quick Guarantees bar under images */}
+            {/* Purchase facts */}
             <div className="grid grid-cols-3 gap-3 pt-2 text-center text-xs text-slate-500">
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                <Truck className="w-4 h-4 text-blue-600 mx-auto mb-1" />
-                <span className="font-semibold block text-slate-800 dark:text-slate-200 text-[11px]">Envíos Rápidos</span>
-                <span className="text-[10px]">A todo el país</span>
+                <CircleDollarSign className="w-4 h-4 text-blue-600 mx-auto mb-1" />
+                <span className="font-semibold block text-slate-800 dark:text-slate-200 text-[11px]">Precio referencial</span>
+                <span className="text-[10px]">Expresado en USD</span>
               </div>
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 mx-auto mb-1" />
-                <span className="font-semibold block text-slate-800 dark:text-slate-200 text-[11px]">Garantía Real</span>
-                <span className="text-[10px]">100% Original</span>
+                <PackageCheck className="w-4 h-4 text-emerald-600 mx-auto mb-1" />
+                <span className="font-semibold block text-slate-800 dark:text-slate-200 text-[11px]">Stock visible</span>
+                <span className="text-[10px]">Confirmar con ventas</span>
               </div>
               <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                <Clock className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-                <span className="font-semibold block text-slate-800 dark:text-slate-200 text-[11px]">Retiro en Tienda</span>
-                <span className="text-[10px]">Disponible hoy</span>
+                <Truck className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+                <span className="font-semibold block text-slate-800 dark:text-slate-200 text-[11px]">Despacho</span>
+                <span className="text-[10px]">Se cotiza por destino</span>
               </div>
             </div>
 
@@ -210,28 +207,6 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
                 {product.name}
               </h1>
-
-              {/* Rating */}
-              {product.rating && (
-                <div className="flex items-center gap-2 text-xs">
-                  <div className="flex items-center text-amber-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < Math.floor(product.rating || 5)
-                            ? "fill-amber-400 text-amber-400"
-                            : "text-slate-300 dark:text-slate-700"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="font-bold text-slate-800 dark:text-slate-200">{product.rating}</span>
-                  {product.reviewsCount && (
-                    <span className="text-slate-400">({product.reviewsCount} opiniones verificadas)</span>
-                  )}
-                </div>
-              )}
 
               {/* Price Panel */}
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80 flex items-baseline justify-between">
@@ -259,6 +234,16 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                       <AlertCircle className="w-3.5 h-3.5" /> Agotado temporalmente
                     </span>
                   )}
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950/40">
+                <WalletCards className="mt-0.5 h-5 w-5 shrink-0 text-blue-700 dark:text-blue-400" />
+                <div>
+                  <p className="text-sm font-extrabold text-slate-950 dark:text-white">Compra con Cashea</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                    Paga una inicial y divide el saldo en cuotas quincenales sin intereses. Sujeto a aprobación, nivel y condiciones de Cashea.
+                  </p>
                 </div>
               </div>
 

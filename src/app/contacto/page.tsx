@@ -1,211 +1,131 @@
-﻿"use client";
+"use client";
 
-import React from "react";
-import Link from "next/link";
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
-  MessageCircle, 
-  Send, 
-  Sparkles, 
-  CheckCircle2 
-} from "lucide-react";
-import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/components/common/SocialIcons";
-import { OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED, SOCIAL_LINKS } from "@/lib/utils";
+import { MessageCircle, Phone, Send } from "lucide-react";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  TikTokIcon,
+} from "@/components/common/SocialIcons";
+import {
+  OFFICIAL_STORE_PHONE,
+  OFFICIAL_STORE_PHONE_FORMATTED,
+  SOCIAL_LINKS,
+} from "@/lib/utils";
+
+const socialLinks = [
+  { href: SOCIAL_LINKS.instagram, name: "Instagram", handle: "@multiogar", icon: InstagramIcon },
+  { href: SOCIAL_LINKS.tiktok, name: "TikTok", handle: "@multiogar", icon: TikTokIcon },
+  { href: SOCIAL_LINKS.facebook, name: "Facebook", handle: "Multiogar", icon: FacebookIcon },
+];
 
 export default function ContactPage() {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const name = String(data.get("name") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+    const text = `Hola Multiogar Ferretería. Mi nombre es ${name}, mi teléfono es ${phone}. ${message}`;
+    window.open(`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
   return (
-    <div className="py-12 bg-slate-50 dark:bg-slate-950 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-          <span className="text-xs font-extrabold uppercase tracking-wider text-orange-600 dark:text-orange-400">
-            Canales Oficiales Multiogar
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Contáctanos & Redes Sociales
+    <div className="min-h-screen bg-slate-50 py-10 dark:bg-slate-950 sm:py-14">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl">
+          <p className="text-xs font-extrabold uppercase text-orange-600">Contacto</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950 dark:text-white sm:text-4xl">
+            Habla con ventas
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Estamos disponibles para cotizaciones al mayor, asesoría en materiales y despachos en toda Venezuela.
+          <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+            Envía productos, cantidades y ciudad para consultar disponibilidad y despacho.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Direct Contact Cards */}
-          <div className="lg:col-span-5 space-y-4">
-            
-            {/* WhatsApp Card */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
-                    Línea Oficial WhatsApp
-                  </h3>
-                  <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Atención Inmediata
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Cotiza listas de materiales de construcción, discos de corte Fortek, herramientas y consulta métodos de pago (Pago Móvil / Zelle / Efectivo).
-              </p>
-
-              <a
-                href={SOCIAL_LINKS.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 px-4 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>Escribir al {OFFICIAL_STORE_PHONE_FORMATTED}</span>
-              </a>
+        <div className="mt-9 grid overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-12">
+          <aside className="border-b border-slate-200 p-6 dark:border-slate-800 lg:col-span-5 lg:border-b-0 lg:border-r lg:p-8">
+            <div className="flex h-11 w-11 items-center justify-center rounded-md bg-emerald-600 text-white">
+              <MessageCircle className="h-5 w-5" />
             </div>
-
-            {/* Social Media Channels Card */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
-              <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
-                Síguenos en Redes Sociales
-              </h3>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <a
-                  href={SOCIAL_LINKS.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-850 hover:bg-pink-50 dark:hover:bg-pink-950/30 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-center group transition-colors"
-                >
-                  <InstagramIcon className="w-6 h-6 text-pink-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">Instagram</span>
-                  <span className="text-[10px] text-slate-400">@multiogar</span>
-                </a>
-
-                <a
-                  href={SOCIAL_LINKS.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-center group transition-colors"
-                >
-                  <TikTokIcon className="w-6 h-6 text-cyan-400 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">TikTok</span>
-                  <span className="text-[10px] text-slate-400">@multiogar</span>
-                </a>
-
-                <a
-                  href={SOCIAL_LINKS.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-850 hover:bg-blue-50 dark:hover:bg-blue-950/30 border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-2 text-center group transition-colors"
-                >
-                  <FacebookIcon className="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">Facebook</span>
-                  <span className="text-[10px] text-slate-400">Multiogar</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Location & Hours */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3 text-xs text-slate-600 dark:text-slate-400">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-900 dark:text-white block font-bold">Cobertura y Envíos:</strong>
-                  <span>Despachos a nivel nacional en toda Venezuela.</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Clock className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-900 dark:text-white block font-bold">Horario de Atención:</strong>
-                  <span>Lunes a Sábado de 8:00 AM a 6:00 PM</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Quick Message Form */}
-          <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-            <h3 className="text-lg font-black text-slate-900 dark:text-white mb-2">
-              Envíanos un Mensaje
-            </h3>
-            <p className="text-xs text-slate-500 mb-6">
-              Te responderemos en minutos por WhatsApp o correo electrónico.
+            <h2 className="mt-5 text-lg font-black text-slate-950 dark:text-white">WhatsApp Multiogar</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              Solicita una cotización y confirma con el asesor los datos oficiales antes de pagar.
             </p>
-
-            <form 
-              onSubmit={(e) => {
-                e.preventDefault();
-                const form = e.currentTarget;
-                const name = (form.elements.namedItem("name") as HTMLInputElement).value;
-                const message = (form.elements.namedItem("message") as HTMLTextAreaElement).value;
-                const waUrl = `https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent(`Hola Multiogar Ferretería, mi nombre es ${name}. ${message}`)}`;
-                window.open(waUrl, "_blank");
-              }}
-              className="space-y-4"
+            <a
+              href={SOCIAL_LINKS.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-md bg-emerald-600 px-4 py-3 text-sm font-extrabold text-white hover:bg-emerald-700"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Tu Nombre *
-                  </label>
+              <Phone className="h-4 w-4" />
+              {OFFICIAL_STORE_PHONE_FORMATTED}
+            </a>
+
+            <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+              <h2 className="text-xs font-extrabold uppercase text-slate-500">Redes sociales</h2>
+              <div className="mt-4 space-y-2">
+                {socialLinks.map(({ href, name, handle, icon: Icon }) => (
+                  <a
+                    key={name}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 rounded-md px-2 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-blue-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="font-bold">{name}</span>
+                    <span className="ml-auto text-xs text-slate-400">{handle}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          <section className="p-6 lg:col-span-7 lg:p-8">
+            <h2 className="text-lg font-black text-slate-950 dark:text-white">Preparar consulta</h2>
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="space-y-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Nombre
                   <input
                     name="name"
                     required
-                    type="text"
-                    placeholder="Ej: David Pérez"
-                    className="w-full h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    maxLength={100}
+                    className="h-11 w-full rounded-md border border-slate-300 bg-slate-50 px-3 text-sm font-normal text-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Teléfono / WhatsApp *
-                  </label>
+                </label>
+                <label className="space-y-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Teléfono
                   <input
                     name="phone"
-                    required
                     type="tel"
-                    placeholder="Ej: 0414-1234567"
-                    className="w-full h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    required
+                    maxLength={25}
+                    className="h-11 w-full rounded-md border border-slate-300 bg-slate-50 px-3 text-sm font-normal text-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                   />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  ¿Qué necesitas cotizar o consultar? *
                 </label>
+              </div>
+              <label className="block space-y-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+                Productos o consulta
                 <textarea
                   name="message"
                   required
-                  rows={4}
-                  placeholder="Escribe la lista de materiales, marcas o preguntas técnicas..."
-                  className="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
+                  rows={7}
+                  maxLength={1000}
+                  placeholder="Ejemplo: 10 discos de corte de 4 1/2 pulgadas y entrega en Valencia."
+                  className="w-full resize-none rounded-md border border-slate-300 bg-slate-50 p-3 text-sm font-normal text-slate-950 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 />
-              </div>
-
+              </label>
               <button
                 type="submit"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-98"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-blue-700 px-5 py-3 text-sm font-extrabold text-white hover:bg-blue-800"
               >
-                <Send className="w-4 h-4" />
-                <span>Enviar Consulta a WhatsApp</span>
+                <Send className="h-4 w-4" />
+                Abrir consulta en WhatsApp
               </button>
             </form>
-          </div>
-
+          </section>
         </div>
-
       </div>
     </div>
   );
