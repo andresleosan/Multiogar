@@ -35,8 +35,8 @@
 - [x] **T3.5**: Integrar revisión previa y apertura explícita de `wa.me/` sin afirmar que el pedido ya fue registrado.
 
 ## Fase 4: Widget de Chat en Vivo para Clientes
-- [ ] **T4.1**: Reactivar el widget de chat solo después de crear un ingreso público seguro. Estado: implementado localmente; pendiente configurar secretos y validar la integración desplegada.
-- [ ] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo. Estado: implementación y reglas validadas 4/4 con Firestore Emulator Suite; pendiente integración en producción.
+- [x] **T4.1**: Reactivar el widget de chat solo después de crear un ingreso público seguro. Estado: validado en producción con cookie temporal y Route Handlers.
+- [x] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo. Estado: validado en producción; creación `200`, mensaje `201`, lectura `200`, y registro QA eliminado.
 - [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso. Estado: texto implementado; adjuntos siguen fuera de alcance y falta validación integral desplegada.
 
 Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 21/21, `pnpm test:rules` 4/4 con Firestore Emulator Suite, `pnpm lint` limpio, `tsc --noEmit` limpio y `pnpm build` limpio con 31 páginas y 2 Route Handlers. QA de navegador limpio en escritorio y móvil para `/`, `/login`, redirección de `/admin`, apertura del chat y respuesta segura `503` sin credenciales de servidor.
@@ -74,7 +74,7 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 21/21, `pnpm
 - [x] **T7.7**: Rediseñar landing, contacto, nosotros y acceso con identidad específica de Multiogar y copy verificable.
 - [x] **T7.8**: Conectar inicio, catálogo, detalle, buscador y panel a suscripciones Firestore con respaldo local.
 - [x] **T7.9**: Retirar reseñas, pedidos, chats, pagos, garantías y plazos simulados de la experiencia visible.
-- [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: chat implementado localmente con identidad temporal, validación, rate limiting y autorización por conversación; el registro servidor de pedidos sigue pendiente.
+- [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: chat implementado y validado en producción con identidad temporal, validación, rate limiting y autorización por conversación; el registro servidor de pedidos sigue pendiente.
 - [x] **T7.11**: Configurar Cashea en landing, detalle, checkout y mensaje de WhatsApp, con condiciones y aprobación explícitas.
 
 Evidencia de integracion OIDC (2026-08-26): proveedor GCP ACTIVE con issuer y audiencia de Vercel restringidos; condicion por owner/proyecto/production; la cuenta `multiogar-vercel-chat` tiene solo `roles/datastore.user` y solo el subject de produccion puede impersonarla. Variables `GCP_*` configuradas unicamente en Vercel Production.
