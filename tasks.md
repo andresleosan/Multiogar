@@ -58,6 +58,7 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 21/21, `pnpm
 - [x] **T5.7**: Desarrollar Dashboard Principal con Estadísticas (`/admin`):
   - Tarjetas de resumen (Total pedidos, ventas estimadas, productos activos, chats pendientes).
   - Gráficas con Recharts (pedidos por día, ventas por categoría y productos con stock bajo).
+- [x] **T5.8**: Agregar gestión segura de permisos del equipo (`/admin/usuarios`) para asignar roles `superadmin`, `vendedor` o `cliente` mediante Firebase Admin.
 
 ## Fase 6: Ciclo de Autocrítica, Auditoría de Seguridad y QA E2E
 - [x] **T6.1**: **Sombrero de Seguridad**: Auditoría con checklist `security-baseline` (Reglas Firestore, RBAC, validación Zod, sanitización de inputs).

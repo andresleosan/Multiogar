@@ -6,8 +6,11 @@ import {
   initializeApp,
   type App,
   type Credential,
+  type GoogleOAuthAccessToken,
 } from "firebase-admin/app";
+import { getAuth, type Auth } from "firebase-admin/auth";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { ExternalAccountClient, type BaseExternalAccountClient } from "google-auth-library";
 import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -27,6 +30,37 @@ type OidcConfig = {
 };
 
 let oidcFirestore: GoogleCloudFirestore | null = null;
+
+class VercelOidcCredential implements Credential {
+  private readonly authClient: BaseExternalAccountClient;
+
+  constructor(config: OidcConfig) {
+    const authClient = ExternalAccountClient.fromJSON({
+      type: "external_account",
+      audience: `//iam.googleapis.com/projects/${config.projectNumber}/locations/global/workloadIdentityPools/${config.poolId}/providers/${config.providerId}`,
+      subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+      token_url: "https://sts.googleapis.com/v1/token",
+      service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${config.serviceAccountEmail}:generateAccessToken`,
+      subject_token_supplier: {
+        getSubjectToken: async () => getVercelOidcToken(),
+      },
+    });
+    if (!authClient) throw new FirebaseAdminConfigurationError();
+    this.authClient = authClient;
+  }
+
+  async getAccessToken(): Promise<GoogleOAuthAccessToken> {
+    const { token } = await this.authClient.getAccessToken();
+    if (!token) throw new FirebaseAdminConfigurationError();
+    const expiryDate = this.authClient.credentials.expiry_date;
+    return {
+      access_token: token,
+      expires_in: expiryDate
+        ? Math.max(60, Math.floor((expiryDate - Date.now()) / 1_000))
+        : 3_000,
+    };
+  }
+}
 
 function getProjectId() {
   const projectId =
@@ -97,10 +131,17 @@ function getAdminApp(): App {
   if (existingApp) return existingApp;
 
   const projectId = getProjectId();
+  const oidcConfig = getOidcConfig();
   return initializeApp({
-    credential: getAdminCredential(projectId),
+    credential: oidcConfig
+      ? new VercelOidcCredential(oidcConfig)
+      : getAdminCredential(projectId),
     projectId,
   });
+}
+
+export function getAdminAuth(): Auth {
+  return getAuth(getAdminApp());
 }
 
 export async function getAdminFirestore(): Promise<Firestore> {

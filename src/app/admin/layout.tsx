@@ -16,6 +16,7 @@ import {
   Store, 
   ExternalLink,
   LoaderCircle,
+  UsersRound,
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
@@ -116,6 +117,12 @@ function AdminShell({ children }: AdminLayoutProps) {
       badge: unreadChats > 0 ? unreadChats : undefined,
       badgeColor: "bg-blue-600",
       roles: ["superadmin", "vendedor"],
+    },
+    {
+      name: "Permisos del equipo",
+      href: "/admin/usuarios",
+      icon: UsersRound,
+      roles: ["superadmin"],
     },
   ];
 
@@ -259,6 +266,7 @@ function AdminShell({ children }: AdminLayoutProps) {
               {pathname === "/admin/categorias" && "Gestión de Categorías"}
               {pathname === "/admin/pedidos" && "Bandeja de Pedidos WhatsApp"}
               {pathname === "/admin/chats" && "Atención de Chats en Tiempo Real"}
+              {pathname === "/admin/usuarios" && "Permisos del Equipo"}
             </span>
           </div>
 
