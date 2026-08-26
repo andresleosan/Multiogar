@@ -11,12 +11,7 @@ service cloud.firestore {
         ? null
         : request.auth.token.role is string
           ? request.auth.token.role
-          : request.auth.token.email == 'admin@admin.com' ||
-              request.auth.token.email == 'admin@multiogar.com'
-            ? 'superadmin'
-            : request.auth.token.email == 'vendedor@vendedor.com'
-              ? 'vendedor'
-              : 'cliente';
+          : 'cliente';
     }
 
     function isSuperAdmin() {
@@ -46,11 +41,16 @@ service cloud.firestore {
     }
 
     match /chats/{chatId} {
+      // Visitantes acceden solo mediante Route Handlers con cookie firmada.
       allow read, write: if isStaff();
 
       match /messages/{messageId} {
         allow read, write: if isStaff();
       }
+    }
+
+    match /chatRateLimits/{rateLimitId} {
+      allow read, write: if false;
     }
 
     match /{document=**} {

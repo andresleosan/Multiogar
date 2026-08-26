@@ -14,6 +14,9 @@ import {
   Phone,
   Search,
   ShoppingCart,
+  LogOut,
+  ShieldCheck,
+  UserRound,
   Wrench,
   X,
   Zap,
@@ -25,18 +28,24 @@ import { DataService } from "@/lib/data-service";
 import { Product } from "@/types";
 import { formatCurrency, OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED } from "@/lib/utils";
 import { useHydrated } from "@/hooks/use-hydrated";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { isAdminRole } from "@/lib/auth-roles";
+import { logoutFromFirebase } from "@/lib/firebase-auth";
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { toggleCart, getTotalItems } = useCartStore();
+  const { status, role, email, displayName, isAuthenticated } = useAuth();
   const hydrated = useHydrated();
   const [searchQuery, setSearchQuery] = useState("");
   const [catalogProducts, setCatalogProducts] = useState<Product[]>([]);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
   const isAdminRoute = pathname.startsWith("/admin");
 
   useEffect(() => {
@@ -72,6 +81,9 @@ export const Navbar: React.FC = () => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false);
       }
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+        setIsAccountMenuOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -87,6 +99,13 @@ export const Navbar: React.FC = () => {
 
   const totalItems = hydrated ? getTotalItems() : 0;
   const visibleSearchResults = searchQuery.trim() ? searchResults : [];
+
+  const handleLogout = async () => {
+    await logoutFromFirebase();
+    setIsAccountMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    window.location.replace("/");
+  };
 
   if (isAdminRoute) {
     return null;
@@ -108,9 +127,54 @@ export const Navbar: React.FC = () => {
               <span>WhatsApp: {OFFICIAL_STORE_PHONE_FORMATTED}</span>
             </a>
             <span className="hidden text-blue-300 md:inline">|</span>
-            <Link href="/admin/login" className="hidden transition-colors hover:text-orange-200 md:inline">
-              Acceso Empleados
-            </Link>
+            <div ref={accountRef} className="relative hidden md:block">
+              {status === "loading" ? (
+                <span className="text-blue-100">Verificando cuenta...</span>
+              ) : !isAuthenticated ? (
+                <Link href="/login" className="flex items-center gap-1.5 transition-colors hover:text-orange-200">
+                  <UserRound className="h-3.5 w-3.5" />
+                  Iniciar sesión
+                </Link>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsAccountMenuOpen((open) => !open)}
+                    aria-expanded={isAccountMenuOpen}
+                    className="flex max-w-48 items-center gap-1.5 transition-colors hover:text-orange-200"
+                  >
+                    <UserRound className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{displayName || email || "Mi cuenta"}</span>
+                  </button>
+                  {isAccountMenuOpen && (
+                    <div className="absolute right-0 top-7 z-50 w-56 rounded-md border border-slate-200 bg-white p-1.5 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                      <div className="border-b border-slate-100 px-2.5 py-2 dark:border-slate-800">
+                        <p className="truncate text-xs font-bold">{displayName || "Cuenta Multiogar"}</p>
+                        <p className="truncate text-[10px] text-slate-500">{email}</p>
+                      </div>
+                      {isAdminRole(role) && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsAccountMenuOpen(false)}
+                          className="mt-1 flex items-center gap-2 rounded px-2.5 py-2 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800"
+                        >
+                          <ShieldCheck className="h-4 w-4 text-blue-600" />
+                          Panel de trabajo
+                        </Link>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => void handleLogout()}
+                        className="flex w-full items-center gap-2 rounded px-2.5 py-2 text-left text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Cerrar sesión
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -408,13 +472,41 @@ export const Navbar: React.FC = () => {
             >
               Ubicación, WhatsApp y Redes
             </Link>
-            <Link
-              href="/admin/login"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-3 py-2 text-orange-600 dark:text-orange-400 font-semibold"
-            >
-              Panel Administrativo
-            </Link>
+            {!isAuthenticated ? (
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-2 font-semibold text-blue-700 dark:text-blue-400"
+              >
+                <UserRound className="h-4 w-4" />
+                Iniciar sesión
+              </Link>
+            ) : (
+              <>
+                <div className="px-3 py-2">
+                  <p className="truncate text-xs font-bold text-slate-800 dark:text-white">{displayName || "Mi cuenta"}</p>
+                  <p className="truncate text-[11px] text-slate-500">{email}</p>
+                </div>
+                {isAdminRole(role) && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 font-semibold text-orange-600 dark:text-orange-400"
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                    Panel de trabajo
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  onClick={() => void handleLogout()}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left font-semibold text-rose-600"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Cerrar sesión
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

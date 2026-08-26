@@ -48,8 +48,11 @@ test("los enlaces administrativos normalizan teléfonos de Venezuela", async () 
   assert.match(chats, /normalizeVenezuelanPhoneForWhatsApp/);
 });
 
-test("el chat público permanece fuera del layout hasta contar con ingreso seguro", async () => {
+test("el chat público se reactiva mediante el ingreso seguro", async () => {
   const layout = await source("src/app/layout.tsx");
+  const widget = await source("src/components/chat/LiveChatWidget.tsx");
 
-  assert.doesNotMatch(layout, /<LiveChatWidget\s*\/>/);
+  assert.match(layout, /<LiveChatWidget\s*\/>/);
+  assert.match(widget, /\/api\/chat\/session/);
+  assert.doesNotMatch(widget, /DataService/);
 });

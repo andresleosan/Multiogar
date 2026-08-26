@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
-import { AuthProvider, useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { getAdminRouteRedirect, isAdminRole } from "@/lib/auth-roles";
 import { DataService } from "@/lib/data-service";
 import { logoutFromFirebase } from "@/lib/firebase-auth";
@@ -29,11 +29,7 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  return (
-    <AuthProvider>
-      <AdminShell>{children}</AdminShell>
-    </AuthProvider>
-  );
+  return <AdminShell>{children}</AdminShell>;
 }
 
 function AdminShell({ children }: AdminLayoutProps) {
@@ -79,7 +75,7 @@ function AdminShell({ children }: AdminLayoutProps) {
     setIsLoggingOut(true);
     try {
       await logoutFromFirebase();
-      window.location.replace("/admin/login");
+      window.location.replace("/login");
     } catch {
       setLogoutError("No fue posible cerrar la sesión. Intenta nuevamente.");
       setIsLoggingOut(false);
@@ -130,7 +126,7 @@ function AdminShell({ children }: AdminLayoutProps) {
   const redirect =
     status === "ready"
       ? getAdminRouteRedirect(pathname, role, isAuthenticated)
-      : "/admin/login";
+      : `/login?redirect=${encodeURIComponent(pathname)}`;
 
   if (status === "loading" || redirect || !isAdminRole(role)) {
     return (

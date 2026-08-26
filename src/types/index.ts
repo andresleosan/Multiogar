@@ -93,8 +93,9 @@ export interface ChatMessage {
 
 export interface ChatSession {
   id: string;
+  ownerIdHash?: string;
   customerName: string;
-  customerPhone?: string;
+  customerPhone?: string | null;
   status: 'abierto' | 'en_atencion' | 'cerrado';
   assignedTo?: string; // Nombre del asesor
   lastMessage: string;
@@ -102,13 +103,14 @@ export interface ChatSession {
   unreadAdmin: number;
   unreadCustomer: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface UserProfile {
   uid: string;
   email: string;
   displayName: string;
-  role: 'superadmin' | 'vendedor';
+  role: 'superadmin' | 'vendedor' | 'cliente';
   active: boolean;
   avatarUrl?: string;
 }

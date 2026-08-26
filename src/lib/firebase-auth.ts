@@ -1,7 +1,9 @@
 import { z } from "zod";
 import {
+  GoogleAuthProvider,
   getIdTokenResult,
   onAuthStateChanged,
+  signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
   type Unsubscribe,
@@ -25,6 +27,7 @@ export interface AuthState {
   user: User | null;
   role: AppRole | null;
   email: string | null;
+  displayName: string | null;
   isAuthenticated: boolean;
 }
 
@@ -38,6 +41,7 @@ export const UNAUTHENTICATED_STATE: AuthState = {
   user: null,
   role: null,
   email: null,
+  displayName: null,
   isAuthenticated: false,
 };
 
@@ -56,6 +60,7 @@ async function createAuthState(user: User | null): Promise<AuthState> {
     user,
     role: resolveRole(user.email, token.claims),
     email: user.email,
+    displayName: user.displayName,
     isAuthenticated: true,
   };
 }
@@ -87,6 +92,15 @@ function getLoginErrorMessage(error: unknown): string {
   }
   if (code === "auth/user-disabled") {
     return "Esta cuenta se encuentra deshabilitada.";
+  }
+  if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+    return "El acceso con Google fue cancelado.";
+  }
+  if (code === "auth/popup-blocked") {
+    return "El navegador bloqueó la ventana de Google. Habilítala e intenta nuevamente.";
+  }
+  if (code === "auth/unauthorized-domain") {
+    return "Este dominio no está autorizado en Firebase Authentication.";
   }
 
   return "No fue posible iniciar sesión.";
@@ -138,6 +152,37 @@ export async function loginWithFirebase(
       parsed.data.email,
       parsed.data.password,
     );
+    try {
+      const state = await createAuthState(credential.user);
+      return { success: true, role: state.role };
+    } catch {
+      await signOut(auth);
+      return {
+        success: false,
+        role: null,
+        error: "No fue posible validar los permisos de la cuenta.",
+      };
+    }
+  } catch (error: unknown) {
+    return { success: false, role: null, error: getLoginErrorMessage(error) };
+  }
+}
+
+export async function loginWithGoogle(): Promise<LoginResult> {
+  clearLegacyAuthState();
+
+  if (!auth) {
+    return {
+      success: false,
+      role: null,
+      error: "El servicio de autenticación no está configurado.",
+    };
+  }
+
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    const credential = await signInWithPopup(auth, provider);
     try {
       const state = await createAuthState(credential.user);
       return { success: true, role: state.role };

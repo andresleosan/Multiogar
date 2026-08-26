@@ -13,7 +13,7 @@ Desarrollar la plataforma web de **Multiogar Ferretería**, combinando un catál
 
 | Rol | Descripción | Permisos Clave |
 | :--- | :--- | :--- |
-| **Cliente / Visitante** | Usuario que navega la tienda buscando herramientas, materiales o repuestos. | Navegación de catálogo, filtros, selección de variantes, armado de carrito y envío del pedido por WhatsApp. |
+| **Cliente / Visitante** | Usuario que navega la tienda buscando herramientas, materiales o repuestos. | Navegación de catálogo, filtros, selección de variantes, armado de carrito, envío del pedido por WhatsApp y chat asociado a una identidad temporal segura. |
 | **Vendedor** | Asesor comercial y de mostrador de Multiogar. | Actualización rápida de stock, consulta de pedidos compartidos y atención de conversaciones cuando exista un canal seguro de ingreso. Sin permisos de eliminación ni gestión de usuarios. |
 | **SuperAdmin** | Administrador general de la ferretería. | Control total: CRUD completo de productos y variantes, gestión de categorías, subida de medios a R2/Storage, métricas en dashboard (Recharts), gestión de roles y configuración de tienda. |
 
@@ -43,13 +43,16 @@ Desarrollar la plataforma web de **Multiogar Ferretería**, combinando un catál
    - Formulario de datos básicos del cliente (Nombre, Teléfono, Ciudad/Dirección, Notas adicionales).
    - Generación estructurada del pedido y apertura de WhatsApp con un mensaje formateado. La orden no se considera confirmada hasta recibir respuesta de ventas.
    - Selección de Cashea como forma de pago solicitada, sujeta a aprobación y condiciones de la aplicación.
-5. **Chat en Vivo (diferido):**
-   - No se expone al público mientras no exista un Route Handler con validación, rate limiting e identidad de propietario.
-   - WhatsApp funciona como canal público de atención durante esta etapa.
+5. **Chat de atención:**
+   - No obliga a crear una cuenta: el servidor entrega una identidad temporal aleatoria mediante una cookie firmada y `HttpOnly`.
+   - Cada conversación queda asociada al hash irreversible de esa identidad y solo su propietario temporal o el personal autorizado puede leerla.
+   - Los mensajes del cliente ingresan por Route Handlers con validación, límite de frecuencia y verificación de propietario. El navegador no puede escribir directamente en Firestore.
+   - WhatsApp continúa disponible como canal alternativo de atención y cotización.
 
 ### B. Panel Administrativo (Dashboard & CMS)
 1. **Autenticación y Seguridad (RBAC):**
-   - Acceso con correo y contraseña vía Firebase Auth.
+   - Acceso general con Google o correo y contraseña vía Firebase Auth.
+   - Las cuentas de cliente regresan a la tienda; `superadmin` y `vendedor` pueden continuar al panel según sus permisos.
    - Guardas de interfaz para rutas `/admin/*` con validación de roles (`superadmin` y `vendedor`).
 2. **Gestión de Catálogo (Productos y Categorías):**
    - Formulario modal / página dedicada para creación y edición de productos con validación Zod.

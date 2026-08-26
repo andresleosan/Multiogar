@@ -3,12 +3,6 @@ export const APP_ROLES = ["superadmin", "vendedor", "cliente"] as const;
 export type AppRole = (typeof APP_ROLES)[number];
 export type AdminRole = Exclude<AppRole, "cliente">;
 
-const LEGACY_EMAIL_ROLES: Readonly<Record<string, AdminRole>> = {
-  "admin@admin.com": "superadmin",
-  "admin@multiogar.com": "superadmin",
-  "vendedor@vendedor.com": "vendedor",
-};
-
 export function isAppRole(value: unknown): value is AppRole {
   return typeof value === "string" && APP_ROLES.includes(value as AppRole);
 }
@@ -18,15 +12,10 @@ export function isAdminRole(role: AppRole | null): role is AdminRole {
 }
 
 export function resolveRole(
-  email: string | null,
+  _email: string | null,
   claims: Readonly<Record<string, unknown>> = {},
 ): AppRole {
-  if (isAppRole(claims.role)) {
-    return claims.role;
-  }
-
-  const normalizedEmail = email?.trim().toLowerCase() ?? "";
-  return LEGACY_EMAIL_ROLES[normalizedEmail] ?? "cliente";
+  return isAppRole(claims.role) ? claims.role : "cliente";
 }
 
 export function getAdminRouteRedirect(
@@ -35,7 +24,7 @@ export function getAdminRouteRedirect(
   isAuthenticated: boolean,
 ): string | null {
   if (!isAuthenticated || !isAdminRole(role)) {
-    return "/admin/login";
+    return `/login?redirect=${encodeURIComponent(pathname)}`;
   }
 
   if (pathname.startsWith("/admin/categorias") && role !== "superadmin") {
@@ -43,4 +32,33 @@ export function getAdminRouteRedirect(
   }
 
   return null;
+}
+
+export function getPostLoginRedirect(
+  requestedPath: string | null | undefined,
+  role: AppRole,
+): string {
+  let isSafeLocalPath = false;
+  if (
+    typeof requestedPath === "string" &&
+    requestedPath.startsWith("/") &&
+    !requestedPath.startsWith("//") &&
+    !requestedPath.includes("\\") &&
+    !/%(?:2f|5c)/i.test(requestedPath) &&
+    !requestedPath.startsWith("/login")
+  ) {
+    try {
+      isSafeLocalPath =
+        new URL(requestedPath, "https://multiogar.local").origin ===
+        "https://multiogar.local";
+    } catch {
+      isSafeLocalPath = false;
+    }
+  }
+  const destination = isSafeLocalPath && requestedPath ? requestedPath : "/catalogo";
+
+  if (destination.startsWith("/admin") && !isAdminRole(role)) {
+    return "/catalogo";
+  }
+  return destination;
 }

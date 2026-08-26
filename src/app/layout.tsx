@@ -4,6 +4,8 @@ import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { BottomNavigation } from "@/components/common/BottomNavigation";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
 import { OFFICIAL_SITE_URL } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -81,11 +83,14 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-16 md:pb-0">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <CartDrawer />
-        <BottomNavigation />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <CartDrawer />
+          <BottomNavigation />
+          <LiveChatWidget />
+        </AuthProvider>
       </body>
     </html>
   );

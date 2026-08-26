@@ -237,37 +237,6 @@ export const DataService = {
     });
   },
 
-  createChatSession(customerName: string, customerPhone?: string, initialMessage?: string): ChatSession {
-    const sessions = this.getChatSessions();
-    const newSession: ChatSession = {
-      id: "chat-" + Date.now(),
-      customerName,
-      customerPhone,
-      lastMessage: initialMessage || "Inició conversación",
-      lastMessageAt: new Date().toISOString(),
-      unreadAdmin: 1,
-      unreadCustomer: 0,
-      status: "abierto",
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [newSession, ...sessions];
-    setLocal(CHATS_KEY, updated);
-
-    // Sync to Firestore
-    FirestoreSync.saveChatSession(newSession);
-
-    if (initialMessage) {
-      this.sendChatMessage(newSession.id, {
-        chatId: newSession.id,
-        sender: "customer",
-        senderName: customerName,
-        text: initialMessage,
-      });
-    }
-
-    return newSession;
-  },
-
   getChatMessages(chatId: string): ChatMessage[] {
     const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {});
     return allMessages[chatId] || [];
@@ -283,7 +252,10 @@ export const DataService = {
     });
   },
 
-  sendChatMessage(chatId: string, message: Omit<ChatMessage, "id" | "createdAt">): ChatMessage {
+  sendChatMessage(
+    chatId: string,
+    message: Omit<ChatMessage, "id" | "createdAt" | "sender"> & { sender: "agent" },
+  ): ChatMessage {
     const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {});
     const chatMsgs = allMessages[chatId] || [];
     const newMsg: ChatMessage = {
@@ -303,9 +275,7 @@ export const DataService = {
     if (sIndex !== -1) {
       sessions[sIndex].lastMessage = newMsg.text;
       sessions[sIndex].lastMessageAt = newMsg.createdAt;
-      if (newMsg.sender === "customer") {
-        sessions[sIndex].unreadAdmin += 1;
-      }
+      sessions[sIndex].unreadCustomer += 1;
       setLocal(CHATS_KEY, sessions);
       FirestoreSync.saveChatSession(sessions[sIndex]);
     }

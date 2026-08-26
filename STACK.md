@@ -15,11 +15,11 @@
 | **Framework Full-stack** | Next.js 16.3 (App Router, React 19, TypeScript) | Render estático para el catálogo inicial y componentes cliente para datos remotos e interacción. |
 | **Estilos & UI** | Tailwind CSS v4 + Lucide Icons | Implementación directa con controles nativos y componentes propios. |
 | **Animaciones & UX** | Framer Motion | Micro-interacciones de alta fluidez en drawers, modales, banners y tarjetas de productos. |
-| **Autenticación** | Firebase Auth Client SDK | Sesiones firmadas y resolución de roles por custom claim, con allowlist temporal exacta para las cuentas de prueba. |
+| **Autenticación** | Firebase Auth Client SDK + identidad temporal HMAC | Inicio de sesión general con Google o correo/contraseña y roles por custom claim. El chat anónimo usa una cookie `HttpOnly` firmada; Firebase Admin opera Firestore únicamente en servidor. |
 | **Base de Datos Principal** | Cloud Firestore | Suscripciones `onSnapshot` para catálogo y datos operativos del personal. Las escrituras públicas permanecen bloqueadas. |
 | **Almacenamiento de Medios** | Archivos locales en `public/` | Las imágenes actuales son referenciales. La carga administrada a Storage está pendiente. |
 | **Visualización & Métricas** | Recharts | Renderizado declarativo de gráficas estadísticas ligeras y reactivas en el dashboard administrativo. |
-| **Validación de Esquemas** | Zod | Validación del formulario de autenticación; los futuros endpoints públicos deben ampliar esta capa. |
+| **Validación de Esquemas** | Zod | Validación de autenticación y contratos HTTP del chat en el límite de entrada. |
 | **Despliegue** | Vercel (Production Ready) | Soporte nativo para Next.js con Edge Network, optimización de imágenes (
 ext/image) y despliegues atómicos. |
 
@@ -42,7 +42,7 @@ flowchart TD
     subgraph Frontend [Frontend Next.js App Router]
         Storefront[Storefront Publico - SSR / ISR / SEO]
         Cart[Drawer Carrito - Zustand / LocalStorage]
-        ChatWidget[Widget Chat en Vivo - Firestore Listener]
+        ChatWidget[Widget Chat - API segura + Firestore Listener]
         AdminCMS[Panel Admin / CMS - RBAC: SuperAdmin / Vendedor]
     end
 
@@ -57,7 +57,7 @@ flowchart TD
     Storefront --> NextAPI
     Cart --> WhatsAppAPI
     Cart --> NextAPI
-    ChatWidget --> FirestoreDB
+    ChatWidget --> NextAPI
     AdminCMS --> FirebaseAuth
     AdminCMS --> FirestoreDB
     AdminCMS --> R2Storage
@@ -142,8 +142,10 @@ interface Order {
 ### 4. chats & messages (Real-time)
 `	ypescript
 interface ChatSession {
-  id: string; // ID del chat (generado para visitante anónimo o cliente)
+  id: string; // ID opaco y determinista por cuenta
+  ownerIdHash: string; // HMAC irreversible de la identidad temporal
   customerName: string;
+  customerEmail?: string;
   customerPhone?: string;
   status: 'abierto' | 'en_atencion' | 'cerrado';
   assignedTo?: string; // ID del vendedor
@@ -172,7 +174,7 @@ interface AppUser {
   uid: string;
   email: string;
   displayName: string;
-  role: 'superadmin' | 'vendedor';
+  role: 'superadmin' | 'vendedor' | 'cliente';
   active: boolean;
   createdAt: string;
 }
@@ -181,13 +183,17 @@ interface AppUser {
 ---
 
 ## 5. Estrategia de Seguridad (Security Baseline)
-- **RBAC Estricto:** Rutas de /admin protegidas por sesión y claims.
+- **RBAC Estricto:** Rutas de `/admin` protegidas por sesión y claims. La interfaz no reemplaza las reglas de Firestore ni la autorización del servidor.
+- **Identidad del chat:** El servidor crea una identidad temporal aleatoria, la firma con HMAC y la conserva en una cookie `HttpOnly`. Firestore solo recibe un hash irreversible.
+- **Route Handlers del chat:** `POST /api/chat/session` abre o recupera la conversación; `GET` y `POST /api/chat/sessions/:chatId/messages` verifican el propietario antes de leer o publicar mensajes.
+- **Rate limiting:** Ventanas por usuario y operación almacenadas en la colección privada `chatRateLimits`; las respuestas limitadas usan HTTP `429` y `Retry-After`.
 - **Reglas de Seguridad Firestore:**
-  - products, categories: Lectura pública (ead: if true), escritura solo para autenticados (write: if request.auth != null). Eliminación restringida a superadmin.
-  - orders: Creación pública para clientes (create: if true), lectura/actualización solo para usuarios administrativos.
-  - chats / messages: Lectura/escritura asociada al chatId del visitante y acceso total para vendedores autenticados.
-- **Validación de Formularios:** Zod schemas en cliente y servidor.
-- **Variables de Entorno:** Secretos protegidos (.env.local), claves públicas con prefijo NEXT_PUBLIC_.
+  - `products`, `categories`: lectura pública; escritura solo para el personal autorizado.
+  - `orders`: acceso limitado al personal autorizado.
+  - `chats`, `messages`: acceso directo solo para el personal. Los visitantes leen y escriben mediante Route Handlers que verifican la cookie propietaria.
+  - `chatRateLimits`: sin acceso desde clientes.
+- **Validación de Formularios:** Esquemas Zod en cliente y servidor.
+- **Variables de Entorno:** Firebase Admin usa OIDC de Vercel y credenciales temporales (`FIREBASE_ADMIN_PROJECT_ID`, `GCP_PROJECT_NUMBER`, `GCP_SERVICE_ACCOUNT_EMAIL`, `GCP_WORKLOAD_IDENTITY_POOL_ID`, `GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID`). Las credenciales privadas se conservan solo como alternativa local; las claves públicas del SDK cliente usan el prefijo `NEXT_PUBLIC_`.
 
 ---
 

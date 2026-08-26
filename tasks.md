@@ -35,12 +35,14 @@
 - [x] **T3.5**: Integrar revisión previa y apertura explícita de `wa.me/` sin afirmar que el pedido ya fue registrado.
 
 ## Fase 4: Widget de Chat en Vivo para Clientes
-- [ ] **T4.1**: Reactivar el widget de chat solo después de crear un ingreso público seguro.
-- [ ] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo.
-- [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso.
+- [ ] **T4.1**: Reactivar el widget de chat solo después de crear un ingreso público seguro. Estado: implementado localmente; pendiente configurar secretos y validar la integración desplegada.
+- [ ] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo. Estado: implementación y reglas validadas 4/4 con Firestore Emulator Suite; pendiente integración en producción.
+- [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso. Estado: texto implementado; adjuntos siguen fuera de alcance y falta validación integral desplegada.
+
+Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 21/21, `pnpm test:rules` 4/4 con Firestore Emulator Suite, `pnpm lint` limpio, `tsc --noEmit` limpio y `pnpm build` limpio con 31 páginas y 2 Route Handlers. QA de navegador limpio en escritorio y móvil para `/`, `/login`, redirección de `/admin`, apertura del chat y respuesta segura `503` sin credenciales de servidor.
 
 ## Fase 5: Panel Administrativo y CMS (Vendedor & SuperAdmin)
-- [x] **T5.1**: Implementar pantalla de Login de Administración (`/admin/login`) con selector interactivo de rol RBAC.
+- [x] **T5.1**: Implementar acceso general (`/login`) con Google y correo/contraseña; `/admin/login` conserva una redirección compatible y el RBAC decide el destino.
 - [x] **T5.2**: Implementar Layout administrativo con navegación lateral, barra superior, estado de sesión y protección de roles.
 - [x] **T5.3**: Desarrollar Módulo de Gestión de Productos (`/admin/productos`):
   - Tabla interactiva con búsqueda, filtros y paginación.
@@ -68,9 +70,9 @@
 - [x] **T7.3**: Corregir hooks condicionales, métricas del dashboard, hidratación del catálogo y errores bloqueantes de ESLint.
 - [x] **T7.4**: Definir reglas Firestore con denegación predeterminada y permisos mínimos por rol.
 - [x] **T7.5**: Validar localmente con 12 pruebas automatizadas, ESLint sin advertencias, build de 29 rutas y recorridos E2E de los tres roles.
-- [ ] **T7.6**: Rotar credenciales expuestas, asignar custom claims y desplegar/probar reglas con Firebase Emulator Suite. Estado: bloqueada hasta confirmación del operador y acceso al proyecto Firebase.
+- [ ] **T7.6**: Rotar credenciales expuestas, asignar custom claims y desplegar/probar reglas con Firebase Emulator Suite. Estado: reglas probadas 4/4 y desplegadas; allowlist retirado y acceso de la cuenta expuesta negado con `403` en producción. Pendiente asignar custom claims y eliminar o rotar las cuentas de prueba.
 - [x] **T7.7**: Rediseñar landing, contacto, nosotros y acceso con identidad específica de Multiogar y copy verificable.
 - [x] **T7.8**: Conectar inicio, catálogo, detalle, buscador y panel a suscripciones Firestore con respaldo local.
 - [x] **T7.9**: Retirar reseñas, pedidos, chats, pagos, garantías y plazos simulados de la experiencia visible.
-- [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: requiere diseño de identidad, rate limiting y configuración de backend.
+- [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: chat implementado localmente con identidad temporal, validación, rate limiting y autorización por conversación; el registro servidor de pedidos sigue pendiente.
 - [x] **T7.11**: Configurar Cashea en landing, detalle, checkout y mensaje de WhatsApp, con condiciones y aprobación explícitas.
