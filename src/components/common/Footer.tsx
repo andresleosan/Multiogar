@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CircleDollarSign, MessageCircle, PackageCheck, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import {
@@ -20,17 +20,14 @@ const serviceFacts = [
   {
     title: "Precios de referencia",
     description: "Catálogo expresado en USD.",
-    icon: CircleDollarSign,
   },
   {
     title: "Stock por confirmar",
     description: "Ventas valida cada pedido.",
-    icon: PackageCheck,
   },
   {
     title: "Atención por WhatsApp",
     description: "Cotización y despacho coordinados.",
-    icon: MessageCircle,
   },
 ];
 
@@ -50,13 +47,11 @@ export function Footer() {
     <footer className="border-t border-slate-800 bg-slate-950 text-slate-300">
       <div className="border-b border-slate-800">
         <div className="mx-auto grid max-w-7xl divide-y divide-slate-800 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
-          {serviceFacts.map(({ title, description, icon: Icon }) => (
-            <div key={title} className="flex min-h-24 items-center gap-4 py-5 sm:px-5 sm:first:pl-0">
-              <Icon className="h-5 w-5 shrink-0 text-orange-500" />
-              <div>
-                <h2 className="text-sm font-extrabold text-white">{title}</h2>
-                <p className="mt-1 text-xs text-slate-400">{description}</p>
-              </div>
+          {serviceFacts.map(({ title, description }, index) => (
+            <div key={title} className="flex min-h-28 flex-col justify-center gap-2 py-6 sm:px-6 sm:first:pl-0">
+              <span className={`h-1 w-10 ${index === 1 ? "bg-blue-500" : "bg-orange-500"}`} aria-hidden="true" />
+              <h2 className="text-sm font-extrabold text-white">{title}</h2>
+              <p className="text-xs text-slate-400">{description}</p>
             </div>
           ))}
         </div>
