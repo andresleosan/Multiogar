@@ -2,10 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
+  ArrowUpRight,
   CircleDollarSign,
   Droplets,
   MessageCircle,
   PackageCheck,
+  Ruler,
   Wrench,
   Zap,
 } from "lucide-react";
@@ -35,35 +37,24 @@ export function HeroBanner() {
   );
 
   return (
-    <section className="relative min-h-[520px] overflow-hidden bg-slate-950 text-white sm:min-h-[560px] lg:min-h-[610px]">
-      <Image
-        src="/hero-tools.jpg"
-        alt="Herramientas de trabajo organizadas sobre un banco de taller"
-        fill
-        loading="eager"
-        fetchPriority="high"
-        sizes="100vw"
-        className="object-cover object-center"
-      />
-      <div className="absolute inset-0 bg-slate-950/72" />
-
-      <div className="relative mx-auto flex min-h-[520px] max-w-7xl flex-col justify-end px-4 pb-0 pt-14 sm:min-h-[560px] sm:px-6 lg:min-h-[610px] lg:px-8">
-        <div className="max-w-3xl pb-10 sm:pb-12">
-          <p className="mb-5 border-l-4 border-orange-500 pl-3 text-xs font-extrabold uppercase text-white">
-            Catálogo ferretero en Venezuela · Precios en USD
+    <section className="overflow-hidden bg-slate-950 text-white">
+      <div className="mx-auto grid max-w-7xl lg:grid-cols-[1.03fr_0.97fr]">
+        <div className="flex min-h-[500px] flex-col justify-center px-4 py-16 sm:px-6 lg:min-h-[540px] lg:px-8 lg:py-20">
+          <p className="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.16em] text-orange-400">
+            <span className="h-1.5 w-10 bg-orange-500" />
+            Ferretería para obra, taller y hogar
           </p>
-          <h1 className="max-w-3xl text-4xl font-black leading-[1.02] text-white sm:text-6xl lg:text-7xl">
-            Multiogar Ferretería
+          <h1 className="max-w-2xl text-4xl font-black leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[4.4rem]">
+            Herramientas y materiales para resolver hoy.
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg">
-            Herramientas, plomería, electricidad y materiales de construcción con stock visible.
-            Arma tu pedido en la web y confirma disponibilidad con un asesor por WhatsApp.
+          <p className="mt-6 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">
+            Encuentra marcas, medidas y precios de referencia en un solo lugar. Arma tu pedido y confirma disponibilidad con el equipo de Multiogar por WhatsApp.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/catalogo"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-white"
             >
               Ver catálogo
               <ArrowRight className="h-4 w-4" />
@@ -72,42 +63,63 @@ export function HeroBanner() {
               href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${quoteMessage}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md border border-white/60 bg-white/10 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-white hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 border border-slate-600 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:border-white hover:bg-white hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <MessageCircle className="h-4 w-4" />
               Cotizar una lista
             </a>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-xs font-semibold text-slate-200">
-            <span className="inline-flex items-center gap-2">
+          <div className="mt-10 grid max-w-xl grid-cols-2 border-t border-slate-700 pt-5">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300">
               <PackageCheck className="h-4 w-4 text-orange-400" /> Stock por producto
             </span>
-            <span className="inline-flex items-center gap-2">
-              <CircleDollarSign className="h-4 w-4 text-orange-400" /> Precios de referencia en USD
+            <span className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300">
+              <CircleDollarSign className="h-4 w-4 text-orange-400" /> Precios en USD
             </span>
           </div>
         </div>
 
-        <nav
-          aria-label="Accesos rápidos del catálogo"
-          className="hidden border-t border-white/25 sm:grid sm:grid-cols-3"
-        >
+        <div className="relative min-h-[360px] overflow-hidden border-t border-slate-800 lg:min-h-[540px] lg:border-l lg:border-t-0">
+          <Image
+            src="/hero-tools.jpg"
+            alt="Herramientas de trabajo organizadas sobre un banco de taller"
+            fill
+            loading="eager"
+            fetchPriority="high"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/10 to-slate-950/20 lg:from-slate-950/35" />
+          <div className="absolute right-4 top-4 max-w-[190px] bg-white p-4 text-slate-950 shadow-2xl sm:right-8 sm:top-8">
+            <p className="text-[10px] font-black uppercase tracking-[0.12em] text-orange-600">Mostrador Multiogar</p>
+            <p className="mt-2 text-sm font-extrabold leading-5">Consulta producto, medida y existencia.</p>
+            <ArrowUpRight className="mt-4 h-5 w-5 text-blue-600" />
+          </div>
+          <div className="absolute bottom-5 left-4 flex items-center gap-3 bg-orange-500 px-4 py-3 text-xs font-black text-slate-950 sm:bottom-8 sm:left-8">
+            <Ruler className="h-4 w-4" />
+            Datos claros para comprar mejor
+          </div>
+        </div>
+      </div>
+
+      <nav aria-label="Accesos rápidos del catálogo" className="border-t border-slate-800 bg-slate-900">
+        <div className="mx-auto grid max-w-7xl sm:grid-cols-3">
           {quickLinks.map(({ label, href, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className="flex min-h-14 items-center justify-between gap-3 border-b border-white/20 py-3 text-sm font-bold text-white transition-colors hover:text-orange-300 sm:border-b-0 sm:border-r sm:px-4 sm:first:pl-0 sm:last:border-r-0"
+              className="group flex min-h-16 items-center justify-between gap-3 border-b border-slate-800 px-4 py-4 text-sm font-bold text-slate-200 transition-colors hover:bg-slate-800 hover:text-white sm:border-b-0 sm:border-r sm:px-6 sm:last:border-r-0 lg:px-8"
             >
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex items-center gap-3">
                 <Icon className="h-4 w-4 text-orange-400" />
                 {label}
               </span>
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-1" />
             </Link>
           ))}
-        </nav>
-      </div>
+        </div>
+      </nav>
     </section>
   );
 }
