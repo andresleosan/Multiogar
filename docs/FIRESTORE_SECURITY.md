@@ -34,7 +34,7 @@ Configurar en Vercel, sin subir valores al repositorio:
 - `GCP_WORKLOAD_IDENTITY_POOL_ID`: ID del pool de Workload Identity Federation.
 - `GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID`: ID del proveedor OIDC.
 
-Producción usa el token OIDC emitido por Vercel para obtener credenciales temporales. El proveedor debe aceptar únicamente el `owner`, proyecto y entorno `production` de Multiogar, y la cuenta debe tener solo `roles/datastore.user`. Para desarrollo local se admite `FIREBASE_ADMIN_CLIENT_EMAIL` con `FIREBASE_ADMIN_PRIVATE_KEY`, pero no se debe utilizar esa alternativa en Vercel.
+Producción usa el token OIDC emitido por Vercel para obtener credenciales temporales. El proveedor debe aceptar únicamente el `owner`, proyecto y entorno `production` de Multiogar. La cuenta de servicio tiene `roles/datastore.user` y `roles/firebaseauth.admin` para leer/escribir Firestore y administrar custom claims; no se utiliza una clave privada permanente en Vercel. Para desarrollo local se admite `FIREBASE_ADMIN_CLIENT_EMAIL` con `FIREBASE_ADMIN_PRIVATE_KEY`, pero no se debe utilizar esa alternativa en Vercel.
 
 El SDK web continúa usando variables `NEXT_PUBLIC_FIREBASE_*`. Esas variables identifican el proyecto, pero no sustituyen las reglas de seguridad.
 
