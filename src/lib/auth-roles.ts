@@ -55,9 +55,18 @@ export function getPostLoginRedirect(
       isSafeLocalPath = false;
     }
   }
+  if (isAdminRole(role)) {
+    // Staff always lands in the work panel; preserve a safe deep link when one
+    // was explicitly requested from another administrative screen.
+    if (isSafeLocalPath && requestedPath?.startsWith("/admin")) {
+      return requestedPath;
+    }
+    return "/admin";
+  }
+
   const destination = isSafeLocalPath && requestedPath ? requestedPath : "/catalogo";
 
-  if (destination.startsWith("/admin") && !isAdminRole(role)) {
+  if (destination.startsWith("/admin")) {
     return "/catalogo";
   }
   return destination;

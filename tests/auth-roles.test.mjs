@@ -39,11 +39,14 @@ test("las rutas administrativas fallan cerradas y categorías exige superadmin",
 
 test("el retorno posterior al login solo acepta rutas locales y respeta roles", () => {
   assert.equal(getPostLoginRedirect("/producto/taladro", "cliente"), "/producto/taladro");
+  assert.equal(getPostLoginRedirect(undefined, "superadmin"), "/admin");
+  assert.equal(getPostLoginRedirect(undefined, "vendedor"), "/admin");
+  assert.equal(getPostLoginRedirect("/admin/chats", "vendedor"), "/admin/chats");
   assert.equal(getPostLoginRedirect("/admin", "superadmin"), "/admin");
   assert.equal(getPostLoginRedirect("/admin", "cliente"), "/catalogo");
-  assert.equal(getPostLoginRedirect("https://evil.example", "superadmin"), "/catalogo");
-  assert.equal(getPostLoginRedirect("//evil.example", "superadmin"), "/catalogo");
-  assert.equal(getPostLoginRedirect("/\\evil.example", "superadmin"), "/catalogo");
-  assert.equal(getPostLoginRedirect("/%5cevil.example", "superadmin"), "/catalogo");
-  assert.equal(getPostLoginRedirect("/login?redirect=/admin", "superadmin"), "/catalogo");
+  assert.equal(getPostLoginRedirect("https://evil.example", "superadmin"), "/admin");
+  assert.equal(getPostLoginRedirect("//evil.example", "superadmin"), "/admin");
+  assert.equal(getPostLoginRedirect("/\\evil.example", "superadmin"), "/admin");
+  assert.equal(getPostLoginRedirect("/%5cevil.example", "superadmin"), "/admin");
+  assert.equal(getPostLoginRedirect("/login?redirect=/admin", "superadmin"), "/admin");
 });

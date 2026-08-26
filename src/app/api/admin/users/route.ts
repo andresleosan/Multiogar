@@ -72,6 +72,14 @@ function errorResponse(error: unknown) {
   if (error instanceof FirebaseAdminConfigurationError) {
     return jsonError("La administración de usuarios no está disponible temporalmente.", 503);
   }
+  if (
+    error &&
+    typeof error === "object" &&
+    "code" in error &&
+    error.code === "auth/insufficient-permission"
+  ) {
+    return jsonError("La gestion de usuarios aun no esta habilitada en el servidor.", 503);
+  }
   console.error("Admin users route failed", {
     errorName: error instanceof Error ? error.name : "UnknownError",
     errorCode: error && typeof error === "object" && "code" in error ? String(error.code) : undefined,

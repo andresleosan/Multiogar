@@ -281,7 +281,9 @@ function AdminShell({ children }: AdminLayoutProps) {
                 <span className="font-bold text-slate-900 dark:text-white block">
                   {role === "superadmin" ? "Administrador Multiogar" : "Vendedor de Mostrador"}
                 </span>
-                <span className="text-[10px] text-slate-400 capitalize">{role}</span>
+                <span className="text-[10px] text-slate-400">
+                  {role === "superadmin" ? "Admin" : "Vendedor"}
+                </span>
               </div>
             </div>
           </div>
