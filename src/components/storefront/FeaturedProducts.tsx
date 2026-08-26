@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Building2, Flame } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/storefront/ProductCard";
 import type { Product } from "@/types";
 
@@ -42,8 +42,8 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
           <div>
-            <p className="mb-2 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-600">
-              <Flame className="h-4 w-4" /> Selección del mostrador
+            <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-600">
+              <span className="h-1 w-8 bg-orange-600" aria-hidden="true" /> Selección del mostrador
             </p>
             <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white sm:text-3xl">
               Lo que más se está cotizando
@@ -79,15 +79,13 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-col justify-between gap-6 bg-slate-950 px-6 py-8 text-white sm:px-8 lg:flex-row lg:items-center">
-          <div className="flex max-w-3xl items-start gap-4">
-            <Building2 className="mt-1 h-7 w-7 shrink-0 text-orange-400" />
-            <div>
-              <h3 className="text-xl font-black">¿Compras para una obra o negocio?</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                Envía cantidades, medidas y marcas por WhatsApp. Un vendedor revisará la lista antes de confirmar precio y despacho.
-              </p>
-            </div>
+        <div className="mt-14 flex flex-col justify-between gap-6 border-l-4 border-orange-600 bg-slate-950 px-6 py-8 text-white sm:px-8 lg:flex-row lg:items-center">
+          <div className="max-w-3xl">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-orange-400">Atención para proyectos</p>
+            <h3 className="mt-2 text-xl font-black">¿Compras para una obra o negocio?</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              Envía cantidades, medidas y marcas por WhatsApp. Un vendedor revisará la lista antes de confirmar precio y despacho.
+            </p>
           </div>
           <Link
             href="/contacto"
