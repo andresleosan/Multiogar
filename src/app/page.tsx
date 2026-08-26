@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { HeroBanner } from "@/components/storefront/HeroBanner";
@@ -35,15 +35,16 @@ export default function HomePage() {
             <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
               Marcas Líderes Distribuidas:
             </span>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-slate-400 font-black text-sm sm:text-base">
-              <span className="hover:text-white transition-colors">FORTEK</span>
-              <span className="hover:text-emerald-400 transition-colors">ATOUAN</span>
-              <span className="hover:text-cyan-400 transition-colors">POWERFIK</span>
-              <span className="hover:text-blue-400 transition-colors">TOTAL Tools</span>
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-7 text-slate-400 font-black text-xs sm:text-sm uppercase tracking-wider">
+              <span className="hover:text-white transition-colors">PRISMA</span>
               <span className="hover:text-amber-400 transition-colors">INGCO</span>
-              <span className="hover:text-yellow-400 transition-colors">DeWALT</span>
-              <span className="hover:text-rose-400 transition-colors">CISA</span>
-              <span className="hover:text-blue-500 transition-colors">PAVCO</span>
+              <span className="hover:text-cyan-400 transition-colors">FAGUAX</span>
+              <span className="hover:text-blue-400 transition-colors">LUMISTAR</span>
+              <span className="hover:text-yellow-400 transition-colors">ZOE</span>
+              <span className="hover:text-emerald-400 transition-colors">MAGIC GYPSUM</span>
+              <span className="hover:text-orange-400 transition-colors">FORTEK</span>
+              <span className="hover:text-blue-500 transition-colors">TOTAL</span>
+              <span className="hover:text-cyan-500 transition-colors">PAVCO</span>
               <span className="hover:text-pink-400 transition-colors">MONTANA</span>
               <span className="hover:text-emerald-500 transition-colors">VENCEMOS</span>
             </div>

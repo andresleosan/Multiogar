@@ -1,14 +1,33 @@
-﻿import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
+import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_ORDERS } from "@/lib/seed-data";
 
+// Versión del catálogo para forzar refresco de datos en clientes existentes
+const DATA_VERSION = "multiogar_v4_facebook_catalog";
+const VERSION_KEY = "multiogar_data_version";
 const PRODUCTS_KEY = "multiogar_db_products";
 const CATEGORIES_KEY = "multiogar_db_categories";
 const ORDERS_KEY = "multiogar_db_orders";
 const CHATS_KEY = "multiogar_db_chats";
 const MESSAGES_KEY = "multiogar_db_messages";
 
+function checkAndSyncVersion() {
+  if (typeof window === "undefined") return;
+  try {
+    const currentVer = localStorage.getItem(VERSION_KEY);
+    if (currentVer !== DATA_VERSION) {
+      // Version changed: update products and categories to ensure fresh catalog
+      localStorage.setItem(VERSION_KEY, DATA_VERSION);
+      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(INITIAL_PRODUCTS));
+      localStorage.setItem(CATEGORIES_KEY, JSON.stringify(INITIAL_CATEGORIES));
+    }
+  } catch (e) {
+    console.error("Error syncing data version:", e);
+  }
+}
+
 function getLocal<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
+  checkAndSyncVersion();
   try {
     const raw = localStorage.getItem(key);
     if (!raw) {
@@ -102,20 +121,25 @@ export const DataService = {
     return categories.find((c) => c.slug === slug);
   },
 
-  createCategory(category: Omit<Category, "id">): Category {
+  createCategory(categoryData: Omit<Category, "id">): Category {
     const categories = this.getCategories();
-    const newCategory: Category = {
-      ...category,
-      id: category.slug,
+    const newCat: Category = {
+      ...categoryData,
+      id: "cat-" + Date.now(),
     };
-    const updated = [...categories, newCategory];
+    const updated = [...categories, newCat];
     setLocal(CATEGORIES_KEY, updated);
-    return newCategory;
+    return newCat;
   },
 
   // ORDERS
   getOrders(): Order[] {
     return getLocal<Order[]>(ORDERS_KEY, INITIAL_ORDERS);
+  },
+
+  getOrderById(id: string): Order | undefined {
+    const orders = this.getOrders();
+    return orders.find((o) => o.id === id);
   },
 
   createOrder(order: Order): Order {
@@ -125,74 +149,83 @@ export const DataService = {
     return order;
   },
 
-  updateOrderStatus(orderId: string, status: Order["status"]): Order | null {
+  updateOrderStatus(orderId: string, status: Order["status"]): boolean {
     const orders = this.getOrders();
     const index = orders.findIndex((o) => o.id === orderId);
-    if (index === -1) return null;
+    if (index === -1) return false;
     orders[index].status = status;
     orders[index].updatedAt = new Date().toISOString();
     setLocal(ORDERS_KEY, orders);
-    return orders[index];
+    return true;
   },
 
-  // CHATS
+  // CHAT SESSIONS & MESSAGES
   getChatSessions(): ChatSession[] {
     const initialChats: ChatSession[] = [
       {
         id: "chat-sample-1",
-        customerName: "Juan Camilo Botero",
-        customerPhone: "3001234567",
-        status: "abierto",
-        lastMessage: "¿Tienen disponibilidad de brocas SDS Plus para concreto?",
-        lastMessageAt: "2026-08-25T19:30:00Z",
+        customerName: "Pedro Ramírez",
+        customerPhone: "04141234567",
+        lastMessage: "¿Tienen disponible la pistola de calor Ingco y el protector Lumistar 220V?",
+        lastMessageAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
         unreadAdmin: 1,
         unreadCustomer: 0,
-        createdAt: "2026-08-25T19:28:00Z",
+        status: "abierto",
+        createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
       },
       {
         id: "chat-sample-2",
-        customerName: "Ferretería El Poblado",
-        customerPhone: "3159988776",
-        status: "en_atencion",
-        assignedTo: "Mateo (Asesor)",
-        lastMessage: "Le acabo de enviar la cotización con descuento por mayor.",
-        lastMessageAt: "2026-08-25T18:15:00Z",
+        customerName: "Construcciones Ávila",
+        customerPhone: "04245558899",
+        lastMessage: "Buenas tardes, ¿precio por bulto del mastique Magic Gypsum y esmalte Prisma?",
+        lastMessageAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
         unreadAdmin: 0,
         unreadCustomer: 0,
-        createdAt: "2026-08-25T17:50:00Z",
+        status: "en_atencion",
+        createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
       },
     ];
     return getLocal<ChatSession[]>(CHATS_KEY, initialChats);
+  },
+
+  createChatSession(customerName: string, customerPhone?: string, initialMessage?: string): ChatSession {
+    const sessions = this.getChatSessions();
+    const newSession: ChatSession = {
+      id: "chat-" + Date.now(),
+      customerName,
+      customerPhone,
+      lastMessage: initialMessage || "Inició conversación",
+      lastMessageAt: new Date().toISOString(),
+      unreadAdmin: 1,
+      unreadCustomer: 0,
+      status: "abierto",
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [newSession, ...sessions];
+    setLocal(CHATS_KEY, updated);
+
+    if (initialMessage) {
+      this.sendChatMessage(newSession.id, {
+        chatId: newSession.id,
+        sender: "customer",
+        senderName: customerName,
+        text: initialMessage,
+      });
+    }
+
+    return newSession;
   },
 
   getChatMessages(chatId: string): ChatMessage[] {
     const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {
       "chat-sample-1": [
         {
-          id: "m1",
+          id: "m-1",
           chatId: "chat-sample-1",
           sender: "customer",
-          senderName: "Juan Camilo",
-          text: "Buenas tardes, ¿tienen disponibilidad de brocas SDS Plus para concreto?",
-          createdAt: "2026-08-25T19:30:00Z",
-        },
-      ],
-      "chat-sample-2": [
-        {
-          id: "m2",
-          chatId: "chat-sample-2",
-          sender: "customer",
-          senderName: "Ferretería El Poblado",
-          text: "Hola, necesito cotizar 20 bultos de cemento y 10 varillas de 1/2.",
-          createdAt: "2026-08-25T17:50:00Z",
-        },
-        {
-          id: "m3",
-          chatId: "chat-sample-2",
-          sender: "agent",
-          senderName: "Mateo (Asesor)",
-          text: "¡Hola! Con gusto. Le acabo de enviar la cotización con descuento por mayor.",
-          createdAt: "2026-08-25T18:15:00Z",
+          senderName: "Pedro Ramírez",
+          text: "¿Tienen disponible la pistola de calor Ingco y el protector Lumistar 220V?",
+          createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
         },
       ],
     });
@@ -201,98 +234,64 @@ export const DataService = {
 
   sendChatMessage(chatId: string, message: Omit<ChatMessage, "id" | "createdAt">): ChatMessage {
     const allMessages = getLocal<Record<string, ChatMessage[]>>(MESSAGES_KEY, {});
-    const newMessage: ChatMessage = {
+    const chatMsgs = allMessages[chatId] || [];
+    const newMsg: ChatMessage = {
       ...message,
       id: "msg-" + Date.now(),
       createdAt: new Date().toISOString(),
     };
-    if (!allMessages[chatId]) {
-      allMessages[chatId] = [];
-    }
-    allMessages[chatId].push(newMessage);
+    allMessages[chatId] = [...chatMsgs, newMsg];
     setLocal(MESSAGES_KEY, allMessages);
 
-    // Update chat session
+    // Update parent session
     const sessions = this.getChatSessions();
-    const sessionIndex = sessions.findIndex((s) => s.id === chatId);
-    if (sessionIndex > -1) {
-      sessions[sessionIndex].lastMessage = message.text;
-      sessions[sessionIndex].lastMessageAt = newMessage.createdAt;
-      if (message.sender === "customer") {
-        sessions[sessionIndex].unreadAdmin += 1;
+    const sIndex = sessions.findIndex((s) => s.id === chatId);
+    if (sIndex !== -1) {
+      sessions[sIndex].lastMessage = newMsg.text;
+      sessions[sIndex].lastMessageAt = newMsg.createdAt;
+      if (newMsg.sender === "customer") {
+        sessions[sIndex].unreadAdmin += 1;
       }
       setLocal(CHATS_KEY, sessions);
     }
 
-    return newMessage;
+    return newMsg;
   },
 
-  createChatSession(customerName: string, customerPhone?: string, initialText?: string): ChatSession {
-    const sessions = this.getChatSessions();
-    const newSession: ChatSession = {
-      id: "chat-" + Date.now(),
-      customerName,
-      customerPhone,
-      status: "abierto",
-      lastMessage: initialText || "Nueva conversación iniciada",
-      lastMessageAt: new Date().toISOString(),
-      unreadAdmin: 1,
-      unreadCustomer: 0,
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [newSession, ...sessions];
-    setLocal(CHATS_KEY, updated);
-
-    if (initialText) {
-      this.sendChatMessage(newSession.id, {
-        chatId: newSession.id,
-        sender: "customer",
-        senderName: customerName,
-        text: initialText,
-      });
-    }
-
-    return newSession;
-  },
-
-  // STATS FOR DASHBOARD
+  // ANALYTICS DASHBOARD
   getDashboardStats() {
+    return this.getDashboardMetrics();
+  },
+
+  getDashboardMetrics() {
     const products = this.getProducts();
     const orders = this.getOrders();
     const chats = this.getChatSessions();
 
-    const totalOrders = orders.length;
-    const totalSales = orders.reduce((sum, o) => sum + o.total, 0);
-    const pendingOrders = orders.filter((o) => o.status === "pendiente").length;
-    const completedOrders = orders.filter((o) => o.status === "completado").length;
-    const lowStockProducts = products.filter((p) => p.stock <= 10).length;
-    const totalActiveProducts = products.length;
-    const openChats = chats.filter((c) => c.status !== "cerrado").length;
+    const totalSales = orders.reduce((acc, curr) => acc + (curr.total || 0), 0);
+    const totalProducts = products.length;
+    const lowStockCount = products.filter((p) => p.stock <= 5).length;
+    const openChatsCount = chats.filter((c) => c.status === "abierto").length;
 
-    // Sales by Category
-    const categorySalesMap: Record<string, number> = {};
-    orders.forEach((ord) => {
-      ord.items.forEach((item) => {
-        const prod = products.find((p) => p.id === item.productId);
-        const catName = prod ? prod.categoryName : "Otros";
-        categorySalesMap[catName] = (categorySalesMap[catName] || 0) + item.price * item.quantity;
-      });
+    // Categories Breakdown
+    const categoriesMap: Record<string, number> = {};
+    products.forEach((p) => {
+      categoriesMap[p.categoryName] = (categoriesMap[p.categoryName] || 0) + 1;
     });
 
-    const categorySales = Object.entries(categorySalesMap).map(([name, value]) => ({
-      name,
-      value,
+    const categoryDistribution = Object.keys(categoriesMap).map((catName) => ({
+      name: catName,
+      count: categoriesMap[catName],
     }));
 
     return {
-      totalOrders,
       totalSales,
-      pendingOrders,
-      completedOrders,
-      lowStockProducts,
-      totalActiveProducts,
-      openChats,
-      categorySales,
+      totalOrders: orders.length,
+      totalProducts,
+      lowStockCount,
+      openChatsCount,
+      categoryDistribution,
+      recentOrders: orders.slice(0, 5),
     };
   },
 };
