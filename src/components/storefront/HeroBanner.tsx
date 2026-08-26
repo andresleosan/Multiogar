@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  ArrowUpRight,
   CircleDollarSign,
   Droplets,
   MessageCircle,
@@ -80,7 +79,7 @@ export function HeroBanner() {
           </div>
         </div>
 
-        <div className="relative min-h-[360px] overflow-hidden border-t border-slate-800 lg:min-h-[540px] lg:border-l lg:border-t-0">
+        <div className="group relative min-h-[360px] overflow-hidden border-t border-slate-800 bg-slate-900 lg:min-h-[540px] lg:border-l lg:border-t-0">
           <Image
             src="/hero-tools.jpg"
             alt="Herramientas de trabajo organizadas sobre un banco de taller"
@@ -88,17 +87,25 @@ export function HeroBanner() {
             loading="eager"
             fetchPriority="high"
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover object-center"
+            className="object-cover object-[58%_48%] transition-transform duration-700 group-hover:scale-[1.02]"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/10 to-slate-950/20 lg:from-slate-950/35" />
-          <div className="absolute right-4 top-4 max-w-[190px] bg-white p-4 text-slate-950 shadow-2xl sm:right-8 sm:top-8">
-            <p className="text-[10px] font-black uppercase tracking-[0.12em] text-orange-600">Mostrador Multiogar</p>
-            <p className="mt-2 text-sm font-extrabold leading-5">Consulta producto, medida y existencia.</p>
-            <ArrowUpRight className="mt-4 h-5 w-5 text-blue-600" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-slate-950/15" />
+          <div className="absolute left-5 top-5 flex items-center gap-3 text-xs font-black uppercase tracking-[0.14em] text-white sm:left-8 sm:top-8">
+            <span className="h-2 w-2 bg-orange-500" />
+            Herramientas eléctricas
           </div>
-          <div className="absolute bottom-5 left-4 flex items-center gap-3 bg-orange-500 px-4 py-3 text-xs font-black text-slate-950 sm:bottom-8 sm:left-8">
-            <Ruler className="h-4 w-4" />
-            Datos claros para comprar mejor
+          <div className="absolute inset-x-0 bottom-0 border-t border-white/15 bg-slate-950/90 p-5 backdrop-blur-sm sm:p-7">
+            <div className="flex items-end justify-between gap-5">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-orange-400">En el mostrador</p>
+                <p className="mt-2 max-w-xs text-sm font-extrabold leading-5 text-white sm:text-base">
+                  Consulta potencia, medida y existencia.
+                </p>
+              </div>
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-blue-400/60 text-blue-300">
+                <Ruler className="h-4 w-4" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
