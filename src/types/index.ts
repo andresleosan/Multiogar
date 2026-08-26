@@ -1,4 +1,4 @@
-﻿export interface ProductVariant {
+export interface ProductVariant {
   id: string;
   name: string; // Ej: '1/2 pulgada', '3/4 pulgada', '110V', '220V', 'Rojo'
   sku: string;
@@ -72,8 +72,8 @@ export interface Order {
   subtotal: number;
   deliveryFee?: number;
   total: number;
-  status: 'pendiente' | 'atendido' | 'completado' | 'cancelado';
-  channel: 'whatsapp_web' | 'direct' | 'chat_web';
+  status: 'pendiente' | 'atendido' | 'enviado' | 'completado' | 'cancelado';
+  channel: 'web' | 'whatsapp_web' | 'direct' | 'chat_web';
   whatsappUrl?: string;
   createdAt: string;
   updatedAt: string;
