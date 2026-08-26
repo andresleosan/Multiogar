@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { 
   MessageSquare, 
   X, 
@@ -18,6 +19,7 @@ import { ChatMessage, ChatSession } from "@/types";
 import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
 
 export const LiveChatWidget: React.FC = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [session, setSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -25,6 +27,11 @@ export const LiveChatWidget: React.FC = () => {
   const [customerName, setCustomerName] = useState("");
   const [isStarted, setIsStarted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Hide live chat widget inside admin dashboard
+  if (pathname && pathname.startsWith("/admin")) {
+    return null;
+  }
 
   // Load or create customer session
   useEffect(() => {

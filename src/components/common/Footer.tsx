@@ -1,5 +1,8 @@
-﻿import React from "react";
+﻿"use client";
+
+import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { 
   Phone, 
@@ -15,6 +18,13 @@ import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/compone
 import { OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED, SOCIAL_LINKS } from "@/lib/utils";
 
 export const Footer: React.FC = () => {
+  const pathname = usePathname();
+
+  // Hide public store footer on admin routes
+  if (pathname && pathname.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <footer className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +52,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-amber-600/10 border border-amber-500/20 flex items-center justify-center text-amber-500 flex-shrink-0">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
@@ -52,7 +62,7 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 flex-shrink-0">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 flex-shrink-0">
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
@@ -63,150 +73,114 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Main Footer Links */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 py-12">
           
-          {/* Brand Info & Socials */}
-          <div className="md:col-span-2 space-y-4">
+          {/* Brand Info */}
+          <div className="lg:col-span-2 space-y-4">
             <BrandLogo size="lg" />
-            <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-              Tu ferretería de confianza en Venezuela. Proveemos soluciones en herramientas, discos de corte, plomería, pinturas, cerrajería y materiales de construcción para profesionales, contratistas y el hogar.
+            <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+              Multiogar Ferretería es tu aliado comercial en Venezuela para herramientas industriales, discos de corte, plomería, electricidad y materiales de construcción con pedidos directos por WhatsApp y catálogo en USD.
             </p>
             
-            {/* Social Media Links */}
-            <div className="pt-2 flex items-center gap-3">
-              <a
-                href={SOCIAL_LINKS.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-pink-400 hover:text-white hover:bg-pink-600 hover:border-pink-600 flex items-center justify-center transition-all"
-                title="Instagram @multiogar"
-              >
-                <InstagramIcon className="w-5 h-5" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.tiktok}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:text-white hover:bg-slate-800 flex items-center justify-center transition-all"
-                title="TikTok @multiogar"
-              >
-                <TikTokIcon className="w-5 h-5" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-blue-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 flex items-center justify-center transition-all"
-                title="Facebook Multiogar"
-              >
-                <FacebookIcon className="w-5 h-5" />
-              </a>
-              <a
-                href={SOCIAL_LINKS.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-600 flex items-center justify-center transition-all"
-                title="WhatsApp Multiogar"
-              >
-                <WhatsAppIcon className="w-5 h-5" />
-              </a>
+            {/* Social Media Links with Custom Clean Icons */}
+            <div className="pt-2">
+              <span className="text-xs font-semibold text-slate-400 block mb-2">Síguenos en nuestras redes:</span>
+              <div className="flex items-center gap-3">
+                <a
+                  href={SOCIAL_LINKS.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
+                  title="Instagram Multiogar"
+                >
+                  <InstagramIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={SOCIAL_LINKS.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-blue-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
+                  title="Facebook Multiogar"
+                >
+                  <FacebookIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={SOCIAL_LINKS.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-slate-800 hover:border-slate-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
+                  title="TikTok Multiogar"
+                >
+                  <TikTokIcon className="w-4 h-4" />
+                </a>
+                <a
+                  href={SOCIAL_LINKS.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-xl bg-slate-900 hover:bg-emerald-600 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center transition-all hover:scale-105"
+                  title="WhatsApp Multiogar"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                </a>
+              </div>
             </div>
           </div>
 
-          {/* Categories */}
+          {/* Quick Categories */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold text-xs tracking-wider uppercase">Categorías</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
-              <li>
-                <Link href="/catalogo?categoria=herramientas-manuales" className="hover:text-white transition-colors">
-                  Discos de Corte y Manuales
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalogo?categoria=herramientas-electricas" className="hover:text-white transition-colors">
-                  Herramientas Eléctricas
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalogo?categoria=plomeria-tuberias" className="hover:text-white transition-colors">
-                  Plomería y Riego
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalogo?categoria=pinturas-selladores" className="hover:text-white transition-colors">
-                  Pinturas Montana y Selladores
-                </Link>
-              </li>
-              <li>
-                <Link href="/catalogo?categoria=construccion" className="hover:text-white transition-colors">
-                  Materiales de Construcción
-                </Link>
-              </li>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">Categorías</h4>
+            <ul className="space-y-2 text-xs">
+              <li><Link href="/catalogo?categoria=herramientas-manuales" className="hover:text-blue-400 transition-colors">Discos de Corte y Manuales</Link></li>
+              <li><Link href="/catalogo?categoria=herramientas-electricas" className="hover:text-blue-400 transition-colors">Herramientas Eléctricas</Link></li>
+              <li><Link href="/catalogo?categoria=plomeria-tuberias" className="hover:text-blue-400 transition-colors">Plomería y Tuberías</Link></li>
+              <li><Link href="/catalogo?categoria=pinturas-selladores" className="hover:text-blue-400 transition-colors">Pinturas y Selladores</Link></li>
+              <li><Link href="/catalogo?categoria=electricidad-iluminacion" className="hover:text-blue-400 transition-colors">Electricidad e Iluminación</Link></li>
+              <li><Link href="/catalogo?categoria=construccion" className="hover:text-blue-400 transition-colors">Construcción y Albañilería</Link></li>
             </ul>
           </div>
 
-          {/* Quick Links */}
+          {/* Store Links */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold text-xs tracking-wider uppercase">Navegación</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
-              <li>
-                <Link href="/catalogo" className="hover:text-white transition-colors">
-                  Catálogo General (USD)
-                </Link>
-              </li>
-              <li>
-                <Link href="/nosotros" className="hover:text-white transition-colors">
-                  Quiénes Somos
-                </Link>
-              </li>
-              <li>
-                <Link href="/contacto" className="hover:text-white transition-colors">
-                  Ubicación & WhatsApp
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin/login" className="hover:text-orange-400 font-medium transition-colors">
-                  Acceso Administrativo
-                </Link>
-              </li>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">Navegación</h4>
+            <ul className="space-y-2 text-xs">
+              <li><Link href="/catalogo" className="hover:text-blue-400 transition-colors">Catálogo General (USD)</Link></li>
+              <li><Link href="/catalogo?ofertas=true" className="hover:text-orange-400 transition-colors">Ofertas y Promociones</Link></li>
+              <li><Link href="/nosotros" className="hover:text-blue-400 transition-colors">Sobre Multiogar</Link></li>
+              <li><Link href="/contacto" className="hover:text-blue-400 transition-colors">Contacto & Ubicación</Link></li>
+              <li><Link href="/admin/login" className="text-slate-500 hover:text-slate-300 transition-colors">Acceso a Empleados</Link></li>
             </ul>
           </div>
 
           {/* Contact Details */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold text-xs tracking-wider uppercase">Contacto Oficial</h4>
-            <ul className="space-y-2.5 text-sm text-slate-400">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+            <h4 className="text-xs font-bold uppercase tracking-wider text-white">Contacto Oficial</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
                 <span>Venezuela 🇻🇪 (Envíos a nivel nacional)</span>
               </li>
-              <li className="flex items-center gap-2.5">
+              <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 font-bold">
+                <a href={`https://wa.me/${OFFICIAL_STORE_PHONE}`} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                   {OFFICIAL_STORE_PHONE_FORMATTED}
                 </a>
               </li>
-              <li className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-blue-500 flex-shrink-0" />
-                <span>ventas@multiogar.com</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Clock className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                <span>Lunes a Sábado: 8:00 AM - 6:00 PM</span>
+              <li className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                <span>Lun - Sáb: 8:00 AM - 6:00 PM</span>
               </li>
             </ul>
           </div>
+
         </div>
 
-        {/* Bottom Payment Methods & Copyright */}
-        <div className="pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p>© {new Date().getFullYear()} Multiogar Ferretería Venezuela. Todos los derechos reservados.</p>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-slate-400 font-medium">Métodos de Pago:</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-emerald-400 font-bold text-[10px]">Pago Móvil</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-blue-400 font-bold text-[10px]">Zelle</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-amber-400 font-bold text-[10px]">Efectivo USD</span>
-            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-orange-400 font-bold text-[10px]">Pago al Recibir</span>
+        {/* Bottom Strip */}
+        <div className="pt-8 mt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <p>© {new Date().getFullYear()} Multiogar Ferretería C.A. Todos los derechos reservados.</p>
+          <div className="flex items-center gap-4">
+            <span>Precios expresados en Dólares Americanos (USD)</span>
+            <span>•</span>
+            <span>Venezuela</span>
           </div>
         </div>
 
