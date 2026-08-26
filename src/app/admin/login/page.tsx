@@ -5,24 +5,47 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/common/BrandLogo";
-import { Lock, Mail, ShieldCheck, ArrowRight, Store } from "lucide-react";
+import { Lock, Mail, ShieldCheck, ArrowRight, Store, AlertCircle, CheckCircle2 } from "lucide-react";
+import { loginWithFirebase } from "@/lib/firebase-auth";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@multiogar.com");
-  const [password, setPassword] = useState("multiogar2026");
+  const [email, setEmail] = useState("admin@admin.com");
+  const [password, setPassword] = useState("qwertyui9*");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleLogin = (e: React.FormEvent, selectedRole: "superadmin" | "vendedor" = "superadmin") => {
+  const handleLogin = async (e?: React.FormEvent, customEmail?: string, customPass?: string) => {
     if (e) e.preventDefault();
+    setError("");
+    setSuccessMessage("");
     setLoading(true);
 
-    setTimeout(() => {
-      localStorage.setItem("multiogar_admin_auth", "true");
-      localStorage.setItem("multiogar_admin_role", selectedRole);
-      router.push("/admin");
-    }, 600);
+    const loginEmail = customEmail || email;
+    const loginPass = customPass || password;
+
+    try {
+      const res = await loginWithFirebase(loginEmail, loginPass);
+      if (res.success) {
+        setSuccessMessage(`¡Autenticado con éxito como ${res.role.toUpperCase()}! Redirigiendo...`);
+        setTimeout(() => {
+          router.push("/admin");
+        }, 500);
+      } else {
+        setError(res.error || "Credenciales inválidas.");
+      }
+    } catch (err: any) {
+      setError("Error al conectar con Firebase Auth.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickFill = (testEmail: string, testPass: string) => {
+    setEmail(testEmail);
+    setPassword(testPass);
+    handleLogin(undefined, testEmail, testPass);
   };
 
   return (
@@ -42,21 +65,37 @@ export default function AdminLoginPage() {
           <div className="space-y-1">
             <h1 className="text-xl font-black text-white">Panel de Administración</h1>
             <p className="text-xs text-slate-400">
-              Acceso exclusivo para personal de Multiogar Ferretería
+              Conectado a Firebase Project: <span className="font-mono text-blue-400">multiogarweb</span>
             </p>
           </div>
         </div>
 
+        {/* Error / Success Feedback */}
+        {error && (
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+            <span>{successMessage}</span>
+          </div>
+        )}
+
         {/* Login Form */}
-        <form onSubmit={(e) => handleLogin(e, "superadmin")} className="space-y-4 text-xs">
+        <form onSubmit={(e) => handleLogin(e)} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-bold text-slate-300">Correo Electrónico</label>
+            <label className="font-bold text-slate-300">Correo Electrónico (Firebase Auth)</label>
             <div className="relative">
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@admin.com"
                 className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-xs"
               />
               <Mail className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
@@ -71,6 +110,7 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
                 className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-600 text-xs"
               />
               <Lock className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
@@ -80,30 +120,34 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.01]"
+            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.01]"
           >
-            <span>{loading ? "Accediendo..." : "Iniciar Sesión"}</span>
+            <span>{loading ? "Verificando con Firebase..." : "Iniciar Sesión"}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        {/* Quick Demo Logins for RBAC testing */}
+        {/* Quick Demo Logins with User Credentials */}
         <div className="pt-4 border-t border-slate-800 space-y-2">
           <span className="text-[11px] font-bold text-slate-500 block text-center uppercase tracking-wider">
-            Accesos de Prueba Rápida (RBAC):
+            Usuarios de Prueba (1 Clic):
           </span>
           <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={(e) => handleLogin(e, "superadmin")}
-              className="py-2.5 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold text-xs transition-colors text-center"
+              onClick={() => handleQuickFill("admin@admin.com", "qwertyui9*")}
+              disabled={loading}
+              className="py-2.5 px-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold text-xs transition-colors text-center flex flex-col items-center gap-0.5"
             >
-              👑 SuperAdmin
+              <span>👑 SuperAdmin</span>
+              <span className="text-[10px] text-amber-400/70 font-mono">admin@admin.com</span>
             </button>
             <button
-              onClick={(e) => handleLogin(e, "vendedor")}
-              className="py-2.5 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold text-xs transition-colors text-center"
+              onClick={() => handleQuickFill("cliente@cliente.com", "qwertyui9*")}
+              disabled={loading}
+              className="py-2.5 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 font-bold text-xs transition-colors text-center flex flex-col items-center gap-0.5"
             >
-              👤 Vendedor
+              <span>👤 Cliente / Ventas</span>
+              <span className="text-[10px] text-blue-400/70 font-mono">cliente@cliente.com</span>
             </button>
           </div>
         </div>

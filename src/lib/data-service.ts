@@ -1,8 +1,9 @@
-import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
+﻿import { Product, Category, Order, ChatSession, ChatMessage } from "@/types";
 import { INITIAL_PRODUCTS, INITIAL_CATEGORIES, INITIAL_ORDERS } from "@/lib/seed-data";
+import { FirestoreSync } from "@/lib/firestore-sync";
 
 // Versión del catálogo para forzar refresco de datos en clientes existentes
-const DATA_VERSION = "multiogar_v4_facebook_catalog";
+const DATA_VERSION = "multiogar_v5_firebase_connected";
 const VERSION_KEY = "multiogar_data_version";
 const PRODUCTS_KEY = "multiogar_db_products";
 const CATEGORIES_KEY = "multiogar_db_categories";
@@ -15,7 +16,6 @@ function checkAndSyncVersion() {
   try {
     const currentVer = localStorage.getItem(VERSION_KEY);
     if (currentVer !== DATA_VERSION) {
-      // Version changed: update products and categories to ensure fresh catalog
       localStorage.setItem(VERSION_KEY, DATA_VERSION);
       localStorage.setItem(PRODUCTS_KEY, JSON.stringify(INITIAL_PRODUCTS));
       localStorage.setItem(CATEGORIES_KEY, JSON.stringify(INITIAL_CATEGORIES));
@@ -76,6 +76,10 @@ export const DataService = {
     };
     const updated = [newProduct, ...products];
     setLocal(PRODUCTS_KEY, updated);
+
+    // Sync to Firestore
+    FirestoreSync.saveProduct(newProduct);
+
     return newProduct;
   },
 
@@ -90,6 +94,10 @@ export const DataService = {
     };
     products[index] = updatedProduct;
     setLocal(PRODUCTS_KEY, products);
+
+    // Sync to Firestore
+    FirestoreSync.saveProduct(updatedProduct);
+
     return updatedProduct;
   },
 
@@ -100,6 +108,10 @@ export const DataService = {
     products[index].stock = newStock;
     products[index].updatedAt = new Date().toISOString();
     setLocal(PRODUCTS_KEY, products);
+
+    // Sync to Firestore
+    FirestoreSync.saveProduct(products[index]);
+
     return true;
   },
 
@@ -108,6 +120,10 @@ export const DataService = {
     const filtered = products.filter((p) => p.id !== id);
     if (filtered.length === products.length) return false;
     setLocal(PRODUCTS_KEY, filtered);
+
+    // Sync to Firestore
+    FirestoreSync.deleteProduct(id);
+
     return true;
   },
 
@@ -146,6 +162,10 @@ export const DataService = {
     const orders = this.getOrders();
     const updated = [order, ...orders];
     setLocal(ORDERS_KEY, updated);
+
+    // Sync to Firestore
+    FirestoreSync.saveOrder(order);
+
     return order;
   },
 
@@ -156,6 +176,10 @@ export const DataService = {
     orders[index].status = status;
     orders[index].updatedAt = new Date().toISOString();
     setLocal(ORDERS_KEY, orders);
+
+    // Sync to Firestore
+    FirestoreSync.saveOrder(orders[index]);
+
     return true;
   },
 
