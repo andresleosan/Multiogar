@@ -38,7 +38,9 @@ class VercelOidcCredential implements Credential {
       token_url: "https://sts.googleapis.com/v1/token",
       service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${serviceAccountEmail}:generateAccessToken`,
       subject_token_supplier: {
-        getSubjectToken: getVercelOidcToken,
+        // Google passes its supplier context as options; do not let that
+        // override Vercel's fixed audience (`https://vercel.com/<team>`).
+        getSubjectToken: async () => getVercelOidcToken(),
       },
     });
 

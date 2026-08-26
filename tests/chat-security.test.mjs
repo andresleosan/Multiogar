@@ -110,4 +110,5 @@ test("Firebase Admin prioriza OIDC de Vercel sin una clave privada permanente", 
   assert.match(admin, /ExternalAccountClient\.fromJSON/);
   assert.match(admin, /service_account_impersonation_url/);
   assert.match(admin, /GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID/);
+  assert.match(admin, /getSubjectToken: async \(\) => getVercelOidcToken\(\)/);
 });
