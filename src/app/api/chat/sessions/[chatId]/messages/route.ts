@@ -1,4 +1,4 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue } from "@google-cloud/firestore";
 import { NextRequest, NextResponse } from "next/server";
 import { chatMessageInputSchema } from "@/lib/chat-contracts";
 import { getAdminFirestore } from "@/lib/firebase-admin";
