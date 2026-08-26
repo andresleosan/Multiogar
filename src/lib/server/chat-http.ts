@@ -58,6 +58,18 @@ export function handleChatServerError(error: unknown) {
 
   console.error("Chat route failed", {
     errorName: error instanceof Error ? error.name : "UnknownError",
+    errorCode:
+      error && typeof error === "object" && "code" in error
+        ? String(error.code)
+        : undefined,
+    errorStatus:
+      error && typeof error === "object" && "status" in error
+        ? String(error.status)
+        : undefined,
+    errorMessage:
+      error instanceof Error
+        ? error.message.replace(/eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, "[redacted-jwt]").slice(0, 240)
+        : undefined,
   });
   return jsonError("No fue posible procesar la solicitud.", 500);
 }
