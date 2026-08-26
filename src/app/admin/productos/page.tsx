@@ -369,7 +369,7 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* CREATE / EDIT MODAL (SUPERADMIN ONLY) */}
+      {/* CREATE / EDIT MODAL (ADMIN ONLY) */}
       {isModalOpen && role === "superadmin" && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 space-y-6 animate-in zoom-in-95">

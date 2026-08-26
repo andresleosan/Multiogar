@@ -98,7 +98,7 @@ export async function PATCH(request: Request) {
     const body = updateUserSchema.parse(await readJsonBody(request, 2_048));
 
     if (body.uid === admin.uid && body.role !== "superadmin") {
-      return jsonError("No puedes quitarte el permiso de superadmin desde esta pantalla.", 409);
+      return jsonError("No puedes quitarte el permiso de admin desde esta pantalla.", 409);
     }
 
     const auth = getAdminAuth();

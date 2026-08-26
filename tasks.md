@@ -41,13 +41,13 @@
 
 Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 23/23, `pnpm test:rules` 4/4 con Firestore Emulator Suite, `pnpm lint` limpio, `tsc --noEmit` limpio y `pnpm build` limpio con 33 páginas y 3 Route Handlers. Smoke de producción: `/admin/usuarios` `200` y `/api/admin/users` `401` sin token. QA de navegador previo limpio en escritorio y móvil para `/`, `/login`, redirección de `/admin`, apertura del chat y respuesta segura `503` sin credenciales de servidor.
 
-## Fase 5: Panel Administrativo y CMS (Vendedor & SuperAdmin)
+## Fase 5: Panel Administrativo y CMS (Vendedor & Admin)
 - [x] **T5.1**: Implementar acceso general (`/login`) con Google y correo/contraseña; `/admin/login` conserva una redirección compatible y el RBAC decide el destino.
 - [x] **T5.2**: Implementar Layout administrativo con navegación lateral, barra superior, estado de sesión y protección de roles.
 - [x] **T5.3**: Desarrollar Módulo de Gestión de Productos (`/admin/productos`):
   - Tabla interactiva con búsqueda, filtros y paginación.
   - Switch rápido de stock y disponibilidad en 1 clic para Vendedores y Admin.
-  - Modal / Formulario completo de creación/edición con variantes dinámicas y subida de imágenes (SuperAdmin).
+  - Modal / Formulario completo de creación/edición con variantes dinámicas y subida de imágenes (Admin).
 - [x] **T5.4**: Desarrollar Módulo de Categorías (`/admin/categorias`): CRUD y ordenamiento.
 - [x] **T5.5**: Desarrollar Módulo de Pedidos (`/admin/pedidos`):
   - Listado en tiempo real de órdenes con selector de estado (`pendiente` -> `atendido` -> `completado` -> `cancelado`).
@@ -67,7 +67,7 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 23/23, `pnpm
 
 ## Fase 7: Remediación correctiva de autenticación y estabilidad
 - [x] **T7.1**: Eliminar el acceso de demostración, la creación automática de usuarios y los roles controlados desde `localStorage`.
-- [x] **T7.2**: Aplicar guardas de rutas para Cliente, Vendedor y SuperAdmin usando el estado firmado de Firebase Auth.
+- [x] **T7.2**: Aplicar guardas de rutas para Cliente, Vendedor y Admin usando el estado firmado de Firebase Auth.
 - [x] **T7.3**: Corregir hooks condicionales, métricas del dashboard, hidratación del catálogo y errores bloqueantes de ESLint.
 - [x] **T7.4**: Definir reglas Firestore con denegación predeterminada y permisos mínimos por rol.
 - [x] **T7.5**: Validar localmente con 12 pruebas automatizadas, ESLint sin advertencias, build de 29 rutas y recorridos E2E de los tres roles.

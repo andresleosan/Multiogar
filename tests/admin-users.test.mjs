@@ -24,7 +24,7 @@ test("el panel de permisos usa el endpoint y ofrece los tres niveles", async () 
 
   assert.match(page, /\/api\/admin\/users/);
   assert.match(page, /Authorization: `Bearer \$\{token\}`/);
-  assert.match(page, /superadmin: "Superadmin"/);
+  assert.match(page, /superadmin: "Admin"/);
   assert.match(page, /vendedor: "Vendedor"/);
   assert.match(page, /cliente: "Cliente"/);
   assert.match(layout, /href: "\/admin\/usuarios"/);

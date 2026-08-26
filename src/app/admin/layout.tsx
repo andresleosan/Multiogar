@@ -176,7 +176,7 @@ function AdminShell({ children }: AdminLayoutProps) {
             <div className="flex items-center gap-2 text-[11px] font-bold">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span className="text-slate-300">
-                {role === "superadmin" ? "SuperAdmin" : "Vendedor"}
+                {role === "superadmin" ? "Admin" : "Vendedor"}
               </span>
             </div>
             <p className="text-[10px] text-slate-500 truncate" title={email ?? undefined}>
@@ -275,7 +275,7 @@ function AdminShell({ children }: AdminLayoutProps) {
 
             <div className="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-800">
               <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
-                {role === "superadmin" ? "SA" : "VN"}
+                {role === "superadmin" ? "AD" : "VN"}
               </div>
               <div className="text-left text-xs">
                 <span className="font-bold text-slate-900 dark:text-white block">

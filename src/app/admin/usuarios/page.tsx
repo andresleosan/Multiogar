@@ -17,7 +17,7 @@ type ManagedUser = {
 };
 
 const roleLabels: Record<AppRole, string> = {
-  superadmin: "Superadmin",
+  superadmin: "Admin",
   vendedor: "Vendedor",
   cliente: "Cliente",
 };
@@ -96,7 +96,7 @@ export default function AdminUsersPage() {
         <div>
           <ShieldCheck className="mx-auto mb-3 h-8 w-8 text-rose-500" />
           <h1 className="text-lg font-black text-slate-900 dark:text-white">Acceso restringido</h1>
-          <p className="mt-1 text-sm text-slate-500">Solo un superadmin puede administrar permisos.</p>
+          <p className="mt-1 text-sm text-slate-500">Solo un admin puede administrar permisos.</p>
         </div>
       </div>
     );
