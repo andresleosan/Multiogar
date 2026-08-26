@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -18,7 +18,9 @@ import {
   Paintbrush, 
   HardHat,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Truck,
+  ShieldCheck
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
@@ -91,11 +93,19 @@ export const Navbar: React.FC = () => {
       {/* Top Notification Bar */}
       <div className="bg-slate-950 text-white text-xs font-medium py-1.5 px-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="bg-gradient-to-r from-orange-500 to-amber-400 text-white px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase">
-              Venezuela 🇻🇪
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="bg-gradient-to-r from-orange-500 to-amber-400 text-white px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase">
+              Venezuela
             </span>
-            <span>🚚 Envíos a todo el país | 💵 Precios en Dólares (USD) | 🟢 Pago al recibir</span>
+            <span className="hidden sm:inline-flex items-center gap-1 text-slate-300">
+              <Truck className="w-3.5 h-3.5 text-blue-400" /> Envíos a todo el país
+            </span>
+            <span className="hidden md:inline-flex items-center gap-1 text-slate-300">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Precios en Dólares (USD)
+            </span>
+            <span className="inline-flex items-center gap-1 text-slate-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Pago al Recibir / Zelle
+            </span>
           </div>
           <div className="flex items-center gap-4 text-slate-300">
             <a 

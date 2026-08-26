@@ -16,13 +16,24 @@ import {
   MapPin, 
   User, 
   CheckCircle2, 
-  Sparkles 
+  CreditCard,
+  Banknote,
+  DollarSign
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { useCartStore } from "@/store/cart-store";
 import { formatCurrency, generateOrderNumber, generateWhatsAppOrderMessage, OFFICIAL_STORE_PHONE } from "@/lib/utils";
 import { DataService } from "@/lib/data-service";
 import { Order } from "@/types";
+
+const PAYMENT_METHODS = [
+  "Pago Móvil",
+  "Zelle",
+  "Efectivo USD",
+  "Cashea",
+  "Transferencia Bancaria",
+  "Pago al recibir",
+];
 
 export const CartDrawer: React.FC = () => {
   const { 
@@ -41,6 +52,7 @@ export const CartDrawer: React.FC = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerCity, setCustomerCity] = useState("Caracas");
   const [customerAddress, setCustomerAddress] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Pago Móvil");
   const [customerNotes, setCustomerNotes] = useState("");
   const [lastOrderUrl, setLastOrderUrl] = useState("");
   const [lastOrderNumber, setLastOrderNumber] = useState("");
@@ -63,6 +75,8 @@ export const CartDrawer: React.FC = () => {
     }
 
     const orderNumber = generateOrderNumber();
+    const fullNotes = `Método de pago: ${selectedPaymentMethod}. ${customerNotes ? `Notas: ${customerNotes}` : ""}`.trim();
+
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
       orderNumber: orderNumber,
@@ -71,7 +85,7 @@ export const CartDrawer: React.FC = () => {
         phone: customerPhone.trim(),
         city: customerCity.trim() || "Venezuela",
         address: customerAddress.trim(),
-        notes: customerNotes.trim(),
+        notes: fullNotes,
       },
       items: [...items],
       subtotal: subtotal,
@@ -176,7 +190,7 @@ export const CartDrawer: React.FC = () => {
 
                         {item.variantName && (
                           <span className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold block mt-0.5">
-                            Variante: {item.variantName}
+                            Opción: {item.variantName}
                           </span>
                         )}
 
@@ -238,7 +252,7 @@ export const CartDrawer: React.FC = () => {
                       <span className="font-semibold text-slate-900 dark:text-white">{formatCurrency(subtotal)}</span>
                     </div>
                     <div className="flex justify-between text-slate-500">
-                      <span>Despacho:</span>
+                      <span>Despacho en Venezuela:</span>
                       <span className="text-emerald-600 font-bold">A coordinar por WhatsApp</span>
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-800">
@@ -259,7 +273,7 @@ export const CartDrawer: React.FC = () => {
             </>
           )}
 
-          {/* STEP 2: CHECKOUT FORM */}
+          {/* STEP 2: CHECKOUT FORM WITH VENEZUELAN PAYMENT SELECTOR */}
           {step === "checkout" && (
             <form onSubmit={handleSendOrderToWhatsApp} className="flex-1 flex flex-col justify-between p-4 sm:p-5 overflow-y-auto">
               <div className="space-y-4">
@@ -276,6 +290,7 @@ export const CartDrawer: React.FC = () => {
                   </button>
                 </div>
 
+                {/* Customer Name */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-blue-600" /> Nombre Completo / Razón Social *
@@ -290,6 +305,7 @@ export const CartDrawer: React.FC = () => {
                   />
                 </div>
 
+                {/* Customer Phone */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <Phone className="w-3.5 h-3.5 text-emerald-600" /> Teléfono / WhatsApp *
@@ -304,6 +320,7 @@ export const CartDrawer: React.FC = () => {
                   />
                 </div>
 
+                {/* City in Venezuela */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-orange-600" /> Ciudad / Estado en Venezuela *
@@ -318,6 +335,7 @@ export const CartDrawer: React.FC = () => {
                   />
                 </div>
 
+                {/* Delivery Address */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                     Dirección exacta de entrega (Opcional)
@@ -331,20 +349,44 @@ export const CartDrawer: React.FC = () => {
                   />
                 </div>
 
+                {/* Payment Method Selector for Venezuela */}
+                <div className="space-y-2 pt-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <CreditCard className="w-3.5 h-3.5 text-amber-500" /> Método de Pago Preferido:
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                    {PAYMENT_METHODS.map((pm) => (
+                      <button
+                        key={pm}
+                        type="button"
+                        onClick={() => setSelectedPaymentMethod(pm)}
+                        className={`p-2 rounded-xl border text-[11px] font-bold text-center transition-all ${
+                          selectedPaymentMethod === pm
+                            ? "bg-slate-900 text-white border-slate-900 dark:bg-blue-600 dark:border-blue-600 shadow-xs scale-[1.02]"
+                            : "bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-400"
+                        }`}
+                      >
+                        {pm}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Notes */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Método de pago / Notas
+                    Notas adicionales
                   </label>
                   <textarea
                     rows={2}
-                    placeholder="Ej: Pago por Pago Móvil, Zelle o Efectivo USD al recibir..."
+                    placeholder="Detalles de facturación, horario preferido de entrega..."
                     value={customerNotes}
                     onChange={(e) => setCustomerNotes(e.target.value)}
                     className="w-full p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
                   />
                 </div>
 
-                {/* Micro Guarantee */}
+                {/* Guarantee */}
                 <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 text-[11px] text-blue-700 dark:text-blue-300 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 flex-shrink-0" />
                   <span>Tu pedido será confirmado directamente por un asesor comercial en WhatsApp.</span>

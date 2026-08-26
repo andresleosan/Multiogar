@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
+import { BottomNavigation } from "@/components/common/BottomNavigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://multiogar.com"),
@@ -59,7 +60,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Schema.org LocalBusiness & Store JSON-LD
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HardwareStore",
@@ -79,13 +79,13 @@ export default function RootLayout({
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": 6.2442,
-      "longitude": -75.5812
+      "latitude": 10.4806,
+      "longitude": -66.9036
     },
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-      "opens": "07:30",
+      "opens": "08:00",
       "closes": "18:00"
     }
   };
@@ -98,12 +98,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
+      <body className="min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-16 md:pb-0">
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
         <CartDrawer />
         <LiveChatWidget />
+        <BottomNavigation />
       </body>
     </html>
   );

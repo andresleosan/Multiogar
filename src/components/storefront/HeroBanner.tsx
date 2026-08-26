@@ -11,132 +11,195 @@ import {
   Sparkles, 
   Wrench, 
   Zap, 
-  Layers 
+  Droplets,
+  CreditCard,
+  CheckCircle2,
+  ChevronRight,
+  Flame
 } from "lucide-react";
-import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED } from "@/lib/utils";
 
 export const HeroBanner: React.FC = () => {
   return (
-    <section className="relative overflow-hidden bg-slate-950 text-white pt-10 pb-16 lg:pt-16 lg:pb-24">
-      {/* Background Decorative Gradients and Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30 pointer-events-none" />
+    <section className="relative overflow-hidden bg-slate-950 text-white pt-6 pb-12 lg:pt-10 lg:pb-16 border-b border-slate-800">
       
-      <div className="absolute top-1/4 -left-48 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 right-0 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Gradients */}
+      <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 -right-24 w-96 h-96 bg-orange-600/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        {/* Bento Grid Container */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5">
           
-          {/* Left Content */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          {/* BENTO CARD 1: MAIN HERO BANNER (7 Columns) */}
+          <div className="lg:col-span-7 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-blue-950/40 p-6 sm:p-8 border border-slate-800 flex flex-col justify-between relative overflow-hidden shadow-2xl group">
             
-            {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 shadow-inner">
-              <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-ping" />
-              <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
-                Ferretería en Venezuela 🇻🇪
-              </span>
-              <span className="text-slate-600">•</span>
-              <span className="text-xs text-slate-300">Envíos Nacionales & Pago al Recibir</span>
+            {/* Ambient glow inside card */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
+            
+            <div className="space-y-4 relative z-10">
+              
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700/80 text-xs text-orange-400 font-bold tracking-wide">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Multiogar Ferretería Venezuela</span>
+                <span className="text-slate-500">•</span>
+                <span className="text-slate-300 font-medium">Precios en USD</span>
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight sm:leading-none text-white">
+                Herramientas, obra <br className="hidden sm:block" />
+                y materiales al <br />
+                <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-orange-400 bg-clip-text text-transparent">
+                  mejor precio de Venezuela
+                </span>
+              </h1>
+
+              {/* Subtext */}
+              <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+                Discos de corte abrasivos Fortek, herramientas eléctricas Total/Ingco, tuberías PVC Pavco, pinturas Montana y materiales de construcción con asesoría en vivo y envíos a todo el país.
+              </p>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black tracking-tight leading-tight sm:leading-none">
-              Todo para tu obra, <br className="hidden sm:block" />
-              taller y hogar en <br />
-              <span className="bg-gradient-to-r from-blue-400 via-blue-500 to-orange-400 bg-clip-text text-transparent">
-                Multiogar Ferretería
-              </span>
-            </h1>
+            {/* CTAs & Micro-trust */}
+            <div className="pt-6 relative z-10 space-y-4">
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <Link
+                  href="/catalogo"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02]"
+                >
+                  <span>Explorar Catálogo General</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Discos de corte abrasivos Fortek, herramientas eléctricas Total/Ingco, tuberías PVC Pavco, pinturas Montana y materiales de construcción con <strong>precios en Dólares (USD)</strong> y <strong>asesoría WhatsApp</strong>.
-            </p>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
-              <Link
-                href="/catalogo"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-[1.02] transition-all"
-              >
-                <span>Explorar Catálogo</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              <a
-                href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("¡Hola Multiogar! Quiero consultar la lista de precios y disponibilidad de materiales.")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:scale-[1.02] transition-all"
-              >
-                <MessageCircle className="w-5 h-5 fill-white/20" />
-                <span>Cotizar por WhatsApp</span>
-              </a>
-            </div>
-
-            {/* Micro Trust Stats */}
-            <div className="pt-4 grid grid-cols-3 gap-4 border-t border-slate-800/80 max-w-lg mx-auto lg:mx-0 text-left">
-              <div>
-                <span className="text-xl sm:text-2xl font-black text-white block">+2,000</span>
-                <span className="text-xs text-slate-400">Productos en stock</span>
+                <a
+                  href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("¡Hola Multiogar! Quiero solicitar una cotización y lista de precios.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-5 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02]"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Cotizar por WhatsApp</span>
+                </a>
               </div>
-              <div>
-                <span className="text-xl sm:text-2xl font-black text-orange-400 block">$1.00 USD</span>
-                <span className="text-xs text-slate-400">Discos de corte Fortek</span>
-              </div>
-              <div>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 block">Pago Móvil</span>
-                <span className="text-xs text-slate-400">Zelle & Efectivo</span>
+
+              {/* Bottom Quick Perks */}
+              <div className="grid grid-cols-3 gap-2 pt-4 border-t border-slate-800/80 text-[11px] text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                  <span className="truncate">Pago al Recibir</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                  <span className="truncate">Pago Móvil / Zelle</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
+                  <span className="truncate">Envíos Nacionales</span>
+                </div>
               </div>
             </div>
 
           </div>
 
-          {/* Right Visual Card */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none rounded-3xl p-2 bg-gradient-to-b from-blue-500/20 via-slate-800 to-slate-900 border border-slate-700/60 shadow-2xl overflow-hidden">
-              
-              <div className="relative aspect-[4/3] rounded-2xl bg-slate-900 overflow-hidden flex items-center justify-center p-6">
-                <Image
-                  src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1000&auto=format&fit=crop&q=80"
-                  alt="Herramientas y Ferretería Multiogar"
-                  fill
-                  priority
-                  className="object-cover opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-
-                {/* Floating Highlights Inside Card */}
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700 shadow-xl space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                      Oferta Estrella ⭐
-                    </span>
-                    <span className="text-xs bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-md">
-                      Envíos a toda Venezuela
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-bold text-white">
-                    Disco de corte extra fino Fortek 4-1/2&quot;
-                  </h4>
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-lg font-black text-white">$ 1.00 USD</span>
-                    <Link
-                      href="/producto/disco-de-corte-extra-fino-con-hundido-4-2-fortek-dsc02"
-                      className="px-4 py-1.5 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center gap-1 transition-all"
-                    >
-                      Ver producto &rarr;
-                    </Link>
-                  </div>
+          {/* RIGHT COLUMN (5 Columns - Stacked Bento Cards) */}
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-5">
+            
+            {/* BENTO CARD 2: FEATURED DEAL — DISCOS FORTEK $1.00 USD */}
+            <div className="rounded-3xl bg-gradient-to-r from-slate-900 to-slate-850 p-5 border border-slate-800 flex items-center justify-between gap-4 shadow-lg hover:border-orange-500/50 transition-all group">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-orange-600 text-white font-black text-[10px] uppercase">
+                    OFERTA ESTRELLA
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-semibold">Stock: +400 unds</span>
                 </div>
-
+                <h3 className="font-extrabold text-sm text-white group-hover:text-orange-400 transition-colors line-clamp-1">
+                  Discos de Corte Fortek 4-1/2&quot;
+                </h3>
+                <p className="text-[11px] text-slate-400 line-clamp-1">
+                  Centro hundido / plano para acero y metal
+                </p>
+                <div className="flex items-baseline gap-2 pt-1">
+                  <span className="text-xl font-black text-white">$ 1.00 USD</span>
+                  <span className="text-xs text-slate-500 line-through">$ 1.50</span>
+                </div>
               </div>
 
+              <Link
+                href="/producto/disco-de-corte-extra-fino-con-hundido-4-2-fortek-dsc02"
+                className="w-10 h-10 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform"
+                title="Ver producto"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Link>
             </div>
+
+            {/* BENTO CARD 3: POWER TOOLS & PROMOTIONS */}
+            <div className="rounded-3xl bg-gradient-to-r from-slate-900 to-slate-850 p-5 border border-slate-800 flex items-center justify-between gap-4 shadow-lg hover:border-blue-500/50 transition-all group">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-blue-600 text-white font-black text-[10px] uppercase">
+                    TOTAL & INGCO
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-semibold">Garantía 1 Año</span>
+                </div>
+                <h3 className="font-extrabold text-sm text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+                  Taladros 20V & Esmeriladoras
+                </h3>
+                <p className="text-[11px] text-slate-400 line-clamp-1">
+                  Kits completos con baterías de litio
+                </p>
+                <div className="flex items-baseline gap-2 pt-1">
+                  <span className="text-xl font-black text-white">Desde $ 32.00 USD</span>
+                </div>
+              </div>
+
+              <Link
+                href="/catalogo?categoria=herramientas-electricas"
+                className="w-10 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform"
+                title="Ver herramientas eléctricas"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            </div>
+
+            {/* BENTO CARD 4: PAVCO PIPES & MONTANA PAINTS */}
+            <div className="rounded-3xl bg-gradient-to-r from-slate-900 to-slate-850 p-5 border border-slate-800 flex items-center justify-between gap-4 shadow-lg hover:border-emerald-500/50 transition-all group">
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-600 text-white font-black text-[10px] uppercase">
+                    PLOMERÍA & PINTURAS
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-semibold">Pavco & Montana</span>
+                </div>
+                <h3 className="font-extrabold text-sm text-white group-hover:text-emerald-400 transition-colors line-clamp-1">
+                  Tubería PVC & Pinturas AV-2000
+                </h3>
+                <p className="text-[11px] text-slate-400 line-clamp-1">
+                  Despachos para obras residenciales y comerciales
+                </p>
+                <div className="flex items-baseline gap-2 pt-1">
+                  <span className="text-xl font-black text-white">Desde $ 3.50 USD</span>
+                </div>
+              </div>
+
+              <Link
+                href="/catalogo?categoria=plomeria-tuberias"
+                className="w-10 h-10 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform"
+                title="Ver plomería y pinturas"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            </div>
+
           </div>
 
         </div>
+
       </div>
     </section>
   );
