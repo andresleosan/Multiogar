@@ -25,7 +25,7 @@ import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { useCartStore } from "@/store/cart-store";
 import { DataService } from "@/lib/data-service";
 import { Product } from "@/types";
-import { formatCurrency, OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { formatCurrency, OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED } from "@/lib/utils";
 
 export const Navbar: React.FC = () => {
   const router = useRouter();
@@ -93,19 +93,19 @@ export const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex items-center gap-2">
             <span className="bg-gradient-to-r from-orange-500 to-amber-400 text-white px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase">
-              Ferretería Oficial
+              Venezuela 🇻🇪
             </span>
-            <span>🚚 Envíos a todo el país | ⚡ Asesoría técnica inmediata en línea</span>
+            <span>🚚 Envíos a todo el país | 💵 Precios en Dólares (USD) | 🟢 Pago al recibir</span>
           </div>
           <div className="flex items-center gap-4 text-slate-300">
             <a 
               href={`https://wa.me/${OFFICIAL_STORE_PHONE}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-orange-400 transition-colors"
+              className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors font-medium"
             >
               <Phone className="w-3 h-3 text-emerald-400" />
-              <span>WhatsApp: +57 312 345 6789</span>
+              <span>WhatsApp: {OFFICIAL_STORE_PHONE_FORMATTED}</span>
             </a>
             <span className="hidden md:inline text-slate-600">|</span>
             <Link href="/admin/login" className="hidden md:inline hover:text-white transition-colors">
@@ -130,7 +130,7 @@ export const Navbar: React.FC = () => {
               <div className="relative flex items-center">
                 <input
                   type="text"
-                  placeholder="¿Qué herramienta o material necesitas hoy? (Ej: Taladro, PVC, Koraza...)"
+                  placeholder="¿Qué producto buscas? (Ej: Disco Fortek $1, Taladro 20V, Cemento, Pintura...)"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
@@ -201,7 +201,7 @@ export const Navbar: React.FC = () => {
                             </span>
                             {product.stock > 0 ? (
                               <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                                <CheckCircle2 className="w-3 h-3" /> En stock
+                                <CheckCircle2 className="w-3 h-3" /> En stock ({product.stock})
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-rose-500">
@@ -269,7 +269,7 @@ export const Navbar: React.FC = () => {
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
-              placeholder="Buscar herramientas, marcas, SKU..."
+              placeholder="Buscar discos, taladros, tubería..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-10 pl-10 pr-20 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white"
@@ -297,6 +297,13 @@ export const Navbar: React.FC = () => {
                 <span>Catálogo Completo</span>
               </Link>
               <Link 
+                href="/catalogo?categoria=herramientas-manuales"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
+              >
+                <Wrench className="w-3.5 h-3.5 text-blue-500" />
+                <span>Discos y Manuales</span>
+              </Link>
+              <Link 
                 href="/catalogo?categoria=herramientas-electricas"
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
               >
@@ -304,18 +311,11 @@ export const Navbar: React.FC = () => {
                 <span>Eléctricas</span>
               </Link>
               <Link 
-                href="/catalogo?categoria=herramientas-manuales"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
-              >
-                <Wrench className="w-3.5 h-3.5 text-blue-500" />
-                <span>Manuales</span>
-              </Link>
-              <Link 
                 href="/catalogo?categoria=plomeria-tuberias"
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
               >
                 <Droplets className="w-3.5 h-3.5 text-cyan-500" />
-                <span>Plomería y PVC</span>
+                <span>Plomería y Riego</span>
               </Link>
               <Link 
                 href="/catalogo?categoria=pinturas-selladores"
@@ -338,7 +338,7 @@ export const Navbar: React.FC = () => {
                 Sobre Nosotros
               </Link>
               <Link href="/contacto" className="hover:text-blue-600 transition-colors">
-                Contacto & Horarios
+                Contacto & Redes
               </Link>
             </div>
           </div>
@@ -354,7 +354,14 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-3 py-2.5 rounded-xl font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/40"
             >
-              Catálogo General
+              Catálogo General (USD)
+            </Link>
+            <Link
+              href="/catalogo?categoria=herramientas-manuales"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              Discos de Corte y Manuales
             </Link>
             <Link
               href="/catalogo?categoria=herramientas-electricas"
@@ -364,18 +371,11 @@ export const Navbar: React.FC = () => {
               Herramientas Eléctricas
             </Link>
             <Link
-              href="/catalogo?categoria=herramientas-manuales"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Herramientas Manuales
-            </Link>
-            <Link
               href="/catalogo?categoria=plomeria-tuberias"
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
-              Plomería y Tuberías
+              Plomería y Riego por Goteo
             </Link>
             <Link
               href="/catalogo?categoria=pinturas-selladores"
@@ -406,7 +406,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(false)}
               className="block px-3 py-2 text-slate-600 dark:text-slate-400"
             >
-              Ubicación y Horarios
+              Ubicación, WhatsApp y Redes
             </Link>
             <Link
               href="/admin/login"

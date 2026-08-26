@@ -11,7 +11,8 @@ import {
   Headphones, 
   CreditCard 
 } from "lucide-react";
-import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/components/common/SocialIcons";
+import { OFFICIAL_STORE_PHONE, OFFICIAL_STORE_PHONE_FORMATTED, SOCIAL_LINKS } from "@/lib/utils";
 
 export const Footer: React.FC = () => {
   return (
@@ -25,8 +26,8 @@ export const Footer: React.FC = () => {
               <Truck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">Envíos a Todo el País</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Despachos rápidos y seguros.</p>
+              <h4 className="text-white font-bold text-sm">Envíos a Toda Venezuela</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Entregas rápidas y seguras.</p>
             </div>
           </div>
 
@@ -35,8 +36,8 @@ export const Footer: React.FC = () => {
               <Headphones className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">Asesoría Técnica Experta</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Te ayudamos a elegir lo indicado.</p>
+              <h4 className="text-white font-bold text-sm">Asesoría Técnica en Vivo</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Te ayudamos por WhatsApp.</p>
             </div>
           </div>
 
@@ -45,8 +46,8 @@ export const Footer: React.FC = () => {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">Garantía Directa</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Marcas originales 100% legales.</p>
+              <h4 className="text-white font-bold text-sm">Pago al Recibir / Zelle</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Pago Móvil, Efectivo USD, Cashea.</p>
             </div>
           </div>
 
@@ -55,8 +56,8 @@ export const Footer: React.FC = () => {
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-white font-bold text-sm">Compra por WhatsApp</h4>
-              <p className="text-xs text-slate-400 mt-0.5">Trato directo, sin comisiones.</p>
+              <h4 className="text-white font-bold text-sm">Precios en Dólares (USD)</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Ahorra con los mejores precios.</p>
             </div>
           </div>
         </div>
@@ -64,41 +65,76 @@ export const Footer: React.FC = () => {
         {/* Main Footer Links */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10 py-12">
           
-          {/* Brand Info */}
+          {/* Brand Info & Socials */}
           <div className="md:col-span-2 space-y-4">
             <BrandLogo size="lg" />
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-              Tu ferretería de confianza. Proveemos soluciones integrales en herramientas eléctricas y manuales, plomería, pinturas, cerrajería y materiales de construcción para profesionales, contratistas y el hogar.
+              Tu ferretería de confianza en Venezuela. Proveemos soluciones en herramientas, discos de corte, plomería, pinturas, cerrajería y materiales de construcción para profesionales, contratistas y el hogar.
             </p>
-            <div className="pt-2">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-semibold text-orange-400">
-                ⭐ Más de 10 años equipando tus obras y proyectos
-              </span>
+            
+            {/* Social Media Links */}
+            <div className="pt-2 flex items-center gap-3">
+              <a
+                href={SOCIAL_LINKS.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-pink-400 hover:text-white hover:bg-pink-600 hover:border-pink-600 flex items-center justify-center transition-all"
+                title="Instagram @multiogar"
+              >
+                <InstagramIcon className="w-5 h-5" />
+              </a>
+              <a
+                href={SOCIAL_LINKS.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 hover:text-white hover:bg-slate-800 flex items-center justify-center transition-all"
+                title="TikTok @multiogar"
+              >
+                <TikTokIcon className="w-5 h-5" />
+              </a>
+              <a
+                href={SOCIAL_LINKS.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-blue-400 hover:text-white hover:bg-blue-600 hover:border-blue-600 flex items-center justify-center transition-all"
+                title="Facebook Multiogar"
+              >
+                <FacebookIcon className="w-5 h-5" />
+              </a>
+              <a
+                href={SOCIAL_LINKS.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 hover:text-white hover:bg-emerald-600 hover:border-emerald-600 flex items-center justify-center transition-all"
+                title="WhatsApp Multiogar"
+              >
+                <WhatsAppIcon className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
           {/* Categories */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold text-sm tracking-wider uppercase text-xs">Categorías</h4>
+            <h4 className="text-white font-semibold text-xs tracking-wider uppercase">Categorías</h4>
             <ul className="space-y-2 text-sm text-slate-400">
+              <li>
+                <Link href="/catalogo?categoria=herramientas-manuales" className="hover:text-white transition-colors">
+                  Discos de Corte y Manuales
+                </Link>
+              </li>
               <li>
                 <Link href="/catalogo?categoria=herramientas-electricas" className="hover:text-white transition-colors">
                   Herramientas Eléctricas
                 </Link>
               </li>
               <li>
-                <Link href="/catalogo?categoria=herramientas-manuales" className="hover:text-white transition-colors">
-                  Herramientas Manuales
-                </Link>
-              </li>
-              <li>
                 <Link href="/catalogo?categoria=plomeria-tuberias" className="hover:text-white transition-colors">
-                  Plomería y Tuberías PVC
+                  Plomería y Riego
                 </Link>
               </li>
               <li>
                 <Link href="/catalogo?categoria=pinturas-selladores" className="hover:text-white transition-colors">
-                  Pinturas y Selladores
+                  Pinturas Montana y Selladores
                 </Link>
               </li>
               <li>
@@ -111,11 +147,11 @@ export const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold text-sm tracking-wider uppercase text-xs">Navegación</h4>
+            <h4 className="text-white font-semibold text-xs tracking-wider uppercase">Navegación</h4>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <Link href="/catalogo" className="hover:text-white transition-colors">
-                  Catálogo General
+                  Catálogo General (USD)
                 </Link>
               </li>
               <li>
@@ -125,7 +161,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <Link href="/contacto" className="hover:text-white transition-colors">
-                  Ubicación y Contacto
+                  Ubicación & WhatsApp
                 </Link>
               </li>
               <li>
@@ -138,16 +174,16 @@ export const Footer: React.FC = () => {
 
           {/* Contact Details */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold text-sm tracking-wider uppercase text-xs">Atención al Cliente</h4>
+            <h4 className="text-white font-semibold text-xs tracking-wider uppercase">Contacto Oficial</h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                <span>Medellín, Antioquia — Colombia</span>
+                <span>Venezuela 🇻🇪 (Envíos a nivel nacional)</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                <a href={`https://wa.me/${OFFICIAL_STORE_PHONE}`} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400">
-                  +57 312 345 6789
+                <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 font-bold">
+                  {OFFICIAL_STORE_PHONE_FORMATTED}
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
@@ -156,21 +192,21 @@ export const Footer: React.FC = () => {
               </li>
               <li className="flex items-start gap-2.5">
                 <Clock className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                <span>Lunes a Sábado: 7:30 AM - 6:00 PM</span>
+                <span>Lunes a Sábado: 8:00 AM - 6:00 PM</span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Payment Methods & Copyright */}
         <div className="pt-8 border-t border-slate-800 text-xs text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p>© {new Date().getFullYear()} Multiogar Ferretería. Todos los derechos reservados.</p>
-          <div className="flex items-center gap-4">
-            <span>Diseñado para alto rendimiento y conversión rápida</span>
-            <span className="text-slate-700">•</span>
-            <Link href="/admin/login" className="hover:text-slate-400 transition-colors">
-              Panel CMS
-            </Link>
+          <p>© {new Date().getFullYear()} Multiogar Ferretería Venezuela. Todos los derechos reservados.</p>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-slate-400 font-medium">Métodos de Pago:</span>
+            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-emerald-400 font-bold text-[10px]">Pago Móvil</span>
+            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-blue-400 font-bold text-[10px]">Zelle</span>
+            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-amber-400 font-bold text-[10px]">Efectivo USD</span>
+            <span className="px-2 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-orange-400 font-bold text-[10px]">Pago al Recibir</span>
           </div>
         </div>
 

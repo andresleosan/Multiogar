@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -195,17 +195,21 @@ export default function AdminChatsPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              {activeSession.customerPhone && (
-                <a
-                  href={`https://wa.me/57${activeSession.customerPhone}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-500/20 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>Pasar a WhatsApp</span>
-                </a>
-              )}
+              {activeSession.customerPhone && (() => {
+                const clean = activeSession.customerPhone.replace(/\D/g, "");
+                const wa = clean.startsWith("58") ? clean : clean.startsWith("0") ? "58" + clean.slice(1) : "58" + clean;
+                return (
+                  <a
+                    href={`https://wa.me/${wa}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-500/20 transition-colors"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Pasar a WhatsApp</span>
+                  </a>
+                );
+              })()}
             </div>
           </div>
 

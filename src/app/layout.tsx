@@ -7,27 +7,27 @@ import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://multiogar.com"),
-  title: "Multiogar Ferretería | Herramientas, Construcción, Plomería y Hogar",
+  title: "Multiogar Ferretería | Herramientas, Discos de Corte, Construcción y Plomería en Venezuela",
   description:
-    "Catálogo oficial de Multiogar Ferretería en Medellín y Colombia. Herramientas eléctricas, manuales, tuberías PVC, pinturas Koraza y materiales de construcción con asesoría en vivo y pedidos por WhatsApp.",
+    "Catálogo oficial de Multiogar Ferretería en Venezuela. Discos de corte Fortek, herramientas Total e Ingco, tuberías Pavco, cerraduras Cisa y materiales con precios en Dólares (USD) y pedidos directos por WhatsApp.",
   keywords: [
-    "ferretería Medellín",
-    "herramientas eléctricas",
-    "DeWalt",
-    "Makita",
-    "Pavco",
-    "Pintuco",
-    "tubería PVC",
-    "materiales construcción",
-    "Multiogar",
-    "ferretería a domicilio",
+    "ferretería Venezuela",
+    "discos de corte Fortek",
+    "herramientas Total Tools",
+    "Ingco Venezuela",
+    "DeWalt Venezuela",
+    "tubería PVC Pavco",
+    "pinturas Montana",
+    "cerraduras Cisa",
+    "cemento Vencemos",
+    "Multiogar Ferretería",
   ],
   authors: [{ name: "Multiogar Ferretería" }],
   creator: "Multiogar Ferretería",
   openGraph: {
-    title: "Multiogar Ferretería | Todo para tu obra, taller y hogar",
+    title: "Multiogar Ferretería | Todo para tu obra, taller y hogar en Venezuela",
     description:
-      "Herramientas profesionales, plomería, pinturas y materiales de construcción con pedidos directos por WhatsApp y asesoría técnica.",
+      "Herramientas profesionales, discos de corte, plomería, pinturas y materiales de construcción con pedidos directos por WhatsApp y precios en Dólares (USD).",
     url: "https://multiogar.com",
     siteName: "Multiogar Ferretería",
     images: [
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         alt: "Multiogar Ferretería Catálogo Oficial",
       },
     ],
-    locale: "es_CO",
+    locale: "es_VE",
     type: "website",
   },
   twitter: {
@@ -68,15 +68,14 @@ export default function RootLayout({
     "logo": "https://multiogar.com/LogoMultiogar.png",
     "@id": "https://multiogar.com",
     "url": "https://multiogar.com",
-    "telephone": "+573123456789",
-    "priceRange": "$$",
+    "telephone": "+584242811289",
+    "priceRange": "$",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Zona Industrial y Comercial",
-      "addressLocality": "Medellín",
-      "addressRegion": "Antioquia",
-      "postalCode": "050001",
-      "addressCountry": "CO"
+      "streetAddress": "Zona Comercial Multiogar",
+      "addressLocality": "Caracas",
+      "addressRegion": "Distrito Capital",
+      "addressCountry": "VE"
     },
     "geo": {
       "@type": "GeoCoordinates",

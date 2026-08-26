@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -279,15 +279,25 @@ export default function AdminOrdersPage() {
 
             {/* Actions */}
             <div className="pt-2 flex gap-2">
-              <a
-                href={`https://wa.me/57${selectedOrder.customer.phone}?text=${encodeURIComponent(`Hola ${selectedOrder.customer.name}, te confirmamos la recepción de tu pedido ${selectedOrder.orderNumber} en Multiogar Ferretería.`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>Contactar por WhatsApp</span>
-              </a>
+              {(() => {
+                const cleanPhone = selectedOrder.customer.phone.replace(/\D/g, "");
+                const waPhone = cleanPhone.startsWith("58")
+                  ? cleanPhone
+                  : cleanPhone.startsWith("0")
+                  ? "58" + cleanPhone.slice(1)
+                  : "58" + cleanPhone;
+                return (
+                  <a
+                    href={`https://wa.me/${waPhone}?text=${encodeURIComponent(`Hola ${selectedOrder.customer.name}, te confirmamos la recepción de tu pedido ${selectedOrder.orderNumber} en Multiogar Ferretería Venezuela.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Contactar por WhatsApp</span>
+                  </a>
+                );
+              })()}
               <button
                 onClick={() => setSelectedOrder(null)}
                 className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs"

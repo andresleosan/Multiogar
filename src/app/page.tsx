@@ -28,21 +28,24 @@ export default function HomePage() {
       {/* 1. Hero Banner */}
       <HeroBanner />
 
-      {/* 2. Brand Partners Strip */}
+      {/* 2. Brand Partners Strip (Top Venezuelan & Global Brands) */}
       <section className="bg-slate-900 border-b border-slate-800 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
               Marcas Líderes Distribuidas:
             </span>
-            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-slate-400 font-bold text-sm sm:text-base">
-              <span className="hover:text-amber-400 transition-colors">DeWALT</span>
-              <span className="hover:text-cyan-400 transition-colors">Makita</span>
-              <span className="hover:text-yellow-400 transition-colors">STANLEY</span>
-              <span className="hover:text-blue-400 transition-colors">PAVCO Wavin</span>
-              <span className="hover:text-pink-400 transition-colors">Pintuco</span>
-              <span className="hover:text-orange-400 transition-colors">Yale</span>
-              <span className="hover:text-emerald-400 transition-colors">ARGOS</span>
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-slate-400 font-black text-sm sm:text-base">
+              <span className="hover:text-white transition-colors">FORTEK</span>
+              <span className="hover:text-emerald-400 transition-colors">ATOUAN</span>
+              <span className="hover:text-cyan-400 transition-colors">POWERFIK</span>
+              <span className="hover:text-blue-400 transition-colors">TOTAL Tools</span>
+              <span className="hover:text-amber-400 transition-colors">INGCO</span>
+              <span className="hover:text-yellow-400 transition-colors">DeWALT</span>
+              <span className="hover:text-rose-400 transition-colors">CISA</span>
+              <span className="hover:text-blue-500 transition-colors">PAVCO</span>
+              <span className="hover:text-pink-400 transition-colors">MONTANA</span>
+              <span className="hover:text-emerald-500 transition-colors">VENCEMOS</span>
             </div>
           </div>
         </div>
@@ -66,7 +69,7 @@ export default function HomePage() {
               ¿Cómo comprar en Multiogar Ferretería?
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Combinamos la velocidad del catálogo digital con el trato directo y personalizado de tu ferretero amigo.
+              Catálogo digital con precios en Dólares (USD), asesoría en vivo y pagos en Venezuela (Pago Móvil, Zelle, Efectivo USD o Pago al Recibir).
             </p>
           </div>
 
@@ -78,10 +81,10 @@ export default function HomePage() {
                 1
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Explora y Selecciona
+                Selecciona tus Materiales
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Navega nuestro catálogo, elige las medidas, calibres o voltajes requeridos y agrega tus productos al carrito.
+                Navega discos de corte, herramientas, plomería o pinturas y agrégalos a tu carrito.
               </p>
             </div>
 
@@ -91,10 +94,10 @@ export default function HomePage() {
                 2
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Envía a WhatsApp con 1 Clic
+                Envía tu Pedido a WhatsApp
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Completa tus datos de entrega y presiona &quot;Finalizar Pedido&quot;. El sistema estructurará tu pedido automáticamente.
+                Ingresa tus datos de entrega y el sistema generará tu orden formateada al instante.
               </p>
             </div>
 
@@ -104,10 +107,10 @@ export default function HomePage() {
                 3
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                Confirmación y Despacho
+                Despacho & Pago Seguro
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Un asesor en vivo verifica tu pedido, coordina el método de pago preferido y despacha tus materiales a la obra o casa.
+                Coordinamos tu entrega y pagas con el método de tu preferencia (Pago Móvil, Zelle, Efectivo o Pago al recibir).
               </p>
             </div>
 
@@ -118,7 +121,7 @@ export default function HomePage() {
               href="/catalogo"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20 transition-all hover:scale-105"
             >
-              <span>Comenzar a Comprar Ahora</span>
+              <span>Ver Catálogo Completo (USD)</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

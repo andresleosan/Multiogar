@@ -14,8 +14,6 @@ import {
   Sparkles, 
   ArrowUpDown, 
   CheckCircle2, 
-  Grid, 
-  List, 
   RotateCcw 
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
@@ -35,7 +33,7 @@ function CatalogContent() {
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [onlyInStock, setOnlyInStock] = useState<boolean>(false);
   const [onlyOffers, setOnlyOffers] = useState<boolean>(offerParam);
-  const [maxPrice, setMaxPrice] = useState<number>(1000000);
+  const [maxPrice, setMaxPrice] = useState<number>(150);
   const [sortBy, setSortBy] = useState<"relevant" | "price-asc" | "price-desc" | "name">("relevant");
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
 
@@ -107,7 +105,7 @@ function CatalogContent() {
     setSelectedBrand("");
     setOnlyInStock(false);
     setOnlyOffers(false);
-    setMaxPrice(1000000);
+    setMaxPrice(150);
     setSortBy("relevant");
   };
 
@@ -117,7 +115,7 @@ function CatalogContent() {
     onlyInStock,
     onlyOffers,
     Boolean(searchQuery),
-    maxPrice < 1000000,
+    maxPrice < 150,
   ].filter(Boolean).length;
 
   return (
@@ -145,10 +143,10 @@ function CatalogContent() {
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 {selectedCategory
                   ? categories.find((c) => c.slug === selectedCategory)?.name || "Catálogo de Productos"
-                  : "Catálogo Completo de Ferretería"}
+                  : "Catálogo Completo de Ferretería (USD)"}
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-                Mostrando <strong>{filteredProducts.length}</strong> de {products.length} productos disponibles con entrega inmediata.
+                Mostrando <strong>{filteredProducts.length}</strong> de {products.length} productos disponibles en Venezuela.
               </p>
             </div>
 
@@ -192,7 +190,7 @@ function CatalogContent() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Palabra, marca o SKU..."
+                  placeholder="Disco Fortek, taladro, SKU..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-9 pl-9 pr-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -211,7 +209,7 @@ function CatalogContent() {
                   onClick={() => setSelectedCategory("")}
                   className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
                     selectedCategory === ""
-                      ? "bg-blue-600 text-white font-bold"
+                      ? "bg-slate-900 text-white font-bold"
                       : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
@@ -226,7 +224,7 @@ function CatalogContent() {
                       onClick={() => setSelectedCategory(cat.slug)}
                       className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
                         selectedCategory === cat.slug
-                          ? "bg-blue-600 text-white font-bold"
+                          ? "bg-slate-900 text-white font-bold"
                           : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                       }`}
                     >
@@ -249,7 +247,7 @@ function CatalogContent() {
                   onChange={(e) => setSelectedBrand(e.target.value)}
                   className="w-full h-9 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
-                  <option value="">Todas las marcas</option>
+                  <option value="">Todas las marcas ({allBrands.length})</option>
                   {allBrands.map((b) => (
                     <option key={b} value={b}>
                       {b}
@@ -259,20 +257,20 @@ function CatalogContent() {
               </div>
             )}
 
-            {/* Price Max Slider */}
+            {/* Price Max Slider (USD) */}
             <div className="space-y-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
-                <span>Precio Máximo:</span>
-                <span className="text-blue-600 dark:text-blue-400">{formatCurrency(maxPrice)}</span>
+                <span>Precio Máx:</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{formatCurrency(maxPrice)}</span>
               </div>
               <input
                 type="range"
-                min={30000}
-                max={1000000}
-                step={20000}
+                min={1}
+                max={150}
+                step={2}
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-slate-900 dark:accent-blue-500"
               />
             </div>
 
@@ -283,7 +281,7 @@ function CatalogContent() {
                   type="checkbox"
                   checked={onlyInStock}
                   onChange={(e) => setOnlyInStock(e.target.checked)}
-                  className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4"
+                  className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4"
                 />
                 <span>Solo productos en stock</span>
               </label>
@@ -295,7 +293,7 @@ function CatalogContent() {
                   onChange={(e) => setOnlyOffers(e.target.checked)}
                   className="rounded text-orange-600 focus:ring-orange-500 w-4 h-4"
                 />
-                <span>Solo ofertas y descuentos</span>
+                <span>Solo ofertas especiales</span>
               </label>
             </div>
 
@@ -307,14 +305,14 @@ function CatalogContent() {
             {/* Top Toolbar (Sort + Active Tags) */}
             <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                <span className="text-xs text-slate-500">Ordenar por:</span>
+                <span className="text-xs text-slate-500 font-medium">Ordenar por:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
                   className="h-8 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
-                  <option value="relevant">Más Populares / Relevantes</option>
-                  <option value="price-asc">Precio: Menor a Mayor</option>
+                  <option value="relevant">Más Populares</option>
+                  <option value="price-asc">Precio: Menor a Mayor ($1 → $...)</option>
                   <option value="price-desc">Precio: Mayor a Menor</option>
                   <option value="name">Nombre (A - Z)</option>
                 </select>
@@ -324,7 +322,7 @@ function CatalogContent() {
               {activeFiltersCount > 0 && (
                 <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-start sm:justify-end">
                   {selectedCategory && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-[11px] font-bold text-blue-700 dark:text-blue-300">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-800 dark:text-slate-200">
                       {categories.find((c) => c.slug === selectedCategory)?.name || selectedCategory}
                       <button onClick={() => setSelectedCategory("")}><X className="w-3 h-3" /></button>
                     </span>
@@ -347,7 +345,7 @@ function CatalogContent() {
 
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -362,14 +360,14 @@ function CatalogContent() {
                     No se encontraron productos con estos filtros
                   </h3>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                    Intenta ampliar el rango de precios, eliminar la marca seleccionada o buscar con otros términos.
+                    Intenta ampliar el rango de precios o buscar con otras palabras clave.
                   </p>
                 </div>
                 <button
                   onClick={handleResetFilters}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-sm"
+                  className="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-sm"
                 >
-                  Restablecer todos los filtros
+                  Restablecer filtros
                 </button>
               </div>
             )}
@@ -423,16 +421,16 @@ function CatalogContent() {
                 </select>
               </div>
 
-              {/* Price */}
+              {/* Price (USD) */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
                   Precio Máximo: {formatCurrency(maxPrice)}
                 </label>
                 <input
                   type="range"
-                  min={30000}
-                  max={1000000}
-                  step={20000}
+                  min={1}
+                  max={150}
+                  step={2}
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(Number(e.target.value))}
                   className="w-full"
@@ -442,7 +440,7 @@ function CatalogContent() {
               <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs"
+                  className="w-full py-3 rounded-full bg-slate-900 text-white font-bold text-xs"
                 >
                   Ver {filteredProducts.length} Resultados
                 </button>
@@ -458,7 +456,7 @@ function CatalogContent() {
 
 export default function CatalogPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-slate-500">Cargando catálogo...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-slate-500">Cargando catálogo en Dólares...</div>}>
       <CatalogContent />
     </Suspense>
   );

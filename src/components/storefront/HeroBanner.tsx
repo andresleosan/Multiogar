@@ -31,13 +31,13 @@ export const HeroBanner: React.FC = () => {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
             {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 shadow-inner">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 shadow-inner">
               <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-ping" />
-              <span className="text-xs font-semibold text-orange-400 uppercase tracking-wider">
-                Catálogo Digital & Venta Asistida
+              <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">
+                Ferretería en Venezuela 🇻🇪
               </span>
               <span className="text-slate-600">•</span>
-              <span className="text-xs text-slate-300">Medellín & Envíos Nacionales</span>
+              <span className="text-xs text-slate-300">Envíos Nacionales & Pago al Recibir</span>
             </div>
 
             {/* Main Headline */}
@@ -51,14 +51,14 @@ export const HeroBanner: React.FC = () => {
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Herramientas de potencia, manuales, fontanería PVC, pinturas de alta resistencia y materiales de construcción con <strong>asesoría técnica personalizada</strong> y <strong>despacho directo a tu puerta</strong>.
+              Discos de corte abrasivos Fortek, herramientas eléctricas Total/Ingco, tuberías PVC Pavco, pinturas Montana y materiales de construcción con <strong>precios en Dólares (USD)</strong> y <strong>asesoría WhatsApp</strong>.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
               <Link
                 href="/catalogo"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-[1.02] transition-all"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-[1.02] transition-all"
               >
                 <span>Explorar Catálogo</span>
                 <ArrowRight className="w-4 h-4" />
@@ -68,7 +68,7 @@ export const HeroBanner: React.FC = () => {
                 href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("¡Hola Multiogar! Quiero consultar la lista de precios y disponibilidad de materiales.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:scale-[1.02] transition-all"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:scale-[1.02] transition-all"
               >
                 <MessageCircle className="w-5 h-5 fill-white/20" />
                 <span>Cotizar por WhatsApp</span>
@@ -78,16 +78,16 @@ export const HeroBanner: React.FC = () => {
             {/* Micro Trust Stats */}
             <div className="pt-4 grid grid-cols-3 gap-4 border-t border-slate-800/80 max-w-lg mx-auto lg:mx-0 text-left">
               <div>
-                <span className="text-xl sm:text-2xl font-black text-white block">+2,500</span>
-                <span className="text-xs text-slate-400">Referencias activas</span>
+                <span className="text-xl sm:text-2xl font-black text-white block">+2,000</span>
+                <span className="text-xs text-slate-400">Productos en stock</span>
               </div>
               <div>
-                <span className="text-xl sm:text-2xl font-black text-orange-400 block">100%</span>
-                <span className="text-xs text-slate-400">Marcas originales</span>
+                <span className="text-xl sm:text-2xl font-black text-orange-400 block">$1.00 USD</span>
+                <span className="text-xs text-slate-400">Discos de corte Fortek</span>
               </div>
               <div>
-                <span className="text-xl sm:text-2xl font-black text-amber-400 block">24-48h</span>
-                <span className="text-xs text-slate-400">Entregas ágiles</span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-400 block">Pago Móvil</span>
+                <span className="text-xs text-slate-400">Zelle & Efectivo</span>
               </div>
             </div>
 
@@ -97,7 +97,6 @@ export const HeroBanner: React.FC = () => {
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none rounded-3xl p-2 bg-gradient-to-b from-blue-500/20 via-slate-800 to-slate-900 border border-slate-700/60 shadow-2xl overflow-hidden">
               
-              {/* Product Showcase Visual with Logo / Hero Combo */}
               <div className="relative aspect-[4/3] rounded-2xl bg-slate-900 overflow-hidden flex items-center justify-center p-6">
                 <Image
                   src="https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1000&auto=format&fit=crop&q=80"
@@ -109,25 +108,25 @@ export const HeroBanner: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
 
                 {/* Floating Highlights Inside Card */}
-                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700 shadow-xl space-y-2">
+                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-slate-900/95 backdrop-blur-md border border-slate-700 shadow-xl space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                      Combo Ferretero Pro
+                      Oferta Estrella ⭐
                     </span>
-                    <span className="text-xs bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded-md">
-                      Oferta Limitada
+                    <span className="text-xs bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-md">
+                      Envíos a toda Venezuela
                     </span>
                   </div>
                   <h4 className="text-sm font-bold text-white">
-                    Taladro Percutor Inalámbrico 20V + Set de Brocas
+                    Disco de corte extra fino Fortek 4-1/2&quot;
                   </h4>
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-lg font-extrabold text-white">$ 589.000 COP</span>
+                    <span className="text-lg font-black text-white">$ 1.00 USD</span>
                     <Link
-                      href="/producto/taladro-percutor-inalambrico-20v-dewalt-brushless"
-                      className="px-3 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center gap-1 transition-all"
+                      href="/producto/disco-de-corte-extra-fino-con-hundido-4-2-fortek-dsc02"
+                      className="px-4 py-1.5 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center gap-1 transition-all"
                     >
-                      Ver detalle &rarr;
+                      Ver producto &rarr;
                     </Link>
                   </div>
                 </div>
