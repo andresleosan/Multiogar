@@ -39,7 +39,7 @@
 - [x] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo. Estado: validado en producción; creación `200`, mensaje `201`, lectura `200`, y registro QA eliminado.
 - [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso. Estado: texto implementado; adjuntos siguen fuera de alcance y falta validación integral desplegada.
 
-Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 21/21, `pnpm test:rules` 4/4 con Firestore Emulator Suite, `pnpm lint` limpio, `tsc --noEmit` limpio y `pnpm build` limpio con 31 páginas y 2 Route Handlers. QA de navegador limpio en escritorio y móvil para `/`, `/login`, redirección de `/admin`, apertura del chat y respuesta segura `503` sin credenciales de servidor.
+Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 23/23, `pnpm test:rules` 4/4 con Firestore Emulator Suite, `pnpm lint` limpio, `tsc --noEmit` limpio y `pnpm build` limpio con 33 páginas y 3 Route Handlers. Smoke de producción: `/admin/usuarios` `200` y `/api/admin/users` `401` sin token. QA de navegador previo limpio en escritorio y móvil para `/`, `/login`, redirección de `/admin`, apertura del chat y respuesta segura `503` sin credenciales de servidor.
 
 ## Fase 5: Panel Administrativo y CMS (Vendedor & SuperAdmin)
 - [x] **T5.1**: Implementar acceso general (`/login`) con Google y correo/contraseña; `/admin/login` conserva una redirección compatible y el RBAC decide el destino.
