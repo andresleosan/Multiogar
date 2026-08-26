@@ -1,14 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  CircleDollarSign,
   ExternalLink,
-  MessageCircle,
-  PackageCheck,
-  Search,
-  ShoppingCart,
-  Truck,
-  WalletCards,
 } from "lucide-react";
 import { HeroBanner } from "@/components/storefront/HeroBanner";
 import { HomeCatalogSections } from "@/components/storefront/HomeCatalogSections";
@@ -17,17 +10,14 @@ const serviceFacts = [
   {
     title: "Consulta existencias",
     description: "Revisa las unidades disponibles antes de agregar.",
-    icon: PackageCheck,
   },
   {
     title: "Referencia en USD",
     description: "Precios claros según la presentación del producto.",
-    icon: CircleDollarSign,
   },
   {
     title: "Entrega coordinada",
     description: "Confirma destino, transporte y despacho con ventas.",
-    icon: Truck,
   },
 ];
 
@@ -35,17 +25,14 @@ const buyingSteps = [
   {
     title: "Busca lo que necesitas",
     description: "Usa el buscador, una categoría o el SKU.",
-    icon: Search,
   },
   {
     title: "Arma tu pedido",
     description: "Elige presentación y cantidad en el carrito.",
-    icon: ShoppingCart,
   },
   {
     title: "Confirma con ventas",
     description: "Envía la orden por WhatsApp para validar disponibilidad y entrega.",
-    icon: MessageCircle,
   },
 ];
 
@@ -68,17 +55,15 @@ export default function HomePage() {
 
       <section className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
         <div className="mx-auto grid max-w-7xl divide-y divide-slate-200 px-4 dark:divide-slate-800 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
-          {serviceFacts.map(({ title, description, icon: Icon }, index) => (
+          {serviceFacts.map(({ title, description }, index) => (
             <div key={title} className="flex min-h-28 items-center gap-4 py-6 sm:px-6 sm:first:pl-0">
               <span
-                className={`flex h-11 w-11 shrink-0 items-center justify-center ${
+                className={`h-1 w-10 shrink-0 ${
                   index === 1
-                    ? "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300"
-                    : "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                    ? "bg-orange-600"
+                    : "bg-blue-600"
                 }`}
-              >
-                <Icon className="h-5 w-5" />
-              </span>
+              />
               <div>
                 <h2 className="text-sm font-extrabold text-slate-950 dark:text-white">{title}</h2>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{description}</p>
@@ -104,9 +89,7 @@ export default function HomePage() {
       <section className="border-b border-orange-200 bg-orange-50 dark:border-orange-950 dark:bg-slate-900">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-9 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex max-w-3xl items-start gap-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-orange-600 text-white">
-              <WalletCards className="h-5 w-5" />
-            </span>
+            <span className="mt-2 h-1 w-10 shrink-0 bg-orange-600" />
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-orange-700 dark:text-orange-400">Forma de pago disponible</p>
               <h2 className="mt-1 text-xl font-black text-slate-950 dark:text-white">Compra con Cashea en Multiogar</h2>
@@ -142,7 +125,7 @@ export default function HomePage() {
           </div>
 
           <ol className="mt-9 grid border-y border-slate-300 dark:border-slate-700 md:grid-cols-3 md:divide-x md:divide-slate-300 md:dark:divide-slate-700">
-            {buyingSteps.map(({ title, description, icon: Icon }, index) => (
+            {buyingSteps.map(({ title, description }, index) => (
               <li
                 key={title}
                 className="flex gap-4 border-b border-slate-300 py-6 last:border-b-0 dark:border-slate-700 md:border-b-0 md:px-6 md:first:pl-0"
@@ -151,7 +134,7 @@ export default function HomePage() {
                   {index + 1}
                 </span>
                 <div>
-                  <Icon className="mb-3 h-5 w-5 text-orange-600" />
+                  <span className="mb-3 block h-1 w-8 bg-orange-600" />
                   <h3 className="text-base font-extrabold text-slate-950 dark:text-white">{title}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
                 </div>

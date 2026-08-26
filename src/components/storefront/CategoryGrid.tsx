@@ -1,33 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Cpu,
-  Droplets,
-  HardHat,
-  Lightbulb,
-  Lock,
-  Paintbrush,
-  Wrench,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
 import type { Category } from "@/types";
 
 interface CategoryGridProps {
   categories: Category[];
 }
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  Zap,
-  Wrench,
-  Droplets,
-  Paintbrush,
-  Lightbulb,
-  Lock,
-  HardHat,
-  Cpu,
-};
 
 export function CategoryGrid({ categories }: CategoryGridProps) {
   return (
@@ -47,16 +24,14 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
           </div>
           <Link
             href="/catalogo"
-            className="inline-flex items-center gap-2 text-sm font-extrabold text-blue-700 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:text-blue-400"
+            className="inline-flex items-center gap-2 border-b border-blue-700 pb-1 text-sm font-extrabold text-blue-700 transition-colors hover:border-orange-500 hover:text-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:text-blue-400"
           >
             Ver todo el catálogo
-            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map((category) => {
-            const Icon = ICON_MAP[category.icon] ?? Wrench;
             return (
               <Link
                 key={category.id}
@@ -73,16 +48,16 @@ export function CategoryGrid({ categories }: CategoryGridProps) {
                   />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/65 to-slate-950/10" />
-                <span className="relative mb-auto flex h-9 w-9 items-center justify-center border border-white/30 bg-blue-600 text-white">
-                  <Icon className="h-4 w-4" />
-                </span>
+                <span className="relative mb-auto h-1 w-12 bg-orange-500 transition-all group-hover:w-20" />
                 <span className="relative min-w-0 pr-7">
                   <span className="block text-sm font-extrabold leading-5 text-white">{category.name}</span>
                   <span className="mt-2 block text-xs text-slate-300">
                     {category.productCount ?? 0} {category.productCount === 1 ? "producto" : "productos"} en catálogo
                   </span>
                 </span>
-                <ArrowRight className="absolute bottom-5 right-5 h-4 w-4 text-orange-400 transition-transform group-hover:translate-x-1" />
+                <span className="absolute bottom-5 right-5 text-[10px] font-black uppercase tracking-[0.12em] text-orange-400 transition-colors group-hover:text-white">
+                  Explorar
+                </span>
               </Link>
             );
           })}

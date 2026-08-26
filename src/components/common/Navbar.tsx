@@ -7,19 +7,14 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   AlertCircle,
   CheckCircle2,
-  Droplets,
-  HardHat,
   Menu,
-  Paintbrush,
   Phone,
   Search,
   ShoppingCart,
   LogOut,
   ShieldCheck,
   UserRound,
-  Wrench,
   X,
-  Zap,
 } from "lucide-react";
 import { BrandLogo } from "@/components/common/BrandLogo";
 import { ThemeToggle } from "@/components/common/ThemeToggle";
@@ -362,37 +357,32 @@ export const Navbar: React.FC = () => {
               </Link>
               <Link 
                 href="/catalogo?categoria=herramientas-manuales"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
+                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-blue-600 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
-                <Wrench className="w-3.5 h-3.5 text-blue-500" />
                 <span>Discos y Manuales</span>
               </Link>
               <Link 
                 href="/catalogo?categoria=herramientas-electricas"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
+                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-orange-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
                 <span>Eléctricas</span>
               </Link>
               <Link 
                 href="/catalogo?categoria=plomeria-tuberias"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
+                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-cyan-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
-                <Droplets className="w-3.5 h-3.5 text-cyan-500" />
                 <span>Plomería y Riego</span>
               </Link>
               <Link 
                 href="/catalogo?categoria=pinturas-selladores"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
+                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-pink-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
-                <Paintbrush className="w-3.5 h-3.5 text-pink-500" />
                 <span>Pinturas</span>
               </Link>
               <Link 
                 href="/catalogo?categoria=construccion"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-blue-600 transition-colors"
+                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-orange-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
-                <HardHat className="w-3.5 h-3.5 text-orange-500" />
                 <span>Construcción</span>
               </Link>
             </div>

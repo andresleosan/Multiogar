@@ -2,13 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
-  CircleDollarSign,
-  Droplets,
   MessageCircle,
-  PackageCheck,
-  Ruler,
-  Wrench,
-  Zap,
 } from "lucide-react";
 import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
 
@@ -16,17 +10,14 @@ const quickLinks = [
   {
     label: "Discos de corte",
     href: "/producto/disco-de-corte-extra-fino-con-hundido-4-2-fortek-dsc02",
-    icon: Wrench,
   },
   {
     label: "Herramientas eléctricas",
     href: "/catalogo?categoria=herramientas-electricas",
-    icon: Zap,
   },
   {
     label: "Plomería y tuberías",
     href: "/catalogo?categoria=plomeria-tuberias",
-    icon: Droplets,
   },
 ];
 
@@ -69,12 +60,14 @@ export function HeroBanner() {
             </a>
           </div>
 
-          <div className="mt-10 grid max-w-xl grid-cols-2 border-t border-slate-700 pt-5">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300">
-              <PackageCheck className="h-4 w-4 text-orange-400" /> Stock por producto
+          <div className="mt-10 grid max-w-xl grid-cols-2 gap-6 border-t border-slate-700 pt-5">
+            <span className="text-xs font-semibold text-slate-300">
+              <span className="mb-2 block h-1 w-8 bg-orange-500" />
+              Stock por producto
             </span>
-            <span className="inline-flex items-center gap-2 text-xs font-semibold text-slate-300">
-              <CircleDollarSign className="h-4 w-4 text-orange-400" /> Precios en USD
+            <span className="text-xs font-semibold text-slate-300">
+              <span className="mb-2 block h-1 w-8 bg-blue-500" />
+              Precios en USD
             </span>
           </div>
         </div>
@@ -102,9 +95,7 @@ export function HeroBanner() {
                   Consulta potencia, medida y existencia.
                 </p>
               </div>
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-blue-400/60 text-blue-300">
-                <Ruler className="h-4 w-4" />
-              </div>
+              <span className="mb-1 h-1 w-10 shrink-0 bg-blue-400" />
             </div>
           </div>
         </div>
@@ -112,17 +103,18 @@ export function HeroBanner() {
 
       <nav aria-label="Accesos rápidos del catálogo" className="border-t border-slate-800 bg-slate-900">
         <div className="mx-auto grid max-w-7xl sm:grid-cols-3">
-          {quickLinks.map(({ label, href, icon: Icon }) => (
+          {quickLinks.map(({ label, href }) => (
             <Link
               key={href}
               href={href}
-              className="group flex min-h-16 items-center justify-between gap-3 border-b border-slate-800 px-4 py-4 text-sm font-bold text-slate-200 transition-colors hover:bg-slate-800 hover:text-white sm:border-b-0 sm:border-r sm:px-6 sm:last:border-r-0 lg:px-8"
+              className="group relative flex min-h-16 items-center justify-between gap-4 border-b border-slate-800 px-4 py-4 text-sm font-bold text-slate-200 transition-colors hover:bg-slate-800 hover:text-white sm:border-b-0 sm:border-r sm:px-6 sm:last:border-r-0 lg:px-8"
             >
-              <span className="inline-flex items-center gap-3">
-                <Icon className="h-4 w-4 text-orange-400" />
+              <span className="relative after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-orange-400 after:transition-all group-hover:after:w-full">
                 {label}
               </span>
-              <ArrowRight className="h-4 w-4 text-slate-500 transition-transform group-hover:translate-x-1" />
+              <span className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500 transition-colors group-hover:text-orange-400">
+                Ver sección
+              </span>
             </Link>
           ))}
         </div>
