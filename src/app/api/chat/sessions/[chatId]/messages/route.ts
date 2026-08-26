@@ -20,19 +20,19 @@ interface RouteContext {
   params: Promise<{ chatId: string }>;
 }
 
-function getChatRequestContext(request: NextRequest, chatId: string) {
+async function getChatRequestContext(request: NextRequest, chatId: string) {
   if (!/^chat_[a-f0-9]{40}$/.test(chatId)) return null;
 
   const visitor = getChatVisitor(request);
   if (!visitor) return null;
 
-  const db = getAdminFirestore();
+  const db = await getAdminFirestore();
   const reference = db.collection("chats").doc(chatId);
   return { db, reference, visitor };
 }
 
 async function getOwnedChat(
-  context: NonNullable<ReturnType<typeof getChatRequestContext>>,
+  context: NonNullable<Awaited<ReturnType<typeof getChatRequestContext>>>,
 ) {
   const { reference, visitor } = context;
   const snapshot = await reference.get();
@@ -46,7 +46,7 @@ async function getOwnedChat(
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
     const { chatId } = await context.params;
-    const requestContext = getChatRequestContext(request, chatId);
+    const requestContext = await getChatRequestContext(request, chatId);
     if (!requestContext) {
       return jsonError("Conversación no encontrada.", 404);
     }
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
       return jsonError("El mensaje debe tener entre 1 y 1200 caracteres.", 400);
     }
 
-    const requestContext = getChatRequestContext(request, chatId);
+    const requestContext = await getChatRequestContext(request, chatId);
     if (!requestContext) {
       return jsonError("Conversación no encontrada.", 404);
     }

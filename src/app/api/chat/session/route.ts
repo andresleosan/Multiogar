@@ -17,7 +17,7 @@ const SESSION_RATE_LIMIT = { limit: 12, windowMs: 60_000, minIntervalMs: 500 };
 export async function POST(request: NextRequest) {
   try {
     const payload = await readJsonBody(request);
-    const db = getAdminFirestore();
+    const db = await getAdminFirestore();
     const requestKey = getRequestRateLimitKey(request);
     const rateLimit = await consumeRateLimit(
       db,

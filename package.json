@@ -12,6 +12,7 @@
     "test:rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-emulator.test.mjs\""
   },
   "dependencies": {
+    "@google-cloud/firestore": "8.7.1",
     "@vercel/oidc": "^3.8.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
