@@ -36,13 +36,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 function AdminShell({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { status, role, email, isAuthenticated } = useAuth();
+  const { status, role, email, displayName, isAuthenticated } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [unreadChats, setUnreadChats] = useState(0);
   const [pendingOrders, setPendingOrders] = useState(0);
   const [logoutError, setLogoutError] = useState("");
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isLoginPage = pathname === "/admin/login";
+  const currentUserLabel = displayName?.trim() || email?.split("@")[0] || "Usuario";
 
   useEffect(() => {
     if (isLoginPage || status !== "ready") return;
@@ -279,7 +280,7 @@ function AdminShell({ children }: AdminLayoutProps) {
               </div>
               <div className="text-left text-xs">
                 <span className="font-bold text-slate-900 dark:text-white block">
-                  {role === "superadmin" ? "Administrador Multiogar" : "Vendedor de Mostrador"}
+                  {currentUserLabel}
                 </span>
                 <span className="text-[10px] text-slate-400">
                   {role === "superadmin" ? "Admin" : "Vendedor"}

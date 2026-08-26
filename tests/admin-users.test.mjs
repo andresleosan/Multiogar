@@ -29,4 +29,6 @@ test("el panel de permisos usa el endpoint y ofrece los tres niveles", async () 
   assert.match(page, /cliente: "Cliente"/);
   assert.match(layout, /href: "\/admin\/usuarios"/);
   assert.match(layout, /roles: \["superadmin"\]/);
+  assert.match(layout, /currentUserLabel/);
+  assert.doesNotMatch(layout, /Administrador Multiogar/);
 });
