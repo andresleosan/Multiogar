@@ -1,6 +1,9 @@
 ﻿import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Firebase Admin loads CommonJS auth dependencies that must remain in Node's
+  // native resolver instead of being bundled by Turbopack.
+  serverExternalPackages: ["firebase-admin", "google-auth-library", "jwks-rsa"],
   images: {
     remotePatterns: [
       {
