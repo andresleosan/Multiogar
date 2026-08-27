@@ -94,7 +94,7 @@ export function StoreLocationReviews() {
               </a>
             </div>
 
-            <div className="border-l-4 border-orange-500 bg-orange-50 p-5 dark:bg-orange-500/15">
+            <div className="border-l-4 border-orange-500 bg-orange-100 p-5 dark:bg-orange-500/15">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-slate-700 dark:text-orange-100">
                   Opiniones destacadas
