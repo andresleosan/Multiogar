@@ -106,9 +106,9 @@ export default function HomePage() {
 
       <StoreLocationReviews />
 
-      <section className="border-t-4 border-orange-500 bg-orange-100 py-14 dark:border-orange-500 dark:bg-slate-950 sm:py-16">
+      <section className="border-t-4 border-orange-500 bg-orange-200 py-14 dark:border-orange-500 dark:bg-orange-900 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-between gap-6 border-b border-orange-300 pb-9 dark:border-orange-500/50 lg:flex-row lg:items-end">
+          <div className="flex flex-col justify-between gap-6 border-b border-orange-600 pb-9 dark:border-orange-500/70 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
               <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-600">
                 <span className="h-1 w-8 bg-orange-600" aria-hidden="true" />
@@ -130,9 +130,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <ol className="grid gap-8 pt-9 md:grid-cols-3 md:gap-0 md:divide-x md:divide-orange-300 md:dark:divide-orange-500/50">
+          <ol className="grid gap-8 pt-9 md:grid-cols-3 md:gap-0 md:divide-x md:divide-orange-600 md:dark:divide-orange-500/70">
             {buyingSteps.map(({ title, description }, index) => (
-              <li key={title} className="border-b border-orange-300 pb-7 last:border-b-0 dark:border-orange-500/50 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
+              <li key={title} className="border-b border-orange-600 pb-7 last:border-b-0 dark:border-orange-500/70 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl font-black leading-none text-blue-700 dark:text-blue-400">{index + 1}</span>
                   <span className="h-1 w-8 bg-orange-600" aria-hidden="true" />

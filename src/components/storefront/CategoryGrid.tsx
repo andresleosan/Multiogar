@@ -8,7 +8,7 @@ interface CategoryGridProps {
 
 export function CategoryGrid({ categories }: CategoryGridProps) {
   return (
-    <section className="border-b-4 border-orange-500 bg-orange-100 py-14 dark:border-orange-500 dark:bg-slate-950 sm:py-16">
+    <section className="border-b-4 border-orange-500 bg-orange-200 py-14 dark:border-orange-500 dark:bg-orange-900 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
