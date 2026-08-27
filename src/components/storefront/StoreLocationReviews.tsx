@@ -79,7 +79,7 @@ export function StoreLocationReviews() {
                 <div>
                   <h3 className="text-base font-black text-slate-950 dark:text-white">Ubicación y contacto</h3>
                   <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    Cúa 1211, Miranda, Venezuela
+                    Cúa
                   </p>
                   <a
                     href={`tel:${OFFICIAL_STORE_PHONE_FORMATTED.replace(/\s/g, "")}`}
