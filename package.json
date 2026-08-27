@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test tests/auth-roles.test.mjs tests/firestore-rules.test.mjs tests/customer-truthfulness.test.mjs tests/chat-security.test.mjs tests/admin-users.test.mjs",
+    "test": "node --test tests/auth-roles.test.mjs tests/firestore-rules.test.mjs tests/customer-truthfulness.test.mjs tests/chat-security.test.mjs tests/admin-users.test.mjs tests/store-location.test.mjs",
     "test:rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-emulator.test.mjs\""
   },
   "dependencies": {

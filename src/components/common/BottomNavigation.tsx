@@ -82,7 +82,7 @@ export const BottomNavigation: React.FC = () => {
 
         {/* 5. WhatsApp Direct Contact */}
         <a
-          href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("¡Hola Multiogar! Deseo realizar una consulta y pedir asesoría.")}`}
+          href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("¡Hola Ferreteria Multiogar! Deseo realizar una consulta y pedir asesoría.")}`}
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-col items-center justify-center py-1 px-3 rounded-xl text-emerald-600 dark:text-emerald-400 hover:scale-105 transition-all"

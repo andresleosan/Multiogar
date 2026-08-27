@@ -10,9 +10,9 @@ import { OFFICIAL_SITE_URL } from "@/lib/utils";
 
 export const metadata: Metadata = {
   metadataBase: new URL(OFFICIAL_SITE_URL),
-  title: "Multiogar Ferretería | Herramientas, Discos de Corte, Construcción y Plomería en Venezuela",
+  title: "Ferreteria Multiogar | Herramientas, Discos de Corte, Construcción y Plomería en Venezuela",
   description:
-    "Catálogo oficial de Multiogar Ferretería en Venezuela. Discos de corte Fortek, herramientas Total e Ingco, tuberías Pavco, cerraduras Cisa y materiales con precios en Dólares (USD) y pedidos directos por WhatsApp.",
+    "Catálogo oficial de Ferreteria Multiogar en Venezuela. Discos de corte Fortek, herramientas Total e Ingco, tuberías Pavco, cerraduras Cisa y materiales con precios en Dólares (USD) y pedidos directos por WhatsApp.",
   keywords: [
     "ferretería Venezuela",
     "discos de corte Fortek",
@@ -23,22 +23,22 @@ export const metadata: Metadata = {
     "pinturas Montana",
     "cerraduras Cisa",
     "cemento Vencemos",
-    "Multiogar Ferretería",
+    "Ferreteria Multiogar",
   ],
-  authors: [{ name: "Multiogar Ferretería" }],
-  creator: "Multiogar Ferretería",
+  authors: [{ name: "Ferreteria Multiogar" }],
+  creator: "Ferreteria Multiogar",
   openGraph: {
-    title: "Multiogar Ferretería | Todo para tu obra, taller y hogar en Venezuela",
+    title: "Ferreteria Multiogar | Todo para tu obra, taller y hogar en Venezuela",
     description:
       "Herramientas profesionales, discos de corte, plomería, pinturas y materiales de construcción con pedidos directos por WhatsApp y precios en Dólares (USD).",
     url: OFFICIAL_SITE_URL,
-    siteName: "Multiogar Ferretería",
+    siteName: "Ferreteria Multiogar",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Multiogar Ferretería Catálogo Oficial",
+        alt: "Ferreteria Multiogar Catálogo Oficial",
       },
     ],
     locale: "es_VE",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Multiogar Ferretería | Catálogo Oficial",
+    title: "Ferreteria Multiogar | Catálogo Oficial",
     description: "Herramientas de potencia, plomería y construcción con pedidos directos a WhatsApp.",
     images: ["/og-image.png"],
   },
@@ -65,7 +65,7 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HardwareStore",
-    "name": "Multiogar Ferretería",
+    "name": "Ferreteria Multiogar",
     "image": `${OFFICIAL_SITE_URL}/og-image.png`,
     "logo": `${OFFICIAL_SITE_URL}/LogoMultiogar.png`,
     "@id": OFFICIAL_SITE_URL,

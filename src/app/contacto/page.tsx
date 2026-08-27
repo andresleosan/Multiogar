@@ -11,6 +11,7 @@ import {
   OFFICIAL_STORE_PHONE_FORMATTED,
   SOCIAL_LINKS,
 } from "@/lib/utils";
+import { StoreLocationReviews } from "@/components/storefront/StoreLocationReviews";
 
 const socialLinks = [
   { href: SOCIAL_LINKS.instagram, name: "Instagram", handle: "@multiogar", icon: InstagramIcon },
@@ -25,7 +26,7 @@ export default function ContactPage() {
     const name = String(data.get("name") ?? "").trim();
     const phone = String(data.get("phone") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
-    const text = `Hola Multiogar Ferretería. Mi nombre es ${name}, mi teléfono es ${phone}. ${message}`;
+    const text = `Hola Ferreteria Multiogar. Mi nombre es ${name}, mi teléfono es ${phone}. ${message}`;
     window.open(`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -125,6 +126,10 @@ export default function ContactPage() {
               </button>
             </form>
           </section>
+        </div>
+
+        <div className="mt-10">
+          <StoreLocationReviews />
         </div>
       </div>
     </div>

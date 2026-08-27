@@ -84,6 +84,15 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 24/24, `pnpm
 - [x] **T7.16**: Sustituir el icono de fuego y el icono de edificio en la sección de destacados por señales tipográficas y un borde estructural.
 - [x] **T7.17**: Rediseñar la sección de compra asistida y la franja de confianza del footer sin iconos decorativos, con mejor espaciado y jerarquía de pasos.
 - [x] **T7.18**: Reemplazar el icono decorativo de atención para proyectos por una raya lateral naranja en la sección de productos destacados.
+- [x] **T7.19**: Actualizar la marca visible a “Ferreteria Multiogar” y reforzar la paleta azul, blanca y naranja en los modos claro y oscuro.
+- [x] **T7.20**: Integrar ubicación de Google Maps, enlaces de indicaciones y reseñas destacadas de 5 estrellas atribuidas a la ficha compartida.
+- [x] **T7.21**: Equilibrar el modo claro y oscuro con más naranja, reduciendo la saturación azul del modo noche y agregando superficies cálidas y franjas de marca.
+
+Evidencia T7.21 (2026-08-26): `corepack pnpm lint` limpio, `corepack pnpm exec tsc --noEmit` limpio, `corepack pnpm test` 26/26 y `corepack pnpm build` limpio con 34 rutas. El CSS de producción incluye la superficie cálida y el carbón azuloso del modo noche; smoke HTTP de `/` en `200`.
+
+Evidencia T7.20 (2026-08-26): `corepack pnpm lint` limpio, `corepack pnpm exec tsc --noEmit` limpio, `corepack pnpm test` 26/26 y `corepack pnpm build` limpio con 34 rutas. Smoke HTTP del build actual en `/contacto`: `200`, mapa embebido y enlaces de reseñas/indicaciones presentes. Integración documentada en `docs/google-maps-reviews.md` sin credenciales de terceros.
+
+Evidencia T7.19 (2026-08-26): `corepack pnpm lint` limpio, `corepack pnpm exec tsc --noEmit` limpio, `corepack pnpm test` 24/24, `corepack pnpm test:rules` 4/4 y `corepack pnpm build` limpio con 34 rutas. Smoke local de producción: `/`, `/catalogo`, `/nosotros`, `/contacto` y `/login` respondieron `200` y entregaron la nueva marca; el CSS compilado contiene los tokens azules y naranjas del tema.
 
 Evidencia T7.12 (2026-08-26): `pnpm lint` limpio, `pnpm exec tsc --noEmit` limpio, `pnpm test` 24/24, `pnpm test:rules` 4/4 y `pnpm build` limpio con 34 rutas. Smoke con Chrome local: home `200`, H1 visible, imagen principal visible, 15 enlaces de categorías y sin overflow horizontal en viewport móvil 390px. Sin errores de página; los errores de consola corresponden al bloqueo de red local hacia Firebase y activan el respaldo local ya existente.
 Evidencia T7.13 (2026-08-26): `pnpm lint` limpio, `pnpm exec tsc --noEmit` limpio, `pnpm test` 24/24 y `pnpm build` limpio con 34 rutas. Smoke visual con Chrome local en escritorio: etiqueta de categoría visible, banda informativa integrada y tarjeta flotante anterior ausente.

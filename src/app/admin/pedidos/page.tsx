@@ -270,7 +270,7 @@ export default function AdminOrdersPage() {
                         </button>
 
                         <a
-                          href={`https://wa.me/${normalizeVenezuelanPhoneForWhatsApp(order.customer.phone)}?text=${encodeURIComponent(`Hola ${order.customer.name}, te contactamos de Multiogar Ferretería con respecto a tu pedido #${order.orderNumber}.`)}`}
+                          href={`https://wa.me/${normalizeVenezuelanPhoneForWhatsApp(order.customer.phone)}?text=${encodeURIComponent(`Hola ${order.customer.name}, te contactamos de Ferreteria Multiogar con respecto a tu pedido #${order.orderNumber}.`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-colors"

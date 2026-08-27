@@ -44,7 +44,7 @@ export function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="border-t border-slate-800 bg-slate-950 text-slate-300">
+    <footer className="border-t-4 border-orange-500 bg-slate-950 text-slate-300">
       <div className="border-b border-slate-800">
         <div className="mx-auto grid max-w-7xl divide-y divide-slate-800 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
           {serviceFacts.map(({ title, description }, index) => (
@@ -108,7 +108,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-slate-800 px-4 py-5 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Multiogar Ferretería. Precios de referencia en USD.
+        © {new Date().getFullYear()} Ferreteria Multiogar. Precios de referencia en USD.
       </div>
     </footer>
   );

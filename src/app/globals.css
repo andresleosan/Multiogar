@@ -2,6 +2,39 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Brand palette bridge shared by the public storefront and the admin UI. */
+@theme inline {
+  --color-slate-50: #f5f8ff;
+  --color-slate-100: #ebf1ff;
+  --color-slate-200: #d8e3ff;
+  --color-slate-300: #bdcdf2;
+  --color-slate-400: #5f7298;
+  --color-slate-500: #53698f;
+  --color-slate-600: #3b4f75;
+  --color-slate-700: #2a3d63;
+  --color-slate-800: #1b2d55;
+  --color-slate-900: #102047;
+  --color-slate-950: #081638;
+  --color-blue-50: #eef3ff;
+  --color-blue-100: #dbe5ff;
+  --color-blue-200: #c3d2ff;
+  --color-blue-300: #a1b8ff;
+  --color-blue-400: #7896ff;
+  --color-blue-500: #4d70ff;
+  --color-blue-600: #1f47fe;
+  --color-blue-700: #1239dc;
+  --color-blue-800: #0d2dac;
+  --color-orange-50: #fff4ea;
+  --color-orange-100: #ffe4cc;
+  --color-orange-200: #ffc18f;
+  --color-orange-300: #ff9a52;
+  --color-orange-400: #ff7e29;
+  --color-orange-500: #ff6b00;
+  --color-orange-600: #c94f00;
+  --color-orange-700: #d95500;
+  --color-orange-800: #ad4000;
+}
+
 @layer base {
   :root {
     --background: #ffffff;
@@ -18,10 +51,12 @@
     --secondary-foreground: #ffffff;
     --highlight: #ffc700;
     --highlight-foreground: #0f172a;
-    --muted: #f1f5f9;
-    --muted-foreground: #64748b;
+    --muted: #f3f6ff;
+    --muted-foreground: #53627c;
     --accent: #fff7ed;
     --accent-foreground: #c2410c;
+    --surface-warm: #fff7ef;
+    --surface-warm-strong: #ffead9;
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
     --border: #e2e8f0;
@@ -31,29 +66,61 @@
   }
 
   .dark {
-    --background: #0b1120;
+    --background: #121a2a;
     --foreground: #f8fafc;
-    --card: #0f172a;
+    --card: #1d2637;
     --card-foreground: #f8fafc;
-    --popover: #0f172a;
+    --popover: #1d2637;
     --popover-foreground: #f8fafc;
-    --primary: #3b82f6;
-    --primary-hover: #1f47fe;
+    --primary: #5c7dff;
+    --primary-hover: #7896ff;
     --primary-foreground: #ffffff;
     --secondary: #ff6b00;
-    --secondary-hover: #ff8533;
+    --secondary-hover: #ff9a52;
     --secondary-foreground: #ffffff;
     --highlight: #ffc700;
     --highlight-foreground: #0f172a;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #ffedd5;
+    --muted: #33251b;
+    --muted-foreground: #c2cada;
+    --accent: #3a2415;
+    --accent-foreground: #ffd2a8;
+    --surface-warm: #241b17;
+    --surface-warm-strong: #3a2113;
     --destructive: #f87171;
     --destructive-foreground: #ffffff;
-    --border: #334155;
-    --input: #334155;
-    --ring: #3b82f6;
+    --border: #3b4656;
+    --input: #303b4e;
+    --ring: #7896ff;
+
+    --color-slate-50: #f7fbff;
+    --color-slate-100: #edf4ff;
+    --color-slate-200: #dce8ff;
+    --color-slate-300: #c5d7fb;
+    --color-slate-400: #a9b5c7;
+    --color-slate-500: #8591a5;
+    --color-slate-600: #69758a;
+    --color-slate-700: #475467;
+    --color-slate-800: #313c4d;
+    --color-slate-900: #202b3b;
+    --color-slate-950: #121a2a;
+    --color-blue-50: #102b60;
+    --color-blue-100: #163774;
+    --color-blue-200: #244d98;
+    --color-blue-300: #496bc1;
+    --color-blue-400: #7f9eff;
+    --color-blue-500: #8fa8ff;
+    --color-blue-600: #5c7dff;
+    --color-blue-700: #7896ff;
+    --color-blue-800: #9bb1ff;
+    --color-orange-50: #3b250f;
+    --color-orange-100: #5a3210;
+    --color-orange-200: #87501e;
+    --color-orange-300: #c36a25;
+    --color-orange-400: #ff9a52;
+    --color-orange-500: #ff8533;
+    --color-orange-600: #c94f00;
+    --color-orange-700: #ff9a52;
+    --color-orange-800: #ffc18f;
   }
 }
 
@@ -62,6 +129,10 @@ body {
   color: var(--foreground);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   overflow-x: hidden;
+}
+
+.bg-brand-warm {
+  background-color: var(--surface-warm);
 }
 
 /* Custom Ferreteria Utility Classes */
@@ -99,7 +170,7 @@ body {
 }
 
 .ferreteria-gradient {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0d36d9 100%);
+  background: linear-gradient(135deg, #081638 0%, #1239dc 68%, #ff6b00 100%);
 }
 
 .ferreteria-card-hover {
@@ -127,19 +198,19 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #fff7ef;
 }
 .dark ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #121a2a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #c3d2ff;
   border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #475467;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #ff8533;
 }

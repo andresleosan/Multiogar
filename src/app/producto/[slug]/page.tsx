@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!product) {
     return {
-      title: "Producto | Multiogar Ferretería",
+      title: "Producto | Ferreteria Multiogar",
       description: "Consulta disponibilidad, precio de referencia y opciones del catálogo Multiogar.",
     };
   }
@@ -24,9 +24,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const imageUrl = product.images[0] || "/og-image.png";
 
   return {
-    title: `${product.name} | Multiogar Ferretería`,
+    title: `${product.name} | Ferreteria Multiogar`,
     description: product.description.slice(0, 160),
-    keywords: [product.brand, product.categoryName, product.name, "Multiogar Ferretería"],
+    keywords: [product.brand, product.categoryName, product.name, "Ferreteria Multiogar"],
     openGraph: {
       title: `${product.name} - USD ${product.basePrice.toFixed(2)}`,
       description: product.description.slice(0, 160),

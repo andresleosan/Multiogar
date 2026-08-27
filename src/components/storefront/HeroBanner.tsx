@@ -1,33 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  MessageCircle,
-} from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
-
-const quickLinks = [
-  {
-    label: "Discos de corte",
-    href: "/producto/disco-de-corte-extra-fino-con-hundido-4-2-fortek-dsc02",
-  },
-  {
-    label: "Herramientas eléctricas",
-    href: "/catalogo?categoria=herramientas-electricas",
-  },
-  {
-    label: "Plomería y tuberías",
-    href: "/catalogo?categoria=plomeria-tuberias",
-  },
-];
 
 export function HeroBanner() {
   const quoteMessage = encodeURIComponent(
-    "Hola Multiogar Ferretería. Quiero cotizar una lista de materiales.",
+    "Hola Ferreteria Multiogar. Quiero cotizar una lista de materiales.",
   );
 
   return (
-    <section className="overflow-hidden bg-slate-950 text-white">
+    <section className="overflow-hidden border-b-4 border-orange-500 bg-slate-950 text-white">
       <div className="mx-auto grid max-w-7xl lg:grid-cols-[1.03fr_0.97fr]">
         <div className="flex min-h-[500px] flex-col justify-center px-4 py-16 sm:px-6 lg:min-h-[540px] lg:px-8 lg:py-20">
           <p className="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.16em] text-orange-400">
@@ -100,25 +82,6 @@ export function HeroBanner() {
           </div>
         </div>
       </div>
-
-      <nav aria-label="Accesos rápidos del catálogo" className="border-t border-slate-800 bg-slate-900">
-        <div className="mx-auto grid max-w-7xl sm:grid-cols-3">
-          {quickLinks.map(({ label, href }) => (
-            <Link
-              key={href}
-              href={href}
-              className="group relative flex min-h-16 items-center justify-between gap-4 border-b border-slate-800 px-4 py-4 text-sm font-bold text-slate-200 transition-colors hover:bg-slate-800 hover:text-white sm:border-b-0 sm:border-r sm:px-6 sm:last:border-r-0 lg:px-8"
-            >
-              <span className="relative after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-orange-400 after:transition-all group-hover:after:w-full">
-                {label}
-              </span>
-              <span className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-500 transition-colors group-hover:text-orange-400">
-                Ver sección
-              </span>
-            </Link>
-          ))}
-        </div>
-      </nav>
     </section>
   );
 }

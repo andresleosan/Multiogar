@@ -52,12 +52,14 @@ export function generateOrderId(orderNumber: string): string {
   return `ord-${orderNumber.toLowerCase()}-${globalThis.crypto.randomUUID()}`;
 }
 
-// Datos Reales de Contacto Multiogar Ferretería (Venezuela)
+// Datos Reales de Contacto Ferreteria Multiogar (Venezuela)
 export const OFFICIAL_STORE_PHONE = "584242811289"; // +58 424 281 1289
 export const OFFICIAL_STORE_PHONE_FORMATTED = "+58 424 281 1289";
-export const OFFICIAL_STORE_NAME = "Multiogar Ferretería";
+export const OFFICIAL_STORE_NAME = "Ferreteria Multiogar";
 export const OFFICIAL_STORE_LOCATION = "Venezuela";
 export const OFFICIAL_SITE_URL = "https://multiogar.vercel.app";
+export const OFFICIAL_STORE_MAP_URL = "https://www.google.com/maps/place/Ferreteria+Multiogar+19+C.A./@10.1621279,-66.8921672,1114m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8c2ae9ad552fae47:0x3c900a9e0bfefa2a!8m2!3d10.1621226!4d-66.8895923!16s%2Fg%2F11w3s74mtv?hl=es-419&entry=ttu";
+export const OFFICIAL_STORE_MAP_EMBED_URL = "https://www.google.com/maps?q=10.1621226,-66.8895923&z=17&output=embed";
 
 // Redes Sociales Oficiales
 export const SOCIAL_LINKS = {
@@ -103,7 +105,7 @@ export function generateWhatsAppProductInquiry(
   const variantText = variant ? ` (Variante: ${variant.name} - SKU: ${variant.sku})` : ` (SKU: ${product.sku})`;
   const priceText = formatCurrency(variant ? variant.price : product.basePrice);
 
-  const message = `Hola *Multiogar Ferretería* 🛠️, deseo consultar información y disponibilidad sobre:\n\n` +
+  const message = `Hola *Ferreteria Multiogar* 🛠️, deseo consultar información y disponibilidad sobre:\n\n` +
     `📌 *Producto:* ${product.name}${variantText}\n` +
     `💵 *Precio:* ${priceText} USD\n` +
     `🔗 *Ver en web:* ${OFFICIAL_SITE_URL}/producto/${product.slug}\n\n` +

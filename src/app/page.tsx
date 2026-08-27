@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ExternalLink } from "lucide-react";
 import { HeroBanner } from "@/components/storefront/HeroBanner";
 import { HomeCatalogSections } from "@/components/storefront/HomeCatalogSections";
+import { StoreLocationReviews } from "@/components/storefront/StoreLocationReviews";
 
 const serviceFacts = [
   {
@@ -77,13 +78,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-orange-200 bg-orange-50 dark:border-orange-950 dark:bg-slate-900">
+      <section className="border-b border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/60">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-9 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex max-w-3xl items-start gap-4">
             <span className="mt-2 h-1 w-10 shrink-0 bg-orange-600" aria-hidden="true" />
             <div>
               <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-orange-700 dark:text-orange-400">Forma de pago disponible</p>
-              <h2 className="mt-1 text-xl font-black text-slate-950 dark:text-white">Compra con Cashea en Multiogar</h2>
+              <h2 className="mt-1 text-xl font-black text-slate-950 dark:text-white">Compra con Cashea en Ferreteria Multiogar</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                 Paga una inicial y divide el saldo en cuotas quincenales sin intereses desde la aplicación. La compra está sujeta a aprobación, nivel y condiciones de Cashea.
               </p>
@@ -103,7 +104,9 @@ export default function HomePage() {
 
       <HomeCatalogSections />
 
-      <section className="border-t border-slate-200 bg-[#f4f6fb] py-14 dark:border-slate-800 dark:bg-slate-950 sm:py-16">
+      <StoreLocationReviews />
+
+      <section className="border-t border-orange-200 bg-brand-warm py-14 dark:border-orange-900 dark:bg-brand-warm sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-6 border-b border-slate-300 pb-9 dark:border-slate-700 lg:flex-row lg:items-end">
             <div className="max-w-2xl">

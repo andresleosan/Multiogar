@@ -107,7 +107,7 @@ export const Navbar: React.FC = () => {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+    <header className="sticky top-0 z-40 w-full border-b-2 border-orange-500 bg-white shadow-xs dark:border-orange-500 dark:bg-slate-900">
       <div className="bg-blue-700 px-4 py-2 text-xs font-semibold text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <span className="hidden sm:inline">Atención y cotizaciones para toda Venezuela</span>
@@ -144,7 +144,7 @@ export const Navbar: React.FC = () => {
                   {isAccountMenuOpen && (
                     <div className="absolute right-0 top-7 z-50 w-56 rounded-md border border-slate-200 bg-white p-1.5 text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                       <div className="border-b border-slate-100 px-2.5 py-2 dark:border-slate-800">
-                        <p className="truncate text-xs font-bold">{displayName || "Cuenta Multiogar"}</p>
+                        <p className="truncate text-xs font-bold">{displayName || "Cuenta Ferreteria Multiogar"}</p>
                         <p className="truncate text-[10px] text-slate-500">{email}</p>
                       </div>
                       {isAdminRole(role) && (
@@ -286,7 +286,7 @@ export const Navbar: React.FC = () => {
             
             {/* Direct WhatsApp Callout Button */}
             <a
-              href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("Hola Multiogar Ferretería, me gustaría solicitar asesoría y cotización.")}`}
+              href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${encodeURIComponent("Hola Ferreteria Multiogar, me gustaría solicitar asesoría y cotización.")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden min-h-10 items-center gap-2 rounded-md border border-emerald-600 px-3.5 py-2 text-xs font-bold text-emerald-700 transition-colors hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950 lg:flex"
@@ -369,13 +369,13 @@ export const Navbar: React.FC = () => {
               </Link>
               <Link 
                 href="/catalogo?categoria=plomeria-tuberias"
-                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-cyan-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
+              className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-blue-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
                 <span>Plomería y Riego</span>
               </Link>
               <Link 
                 href="/catalogo?categoria=pinturas-selladores"
-                className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-pink-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
+              className="group relative px-2.5 py-1.5 transition-colors after:absolute after:bottom-0 after:left-2.5 after:h-0.5 after:w-0 after:bg-orange-500 after:transition-all hover:text-blue-600 hover:after:w-[calc(100%-1.25rem)]"
               >
                 <span>Pinturas</span>
               </Link>

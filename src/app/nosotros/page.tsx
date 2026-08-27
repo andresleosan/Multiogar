@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="relative mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 sm:pb-14 lg:px-8">
           <p className="text-xs font-extrabold uppercase text-orange-400">Sobre nosotros</p>
           <h1 className="mt-2 max-w-3xl text-3xl font-black text-white sm:text-5xl">
-            Multiogar Ferretería
+            Ferreteria Multiogar
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-200 sm:text-base">
             Una tienda ferretera venezolana con catálogo digital y atención comercial por WhatsApp.

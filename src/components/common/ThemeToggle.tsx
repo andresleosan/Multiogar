@@ -36,12 +36,12 @@ export const ThemeToggle: React.FC = () => {
     <button
       onClick={toggleTheme}
       aria-label="Cambiar tema"
-      className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="rounded-xl p-2 text-blue-700 transition-colors hover:bg-orange-50 dark:text-blue-200 dark:hover:bg-blue-900/60 focus:outline-none focus:ring-2 focus:ring-orange-500"
     >
       {isDark ? (
-        <Sun className="w-5 h-5 text-amber-400 animate-in spin-in-180 duration-300" />
+        <Sun className="h-5 w-5 text-orange-400 animate-in spin-in-180 duration-300" />
       ) : (
-        <Moon className="w-5 h-5 text-slate-700 animate-in spin-in-180 duration-300" />
+        <Moon className="h-5 w-5 text-blue-700 animate-in spin-in-180 duration-300" />
       )}
     </button>
   );

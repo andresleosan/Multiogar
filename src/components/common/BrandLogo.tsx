@@ -43,7 +43,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   return (
     <Link
       href="/"
-      aria-label="Ir al inicio de Multiogar Ferretería"
+      aria-label="Ir al inicio de Ferreteria Multiogar"
       className={cn(
         "inline-flex items-center gap-2.5 transition-opacity hover:opacity-85",
         className,
@@ -59,9 +59,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       />
       {showText && (
         <span className={cn("flex flex-col leading-none", colorClass[variant])}>
-          <strong className={cn("font-black uppercase", textClasses[size])}>Multiogar</strong>
+          <strong className={cn("font-black uppercase", textClasses[size])}>Ferreteria</strong>
           <span className="mt-1 text-[10px] font-bold uppercase text-orange-600">
-            Ferretería
+            Multiogar
           </span>
         </span>
       )}

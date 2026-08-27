@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
-  title: "Iniciar sesión | Multiogar Ferretería",
+  title: "Iniciar sesión | Ferreteria Multiogar",
   description: "Accede a Multiogar con Google o con tu correo electrónico.",
   robots: { index: false, follow: false },
 };
