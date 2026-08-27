@@ -2,19 +2,23 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { getIdToken } from "firebase/auth";
 import { 
   Plus, 
   Search, 
   Edit, 
   Trash2, 
   X, 
-  Save
+  Save,
+  ImagePlus,
+  LoaderCircle,
 } from "lucide-react";
 import { DataService } from "@/lib/data-service";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { isAdminRole } from "@/lib/auth-roles";
 import { Product, ProductVariant, Category } from "@/types";
 import { formatCurrency, slugify } from "@/lib/utils";
+import { auth } from "@/lib/firebase";
 
 export default function AdminProductsPage() {
   const { role } = useAuth();
@@ -38,6 +42,8 @@ export default function AdminProductsPage() {
   const [formStock, setFormStock] = useState(10);
   const [formDescription, setFormDescription] = useState("");
   const [formImages, setFormImages] = useState<string[]>([""]);
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
+  const [imageError, setImageError] = useState("");
   const [formIsFeatured, setFormIsFeatured] = useState(false);
   const [formIsOffer, setFormIsOffer] = useState(false);
   const [formHasVariants, setFormHasVariants] = useState(false);
@@ -70,6 +76,7 @@ export default function AdminProductsPage() {
     setFormStock(10);
     setFormDescription("");
     setFormImages(["/hero-tools.jpg"]);
+    setImageError("");
     setFormIsFeatured(false);
     setFormIsOffer(false);
     setFormHasVariants(false);
@@ -90,6 +97,7 @@ export default function AdminProductsPage() {
     setFormStock(product.stock);
     setFormDescription(product.description);
     setFormImages(product.images.length > 0 ? product.images : [""]);
+    setImageError("");
     setFormIsFeatured(product.isFeatured);
     setFormIsOffer(Boolean(product.isOffer));
     setFormHasVariants(product.hasVariants);
@@ -136,9 +144,49 @@ export default function AdminProductsPage() {
     setFormVariants(formVariants.filter((_, i) => i !== index));
   };
 
+  const handleImageFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const currentUser = auth?.currentUser;
+    if (!currentUser) {
+      setImageError("Tu sesión expiró. Inicia sesión nuevamente para cargar imágenes.");
+      return;
+    }
+
+    setIsProcessingImage(true);
+    setImageError("");
+
+    try {
+      const token = await getIdToken(currentUser, true);
+      const body = new FormData();
+      body.append("file", file);
+      const response = await fetch("/api/admin/product-image", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body,
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        dataUrl?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !payload.dataUrl) {
+        throw new Error(payload.error || "No fue posible preparar la imagen.");
+      }
+
+      setFormImages([payload.dataUrl]);
+    } catch (error) {
+      setImageError(error instanceof Error ? error.message : "No fue posible preparar la imagen.");
+    } finally {
+      setIsProcessingImage(false);
+    }
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (role !== "superadmin") return;
+    if (role !== "superadmin" || isProcessingImage) return;
 
     const catObj = categories.find((c) => c.slug === formCategory);
     const categoryName = catObj ? catObj.name : "Ferretería General";
@@ -268,6 +316,7 @@ export default function AdminProductsPage() {
                           src={p.images[0] || "/LogoMultiogar.png"}
                           alt={p.name}
                           fill
+                          unoptimized={p.images[0]?.startsWith("data:")}
                           className="object-contain p-1"
                         />
                       </div>
@@ -461,15 +510,61 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">URL Imagen Principal</label>
+              <div className="space-y-3 rounded-2xl border border-orange-200 bg-orange-50/70 p-4 dark:border-orange-900/70 dark:bg-orange-950/20">
+                <div>
+                  <label htmlFor="product-image-file" className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-300">
+                    <ImagePlus className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                    Foto del producto
+                  </label>
+                  <p className="mt-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                    Sube JPG, PNG o WebP. El servidor la centra en un lienzo cuadrado blanco y la optimiza para el catálogo.
+                  </p>
+                </div>
                 <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  value={formImages[0] || ""}
-                  onChange={(e) => setFormImages([e.target.value])}
-                  className="w-full h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                  id="product-image-file"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleImageFileChange}
+                  disabled={isProcessingImage}
+                  className="block w-full cursor-pointer rounded-xl border border-orange-200 bg-white text-xs text-slate-700 file:mr-3 file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:font-bold file:text-white hover:file:bg-orange-600 dark:border-orange-900 dark:bg-slate-900 dark:text-slate-200"
                 />
+                {isProcessingImage && (
+                  <p className="flex items-center gap-2 text-[11px] font-semibold text-blue-700 dark:text-blue-300" role="status">
+                    <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                    Preparando foto con fondo blanco…
+                  </p>
+                )}
+                {imageError && (
+                  <p className="text-[11px] font-semibold text-rose-700 dark:text-rose-300" role="alert">
+                    {imageError}
+                  </p>
+                )}
+                {formImages[0] && (
+                  <div className="flex items-center gap-3 rounded-xl border border-orange-100 bg-white p-2 dark:border-orange-900/60 dark:bg-slate-900">
+                    <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700">
+                      <Image
+                        src={formImages[0]}
+                        alt="Vista previa del producto sobre fondo blanco"
+                        fill
+                        unoptimized={formImages[0].startsWith("data:")}
+                        className="object-contain"
+                      />
+                    </div>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Vista previa de la foto principal
+                    </span>
+                  </div>
+                )}
+                <div className="space-y-1">
+                  <label className="font-bold text-slate-700 dark:text-slate-300">O usar URL de imagen</label>
+                  <input
+                    type="url"
+                    placeholder="https://images.unsplash.com/..."
+                    value={formImages[0] || ""}
+                    onChange={(e) => setFormImages([e.target.value])}
+                    className="w-full h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
@@ -584,7 +679,8 @@ export default function AdminProductsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-1.5 shadow-md"
+                  disabled={isProcessingImage}
+                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-1.5 shadow-md disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Save className="w-4 h-4" />
                   <span>{editingProduct ? "Guardar Cambios" : "Crear Producto"}</span>

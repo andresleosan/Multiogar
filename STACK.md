@@ -17,7 +17,7 @@
 | **Animaciones & UX** | Framer Motion | Micro-interacciones de alta fluidez en drawers, modales, banners y tarjetas de productos. |
 | **Autenticación** | Firebase Auth Client SDK + identidad temporal HMAC | Inicio de sesión general con Google o correo/contraseña y roles por custom claim. El chat anónimo usa una cookie `HttpOnly` firmada; Firebase Admin opera Firestore únicamente en servidor. |
 | **Base de Datos Principal** | Cloud Firestore | Suscripciones `onSnapshot` para catálogo y datos operativos del personal. Las escrituras públicas permanecen bloqueadas. |
-| **Almacenamiento de Medios** | Archivos locales en `public/` | Las imágenes actuales son referenciales. La carga administrada a Storage está pendiente. |
+| **Procesamiento de Medios** | Route Handler Node.js + función Python Vercel + `rembg`/`sharp` | El SuperAdmin carga JPG, PNG o WebP; Node valida la sesión y límites, la función Python privada ejecuta `u2netp` para quitar el fondo y Node aplica lienzo blanco 1000×1000 y compresión final. Si falta el secreto interno, el entorno local conserva el fallback de lienzo blanco. |
 | **Visualización & Métricas** | Recharts | Renderizado declarativo de gráficas estadísticas ligeras y reactivas en el dashboard administrativo. |
 | **Validación de Esquemas** | Zod | Validación de autenticación y contratos HTTP del chat en el límite de entrada. |
 | **Despliegue** | Vercel (Production Ready) | Soporte nativo para Next.js con Edge Network, optimización de imágenes (

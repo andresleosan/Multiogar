@@ -57,7 +57,8 @@ Desarrollar la plataforma web de **Multiogar Ferretería**, combinando un catál
 2. **Gestión de Catálogo (Productos y Categorías):**
    - Formulario modal / página dedicada para creación y edición de productos con validación Zod.
    - Creador dinámico de variantes múltiples (nombre, precio diferenciado, stock y SKU propio).
-   - Imágenes locales de referencia. La carga a Firebase Storage queda fuera del alcance actual.
+   - Carga de foto principal para SuperAdmin con validación de sesión, tamaño y formato; el servidor la procesa sobre lienzo blanco antes de guardarla en el producto.
+   - La eliminación IA de fondos opacos se ejecuta en una función Python privada con `rembg`/`u2netp`; después se aplica el lienzo blanco del catálogo.
    - Reordenamiento y gestión de categorías principales.
 3. **Bandeja de Pedidos:**
    - Listado en tiempo real de órdenes recibidas por WhatsApp.

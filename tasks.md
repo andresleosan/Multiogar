@@ -87,6 +87,13 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 24/24, `pnpm
 - [x] **T7.19**: Actualizar la marca visible a “Ferreteria Multiogar” y reforzar la paleta azul, blanca y naranja en los modos claro y oscuro.
 - [x] **T7.20**: Integrar ubicación de Google Maps, enlaces de indicaciones y reseñas destacadas de 5 estrellas atribuidas a la ficha compartida.
 - [x] **T7.21**: Equilibrar el modo claro y oscuro con más naranja, reduciendo la saturación azul del modo noche y agregando superficies cálidas y franjas de marca.
+- [x] **T7.22**: Agregar carga de fotos de productos con procesamiento server-side: autenticación de SuperAdmin, límites de seguridad, lienzo blanco cuadrado y compresión optimizada con `sharp`, manteniendo la opción de URL.
+
+Evidencia T7.22 (2026-08-26): `corepack pnpm lint` limpio, `corepack pnpm exec tsc --noEmit` limpio, `corepack pnpm test` 28/28 y `corepack pnpm build` limpio con 35 rutas, incluida `ƒ /api/admin/product-image`. Prueba real de `sharp`: PNG transparente convertido a JPEG 1000×1000 de 3.3 KB. Smoke HTTP de la ruta: `415` para un cuerpo no multipart y `401` para multipart sin autorización; no se usaron credenciales reales.
+
+- [x] **T7.23**: Instalar `rembg[cpu]` en una Vercel Python Function privada con `u2netp`, conectarla al endpoint Node autenticado y desplegarla en producción.
+
+Evidencia T7.23 (2026-08-26): `corepack pnpm audit --prod` sin vulnerabilidades conocidas; `corepack pnpm install` sincronizado con `uuid 11.1.1`; Vercel Production deployment `dpl_Gq3WESUQR3fwPAFgeTApt2Sm7E2d` en estado `READY`, alias `https://multiogar.vercel.app`, Python 3.12 detectado, `rembg[cpu]==2.0.81` instalado y función desplegada dentro del bundle optimizado de 477.40 MB. Smoke de producción: home `200`, Node sin autorización `415`, Python sin secreto `401`; la inferencia autenticada requiere iniciar sesión como SuperAdmin.
 
 Evidencia T7.21 (2026-08-26): `corepack pnpm lint` limpio, `corepack pnpm exec tsc --noEmit` limpio, `corepack pnpm test` 26/26 y `corepack pnpm build` limpio con 34 rutas. El CSS de producción incluye la superficie cálida y el carbón azuloso del modo noche; smoke HTTP de `/` en `200`.
 
