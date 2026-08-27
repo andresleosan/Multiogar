@@ -14,6 +14,11 @@ const reviews = [
     author: "Hery Meza",
     text: "Excelente ferretería: puedes conseguir todo a excelente precio, distribuidor de los protectores Exceline.",
   },
+  {
+    author: "ynht.0101",
+    text: "\u{1F525} \u{1F525} \u{1F525} \u{1F525} \u{1F525} tremendo equipo !!!!",
+    metadata: "59 sem · 2 Me gusta · Responder",
+  },
 ];
 
 function FiveStars() {
@@ -108,6 +113,9 @@ export function StoreLocationReviews() {
                     <cite className="mt-1 block text-xs font-bold not-italic text-slate-950/80">
                       — {review.author}, Google Maps
                     </cite>
+                    {review.metadata && (
+                      <span className="mt-1 block text-[11px] font-medium text-slate-950/65">{review.metadata}</span>
+                    )}
                   </blockquote>
                 ))}
               </div>
