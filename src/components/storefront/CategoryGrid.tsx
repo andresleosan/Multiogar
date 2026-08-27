@@ -8,23 +8,23 @@ interface CategoryGridProps {
 
 export function CategoryGrid({ categories }: CategoryGridProps) {
   return (
-    <section className="border-b-4 border-orange-500 bg-orange-200 py-14 dark:border-orange-500 dark:bg-orange-900 sm:py-16">
+    <section className="border-b-4 border-slate-950 bg-orange-500 py-14 dark:border-slate-950 dark:bg-orange-500 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-700 dark:text-orange-800">
+            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">
               Compra por área de trabajo
             </p>
-            <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white sm:text-3xl">
+            <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
               Entra directo a lo que necesitas
             </h2>
-            <p className="mt-2 max-w-2xl text-sm text-slate-700 dark:text-white/90">
+            <p className="mt-2 max-w-2xl text-sm text-slate-950/80">
               Herramientas, materiales y repuestos organizados por el trabajo que tienes por delante.
             </p>
           </div>
           <Link
             href="/catalogo"
-            className="inline-flex items-center gap-2 border-b border-blue-700 pb-1 text-sm font-extrabold text-blue-700 transition-colors hover:border-orange-500 hover:text-orange-600 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:border-orange-300 dark:text-white dark:hover:border-white dark:hover:text-white"
+            className="inline-flex items-center gap-2 border-b border-slate-950 pb-1 text-sm font-extrabold text-slate-950 transition-colors hover:border-white hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-950"
           >
             Ver todo el catálogo
           </Link>

@@ -56,7 +56,6 @@ test("la identidad visual hace visible el naranja en ambos temas", async () => {
   assert.match(css, /--surface-warm: #3a2114/);
   assert.equal((css.match(/--color-orange-500: #ff6b00/g) ?? []).length, 2);
   assert.match(hero, /bg-orange-500/);
-  assert.match(categoryGrid, /dark:text-white\/90/);
-  assert.match(categoryGrid, /dark:bg-orange-900/);
+  assert.match(categoryGrid, /bg-orange-500.*dark:bg-orange-500/);
   assert.match(productCard, /bg-orange-500/);
 });

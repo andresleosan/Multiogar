@@ -94,24 +94,24 @@ export function StoreLocationReviews() {
               </a>
             </div>
 
-            <div className="border-l-4 border-orange-500 bg-orange-200 p-5 dark:bg-orange-900/70">
+            <div className="border-l-4 border-slate-950 bg-orange-500 p-5 dark:bg-orange-500">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-slate-700 dark:text-orange-100">
+                <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-slate-950">
                   Opiniones destacadas
                 </p>
                 <FiveStars />
               </div>
               <div className="mt-4 space-y-4">
                 {reviews.map((review) => (
-                  <blockquote key={review.text} className="border-t border-orange-200 pt-3 text-sm leading-6 text-slate-700 first:border-t-0 first:pt-0 dark:border-orange-800/60 dark:text-orange-50">
+                  <blockquote key={review.text} className="border-t border-slate-950/25 pt-3 text-sm leading-6 text-slate-950/85 first:border-t-0 first:pt-0">
                     “{review.text}”
-                    <cite className="mt-1 block text-xs font-bold not-italic text-orange-800 dark:text-orange-200">
+                    <cite className="mt-1 block text-xs font-bold not-italic text-slate-950/80">
                       — {review.author}, Google Maps
                     </cite>
                   </blockquote>
                 ))}
               </div>
-              <p className="mt-4 text-[11px] leading-4 text-slate-500 dark:text-orange-200/80">
+              <p className="mt-4 text-[11px] leading-4 text-slate-950/70">
                 Reseñas mostradas como referencia desde la ficha pública compartida por la empresa.
               </p>
             </div>

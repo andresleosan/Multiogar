@@ -106,39 +106,39 @@ export default function HomePage() {
 
       <StoreLocationReviews />
 
-      <section className="border-t-4 border-orange-500 bg-orange-200 py-14 dark:border-orange-500 dark:bg-orange-900 sm:py-16">
+      <section className="border-t-4 border-slate-950 bg-orange-500 py-14 dark:border-slate-950 dark:bg-orange-500 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-between gap-6 border-b border-orange-600 pb-9 dark:border-orange-500/70 lg:flex-row lg:items-end">
+          <div className="flex flex-col justify-between gap-6 border-b border-slate-950/30 pb-9 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
-              <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-700 dark:text-white">
-                <span className="h-1 w-8 bg-orange-700 dark:bg-orange-300" aria-hidden="true" />
+              <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-slate-950">
+                <span className="h-1 w-8 bg-slate-950" aria-hidden="true" />
                 Compra asistida
               </p>
-              <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white sm:text-3xl">
+              <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Del catálogo a WhatsApp en tres pasos
               </h2>
-              <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-white/90">
+              <p className="mt-3 text-sm leading-6 text-slate-950/80">
                 La web organiza el pedido; el equipo de Multiogar confirma existencias, pago y despacho.
               </p>
             </div>
             <Link
               href="/catalogo"
-              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 bg-orange-500 px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 bg-slate-950 px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-950"
             >
               Empezar pedido
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <ol className="grid gap-8 pt-9 md:grid-cols-3 md:gap-0 md:divide-x md:divide-orange-600 md:dark:divide-orange-500/70">
+          <ol className="grid gap-8 pt-9 md:grid-cols-3 md:gap-0 md:divide-x md:divide-slate-950/30">
             {buyingSteps.map(({ title, description }, index) => (
-              <li key={title} className="border-b border-orange-600 pb-7 last:border-b-0 dark:border-orange-500/70 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
+              <li key={title} className="border-b border-slate-950/30 pb-7 last:border-b-0 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
                 <div className="flex items-center gap-3">
-                  <span className="text-4xl font-black leading-none text-blue-700 dark:text-blue-400">{index + 1}</span>
-                  <span className="h-1 w-8 bg-orange-700 dark:bg-orange-300" aria-hidden="true" />
+                  <span className="text-4xl font-black leading-none text-blue-800">{index + 1}</span>
+                  <span className="h-1 w-8 bg-slate-950" aria-hidden="true" />
                 </div>
-                <h3 className="mt-5 text-base font-extrabold text-slate-950 dark:text-white">{title}</h3>
-                <p className="mt-2 max-w-xs text-sm leading-6 text-slate-700 dark:text-white/90">{description}</p>
+                <h3 className="mt-5 text-base font-extrabold text-slate-950">{title}</h3>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-slate-950/80">{description}</p>
               </li>
             ))}
           </ol>
