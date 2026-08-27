@@ -62,13 +62,13 @@ export function StoreLocationReviews() {
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="overflow-hidden border-4 border-orange-500 bg-slate-100 shadow-sm dark:bg-slate-950">
+          <div className="h-72 overflow-hidden border-4 border-orange-500 bg-slate-100 shadow-sm dark:bg-slate-950 sm:h-96">
             <iframe
               title="Ubicación de Ferreteria Multiogar en Cúa, Miranda"
               src={OFFICIAL_STORE_MAP_EMBED_URL}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="h-72 w-full border-0 sm:h-96"
+              className="block h-full w-full border-0"
             />
           </div>
 
@@ -121,9 +121,6 @@ export function StoreLocationReviews() {
                   </blockquote>
                 ))}
               </div>
-              <p className="mt-4 text-[11px] leading-4 text-slate-950/70">
-                Reseñas mostradas como referencia desde la ficha pública compartida por la empresa.
-              </p>
             </div>
           </div>
         </div>
