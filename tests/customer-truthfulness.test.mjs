@@ -57,3 +57,13 @@ test("el chat público se reactiva mediante el ingreso seguro", async () => {
   assert.match(widget, /\/api\/chat\/session/);
   assert.doesNotMatch(widget, /DataService/);
 });
+
+test("el pie identifica al desarrollador y enlaza su Facebook", async () => {
+  const footer = await source("src/components/common/Footer.tsx");
+
+  assert.match(footer, /2026 Ferreteria Multiogar/);
+  assert.match(footer, /Desarrollado por/);
+  assert.match(footer, /https:\/\/www\.facebook\.com\/AndresLSG/);
+  assert.match(footer, /noopener noreferrer/);
+  assert.doesNotMatch(footer, /Precios de referencia en USD/);
+});
