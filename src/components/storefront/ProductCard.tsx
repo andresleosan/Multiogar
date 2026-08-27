@@ -47,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-200 bg-white p-4 transition-shadow hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+    <article className="group relative flex min-w-0 flex-col overflow-hidden rounded-md border border-slate-200 border-t-2 border-t-orange-500 bg-white p-4 transition-shadow hover:shadow-lg dark:border-slate-800 dark:border-t-orange-500 dark:bg-slate-900">
       {discountPercent && (
         <span className="absolute left-3 top-3 z-10 rounded bg-orange-600 px-2 py-1 text-[10px] font-black text-white">
           -{discountPercent}%

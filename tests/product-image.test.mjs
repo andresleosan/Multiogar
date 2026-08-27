@@ -50,6 +50,7 @@ test("la identidad visual hace visible el naranja en ambos temas", async () => {
   const css = await source("src/app/globals.css");
   const hero = await source("src/components/storefront/HeroBanner.tsx");
   const categoryGrid = await source("src/components/storefront/CategoryGrid.tsx");
+  const featuredProducts = await source("src/components/storefront/FeaturedProducts.tsx");
   const productCard = await source("src/components/storefront/ProductCard.tsx");
 
   assert.match(css, /--surface-warm: #fff0e3/);
@@ -57,5 +58,8 @@ test("la identidad visual hace visible el naranja en ambos temas", async () => {
   assert.equal((css.match(/--color-orange-500: #ff6b00/g) ?? []).length, 2);
   assert.match(hero, /bg-orange-500/);
   assert.match(categoryGrid, /bg-white.*dark:bg-slate-950/);
+  assert.match(featuredProducts, /border-t-4 border-orange-500/);
+  assert.match(featuredProducts, /border-orange-200 dark:border-orange-500\/40/);
+  assert.match(productCard, /border-t-2 border-t-orange-500/);
   assert.match(productCard, /bg-orange-500/);
 });

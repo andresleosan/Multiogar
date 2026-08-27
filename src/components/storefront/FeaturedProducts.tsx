@@ -38,10 +38,10 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
     .slice(0, 8);
 
   return (
-    <section className="bg-white py-16 dark:bg-slate-900 sm:py-20">
+    <section className="border-t-4 border-orange-500 bg-white py-16 dark:border-orange-500 dark:bg-slate-900 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
-          <div>
+          <div className="border-l-4 border-orange-500 pl-4">
             <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-600">
               <span className="h-1 w-8 bg-orange-600" aria-hidden="true" /> Selección del mostrador
             </p>
@@ -53,7 +53,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
             </p>
           </div>
 
-          <div role="tablist" aria-label="Filtrar productos destacados" className="flex max-w-full overflow-x-auto border-b border-slate-200 dark:border-slate-700">
+          <div role="tablist" aria-label="Filtrar productos destacados" className="flex max-w-full overflow-x-auto border-b border-orange-200 dark:border-orange-500/40">
             {filters.map((filter) => (
               <button
                 key={filter.value}
@@ -64,7 +64,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 className={`min-h-10 whitespace-nowrap border-b-2 px-3 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                   activeFilter === filter.value
                     ? "border-orange-600 text-orange-700 dark:border-orange-400 dark:text-orange-300"
-                    : "border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
+                    : "border-transparent text-slate-600 hover:border-orange-300 hover:text-slate-950 dark:text-slate-300 dark:hover:border-orange-400 dark:hover:text-white"
                 }`}
               >
                 {filter.label}
