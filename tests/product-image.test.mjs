@@ -49,11 +49,14 @@ test("el formulario envía archivos al procesador y conserva la alternativa por 
 test("la identidad visual hace visible el naranja en ambos temas", async () => {
   const css = await source("src/app/globals.css");
   const hero = await source("src/components/storefront/HeroBanner.tsx");
+  const categoryGrid = await source("src/components/storefront/CategoryGrid.tsx");
   const productCard = await source("src/components/storefront/ProductCard.tsx");
 
   assert.match(css, /--surface-warm: #fff0e3/);
   assert.match(css, /--surface-warm: #3a2114/);
   assert.equal((css.match(/--color-orange-500: #ff6b00/g) ?? []).length, 2);
   assert.match(hero, /bg-orange-500/);
+  assert.match(categoryGrid, /dark:text-white\/90/);
+  assert.match(categoryGrid, /dark:bg-orange-900/);
   assert.match(productCard, /bg-orange-500/);
 });
