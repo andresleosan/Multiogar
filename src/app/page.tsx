@@ -96,7 +96,7 @@ export default function HomePage() {
             rel="noopener noreferrer"
             className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 border-2 border-slate-950 px-5 py-3 text-sm font-extrabold text-slate-950 transition-colors hover:bg-slate-950 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-950"
           >
-            Conocer Cashea
+            Conoce a Cashea
             <ExternalLink className="h-4 w-4" />
           </a>
         </div>

@@ -32,6 +32,7 @@ test("Cashea reemplaza a Zelle con condiciones explícitas", async () => {
   const paymentSources = `${home}\n${cart}\n${adminOrders}\n${utilities}`;
   assert.doesNotMatch(paymentSources, /Zelle/i);
   assert.match(home, /Compra con Cashea en Ferreteria Multiogar/);
+  assert.match(home, /Conoce a Cashea/);
   assert.match(cart, /Quiero pagar con Cashea/);
   assert.match(adminOrders, /paymentMethod === "cashea"/);
   assert.match(paymentSources, /sujeto a aprobación/iu);
