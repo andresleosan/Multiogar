@@ -23,6 +23,7 @@ test("las reseñas destacadas están atribuidas y limitadas a las referencias co
   assert.match(location, /Google Maps/);
   assert.match(location, /Excelente ferretería/iu);
   assert.match(location, /ynht\.0101/);
+  assert.match(location, /source: "Instagram"/);
   assert.match(location, /59 sem/);
   assert.equal((location.match(/author:/g) ?? []).length, 3);
 });

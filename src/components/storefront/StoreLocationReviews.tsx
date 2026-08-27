@@ -8,6 +8,7 @@ import {
 const reviews = [
   {
     author: "Hery Meza",
+    source: "Google Maps",
     text: "Excelente ferretería, encuentras toda la línea de protectores Exceline.",
   },
   {
@@ -16,6 +17,7 @@ const reviews = [
   },
   {
     author: "ynht.0101",
+    source: "Instagram",
     text: "\u{1F525} \u{1F525} \u{1F525} \u{1F525} \u{1F525} tremendo equipo !!!!",
     metadata: "59 sem · 2 Me gusta · Responder",
   },
@@ -111,7 +113,7 @@ export function StoreLocationReviews() {
                   <blockquote key={review.text} className="border-t border-slate-950/25 pt-3 text-sm leading-6 text-slate-950/85 first:border-t-0 first:pt-0">
                     “{review.text}”
                     <cite className="mt-1 block text-xs font-bold not-italic text-slate-950/80">
-                      — {review.author}, Google Maps
+                      — {review.author}, {review.source ?? "Google Maps"}
                     </cite>
                     {review.metadata && (
                       <span className="mt-1 block text-[11px] font-medium text-slate-950/65">{review.metadata}</span>
