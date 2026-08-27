@@ -310,7 +310,7 @@ export const ProductDetailClient: React.FC<ProductDetailClientProps> = ({
                         ? "bg-emerald-600 text-white"
                         : isOutOfStock
                         ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20 active:scale-98"
+                        : "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/20 active:scale-98"
                     }`}
                   >
                     {isAdded ? (

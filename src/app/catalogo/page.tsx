@@ -233,7 +233,7 @@ function CatalogContent() {
                         onClick={() => setSelectedCategory(cat.slug === selectedCategory ? "" : cat.slug)}
                         className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
                           selectedCategory === cat.slug
-                            ? "bg-blue-600 text-white font-bold shadow-xs"
+                            ? "bg-orange-500 text-white font-bold shadow-xs"
                             : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                         }`}
                       >
@@ -395,7 +395,7 @@ function CatalogContent() {
                 </div>
                 <button
                   onClick={handleResetFilters}
-                  className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors shadow-md"
+                  className="px-5 py-2.5 rounded-full bg-orange-500 text-white text-xs font-bold hover:bg-orange-600 transition-colors shadow-md"
                 >
                   Restablecer todos los filtros
                 </button>
@@ -443,7 +443,7 @@ function CatalogContent() {
                         setIsMobileFilterOpen(false);
                       }}
                       className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium ${
-                        selectedCategory === "" ? "bg-blue-600 text-white font-bold" : "text-slate-600 dark:text-slate-400"
+                        selectedCategory === "" ? "bg-orange-500 text-white font-bold" : "text-slate-600 dark:text-slate-400"
                       }`}
                     >
                       Todas ({products.length})
@@ -456,7 +456,7 @@ function CatalogContent() {
                           setIsMobileFilterOpen(false);
                         }}
                         className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium ${
-                          selectedCategory === cat.slug ? "bg-blue-600 text-white font-bold" : "text-slate-600 dark:text-slate-400"
+                          selectedCategory === cat.slug ? "bg-orange-500 text-white font-bold" : "text-slate-600 dark:text-slate-400"
                         }`}
                       >
                         {cat.name}
@@ -486,7 +486,7 @@ function CatalogContent() {
               <div className="pt-6 border-t border-slate-100 dark:border-slate-800 space-y-2">
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs"
+                  className="w-full py-3 rounded-xl bg-orange-500 text-white font-bold text-xs"
                 >
                   Ver {filteredProducts.length} Productos
                 </button>

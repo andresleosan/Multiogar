@@ -138,7 +138,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {hasVariants ? (
             <Link
               href={`/producto/${product.slug}`}
-              className="flex min-h-10 w-full items-center justify-center gap-2 rounded-md bg-slate-950 px-4 py-2.5 text-xs font-extrabold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+              className="flex min-h-10 w-full items-center justify-center gap-2 rounded-md bg-orange-500 px-4 py-2.5 text-xs font-extrabold text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-orange-500 dark:hover:bg-orange-400"
             >
               Ver opciones
               <ChevronRight className="h-4 w-4" />
@@ -153,7 +153,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   ? "bg-emerald-600"
                   : isOutOfStock
                     ? "cursor-not-allowed bg-slate-300 text-slate-500 dark:bg-slate-800"
-                    : "bg-slate-950 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                            : "bg-orange-500 hover:bg-orange-600 dark:bg-orange-500 dark:hover:bg-orange-400"
               }`}
             >
               {isAdded ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}

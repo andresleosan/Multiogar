@@ -55,9 +55,10 @@ async function removeBackground(input: Buffer, request: Request): Promise<Buffer
       "content-type": "application/octet-stream",
       "x-rembg-secret": secret,
     },
-    body: input as unknown as BodyInit,
+    body: new Uint8Array(input),
+    duplex: "half",
     cache: "no-store",
-  });
+  } as RequestInit & { duplex: "half" });
   if (!response.ok) {
     throw new ChatRequestError("El recorte IA no está disponible temporalmente. Intenta nuevamente.", 503);
   }

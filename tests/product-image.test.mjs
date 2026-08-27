@@ -23,6 +23,7 @@ test("la ruta de imágenes exige superadmin y limita el procesamiento", async ()
   assert.match(route, /flatten\(\{ background: "#ffffff" \}\)/);
   assert.match(route, /REMBG_INTERNAL_SECRET/);
   assert.match(route, /\/api\/remove-background/);
+  assert.match(route, /duplex: "half"/);
   assert.match(route, /Cache-Control.*no-store/);
   assert.match(python, /hmac\.compare_digest/);
   assert.match(python, /new_session\(MODEL_NAME\)/);
@@ -36,9 +37,23 @@ test("el formulario envía archivos al procesador y conserva la alternativa por 
 
   assert.match(page, /type="file"/);
   assert.match(page, /accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(page, /Tomar foto/);
+  assert.match(page, /capture="environment"/);
   assert.match(page, /\/api\/admin\/product-image/);
   assert.match(page, /getIdToken/);
   assert.match(page, /body\.append\("file", file\)/);
   assert.match(page, /O usar URL de imagen/);
   assert.match(page, /unoptimized=\{formImages\[0\]\.startsWith\("data:"\)\}/);
+});
+
+test("la identidad visual hace visible el naranja en ambos temas", async () => {
+  const css = await source("src/app/globals.css");
+  const hero = await source("src/components/storefront/HeroBanner.tsx");
+  const productCard = await source("src/components/storefront/ProductCard.tsx");
+
+  assert.match(css, /--surface-warm: #fff0e3/);
+  assert.match(css, /--surface-warm: #3a2114/);
+  assert.equal((css.match(/--color-orange-500: #ff6b00/g) ?? []).length, 2);
+  assert.match(hero, /bg-orange-500/);
+  assert.match(productCard, /bg-orange-500/);
 });

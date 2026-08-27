@@ -63,7 +63,7 @@ export function FeaturedProducts({ products }: FeaturedProductsProps) {
                 onClick={() => setActiveFilter(filter.value)}
                 className={`min-h-10 whitespace-nowrap border-b-2 px-3 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 ${
                   activeFilter === filter.value
-                    ? "border-blue-600 text-blue-700 dark:text-blue-400"
+                    ? "border-orange-600 text-orange-700 dark:border-orange-400 dark:text-orange-300"
                     : "border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white"
                 }`}
               >

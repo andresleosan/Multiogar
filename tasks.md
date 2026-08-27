@@ -92,6 +92,9 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 24/24, `pnpm
 Evidencia T7.22 (2026-08-26): `corepack pnpm lint` limpio, `corepack pnpm exec tsc --noEmit` limpio, `corepack pnpm test` 28/28 y `corepack pnpm build` limpio con 35 rutas, incluida `ƒ /api/admin/product-image`. Prueba real de `sharp`: PNG transparente convertido a JPEG 1000×1000 de 3.3 KB. Smoke HTTP de la ruta: `415` para un cuerpo no multipart y `401` para multipart sin autorización; no se usaron credenciales reales.
 
 - [x] **T7.23**: Instalar `rembg[cpu]` en una Vercel Python Function privada con `u2netp`, conectarla al endpoint Node autenticado y desplegarla en producción.
+- [x] **T7.24**: Corregir el transporte binario del recorte IA para Vercel, agregar captura desde cámara móvil y reforzar la presencia del naranja de marca en modo claro y oscuro.
+
+Evidencia T7.24 (2026-08-26): prueba real de transporte `Uint8Array + duplex: "half"` con respuesta `200`; `corepack pnpm lint`, `corepack pnpm exec tsc --noEmit`, `corepack pnpm test` 29/29 y `corepack pnpm build` limpios. La publicación del fix en producción queda pendiente de autorización explícita para un nuevo deploy.
 
 Evidencia T7.23 (2026-08-26): `corepack pnpm audit --prod` sin vulnerabilidades conocidas; `corepack pnpm install` sincronizado con `uuid 11.1.1`; Vercel Production deployment `dpl_Gq3WESUQR3fwPAFgeTApt2Sm7E2d` en estado `READY`, alias `https://multiogar.vercel.app`, Python 3.12 detectado, `rembg[cpu]==2.0.81` instalado y función desplegada dentro del bundle optimizado de 477.40 MB. Smoke de producción: home `200`, Node sin autorización `415`, Python sin secreto `401`; la inferencia autenticada requiere iniciar sesión como SuperAdmin.
 

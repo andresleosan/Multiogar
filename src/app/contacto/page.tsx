@@ -119,7 +119,7 @@ export default function ContactPage() {
               </label>
               <button
                 type="submit"
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-blue-700 px-5 py-3 text-sm font-extrabold text-white hover:bg-blue-800"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-orange-500 px-5 py-3 text-sm font-extrabold text-white hover:bg-orange-600"
               >
                 <Send className="h-4 w-4" />
                 Abrir consulta en WhatsApp

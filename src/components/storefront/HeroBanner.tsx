@@ -26,7 +26,7 @@ export function HeroBanner() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/catalogo"
-              className="inline-flex min-h-12 items-center justify-center gap-2 bg-blue-600 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 bg-orange-500 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-white"
             >
               Ver catálogo
               <ArrowRight className="h-4 w-4" />
@@ -35,7 +35,7 @@ export function HeroBanner() {
               href={`https://wa.me/${OFFICIAL_STORE_PHONE}?text=${quoteMessage}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 border border-slate-600 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:border-white hover:bg-white hover:text-slate-950 focus:outline-none focus:ring-2 focus:ring-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 border border-orange-300 px-6 py-3 text-sm font-extrabold text-white transition-colors hover:border-orange-500 hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-white"
             >
               <MessageCircle className="h-4 w-4" />
               Cotizar una lista

@@ -78,14 +78,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/60">
+      <section className="border-b border-orange-600 bg-orange-500 dark:border-orange-300 dark:bg-orange-500">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-9 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex max-w-3xl items-start gap-4">
-            <span className="mt-2 h-1 w-10 shrink-0 bg-orange-600" aria-hidden="true" />
+            <span className="mt-2 h-1 w-10 shrink-0 bg-slate-950" aria-hidden="true" />
             <div>
-              <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-orange-700 dark:text-orange-400">Forma de pago disponible</p>
-              <h2 className="mt-1 text-xl font-black text-slate-950 dark:text-white">Compra con Cashea en Ferreteria Multiogar</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+              <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-slate-950">Forma de pago disponible</p>
+              <h2 className="mt-1 text-xl font-black text-slate-950">Compra con Cashea en Ferreteria Multiogar</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-950/80">
                 Paga una inicial y divide el saldo en cuotas quincenales sin intereses desde la aplicación. La compra está sujeta a aprobación, nivel y condiciones de Cashea.
               </p>
             </div>
@@ -94,7 +94,7 @@ export default function HomePage() {
             href="https://www.cashea.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 border border-slate-950 px-5 py-3 text-sm font-extrabold text-slate-950 transition-colors hover:bg-slate-950 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-950 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-slate-950"
+            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 border-2 border-slate-950 px-5 py-3 text-sm font-extrabold text-slate-950 transition-colors hover:bg-slate-950 hover:text-white focus:outline-none focus:ring-2 focus:ring-slate-950"
           >
             Conocer Cashea
             <ExternalLink className="h-4 w-4" />
@@ -106,7 +106,7 @@ export default function HomePage() {
 
       <StoreLocationReviews />
 
-      <section className="border-t border-orange-200 bg-brand-warm py-14 dark:border-orange-900 dark:bg-brand-warm sm:py-16">
+      <section className="border-t border-orange-200 bg-brand-warm py-14 dark:border-orange-500/70 dark:bg-slate-950 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-6 border-b border-slate-300 pb-9 dark:border-slate-700 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
@@ -123,7 +123,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/catalogo"
-              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 bg-blue-700 px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 bg-orange-500 px-5 py-3 text-sm font-extrabold text-white transition-colors hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               Empezar pedido
               <ArrowRight className="h-4 w-4" />

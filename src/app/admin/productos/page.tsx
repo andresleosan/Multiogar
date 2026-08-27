@@ -12,6 +12,8 @@ import {
   Save,
   ImagePlus,
   LoaderCircle,
+  Camera,
+  Upload,
 } from "lucide-react";
 import { DataService } from "@/lib/data-service";
 import { useAuth } from "@/components/auth/AuthProvider";
@@ -520,14 +522,39 @@ export default function AdminProductsPage() {
                     Sube JPG, PNG o WebP. El servidor la centra en un lienzo cuadrado blanco y la optimiza para el catálogo.
                   </p>
                 </div>
-                <input
-                  id="product-image-file"
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleImageFileChange}
-                  disabled={isProcessingImage}
-                  className="block w-full cursor-pointer rounded-xl border border-orange-200 bg-white text-xs text-slate-700 file:mr-3 file:border-0 file:bg-orange-500 file:px-3 file:py-2 file:font-bold file:text-white hover:file:bg-orange-600 dark:border-orange-900 dark:bg-slate-900 dark:text-slate-200"
-                />
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <label
+                    htmlFor="product-image-camera"
+                    className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-orange-600 focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 dark:focus-within:ring-offset-slate-900"
+                  >
+                    <Camera className="h-4 w-4" />
+                    Tomar foto
+                  </label>
+                  <input
+                    id="product-image-camera"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    capture="environment"
+                    onChange={handleImageFileChange}
+                    disabled={isProcessingImage}
+                    className="sr-only"
+                  />
+                  <label
+                    htmlFor="product-image-file"
+                    className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-orange-300 bg-white px-4 py-2 text-xs font-extrabold text-orange-700 transition-colors hover:bg-orange-50 focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 dark:border-orange-700 dark:bg-slate-900 dark:text-orange-300 dark:hover:bg-orange-950/40 dark:focus-within:ring-offset-slate-900"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Seleccionar archivo
+                  </label>
+                  <input
+                    id="product-image-file"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleImageFileChange}
+                    disabled={isProcessingImage}
+                    className="sr-only"
+                  />
+                </div>
                 {isProcessingImage && (
                   <p className="flex items-center gap-2 text-[11px] font-semibold text-blue-700 dark:text-blue-300" role="status">
                     <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
