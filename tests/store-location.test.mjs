@@ -17,6 +17,7 @@ test("la ubicación pública usa el enlace oficial y un mapa embebido con fallba
   assert.match(location, /block h-full w-full/);
   assert.match(location, /Abrir en Google Maps/);
   assert.match(location, /Ver indicaciones/);
+  assert.match(location, /Cúa, Miranda, Venezuela/);
 });
 
 test("las reseñas destacadas están atribuidas y limitadas a las referencias compartidas", async () => {
