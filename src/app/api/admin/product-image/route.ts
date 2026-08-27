@@ -22,7 +22,8 @@ async function requireSuperadmin(request: Request): Promise<string> {
   let decoded;
   try {
     decoded = await getAdminAuth().verifyIdToken(bearerToken(request));
-  } catch {
+  } catch (error) {
+    if (error instanceof FirebaseAdminConfigurationError) throw error;
     throw new ChatRequestError("La sesión no es válida.", 401);
   }
 

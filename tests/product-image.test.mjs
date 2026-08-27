@@ -25,6 +25,7 @@ test("la ruta de imágenes exige superadmin y limita el procesamiento", async ()
   assert.match(route, /\/api\/remove-background/);
   assert.match(route, /duplex: "half"/);
   assert.match(route, /Cache-Control.*no-store/);
+  assert.match(route, /if \(error instanceof FirebaseAdminConfigurationError\) throw error/);
   assert.match(python, /hmac\.compare_digest/);
   assert.match(python, /new_session\(MODEL_NAME\)/);
   assert.match(python, /MODEL_NAME = os\.environ\.get\("REMBG_MODEL", "u2netp"\)/);
@@ -41,7 +42,16 @@ test("el formulario envía archivos al procesador y conserva la alternativa por 
   assert.match(page, /capture="environment"/);
   assert.match(page, /\/api\/admin\/product-image/);
   assert.match(page, /getIdToken/);
+  assert.match(page, /getIdToken\(currentUser\)/);
+  assert.match(page, /response\.status === 401/);
+  assert.match(page, /getIdToken\(currentUser, true\)/);
   assert.match(page, /body\.append\("file", file\)/);
+  assert.match(page, /prepareImageOnBrowser/);
+  assert.match(page, /window\.location\.hostname/);
+  assert.match(page, /La foto qued.*lista localmente con lienzo blanco/);
+  assert.match(page, /canvas\.toDataURL\("image\/jpeg"/);
+  assert.match(page, /cameraInputRef\.current\?\.click\(\)/);
+  assert.match(page, /fileInputRef\.current\?\.click\(\)/);
   assert.match(page, /O usar URL de imagen/);
   assert.match(page, /unoptimized=\{formImages\[0\]\.startsWith\("data:"\)\}/);
 });

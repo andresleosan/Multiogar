@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { getIdToken } from "firebase/auth";
 import { 
@@ -21,6 +21,51 @@ import { isAdminRole } from "@/lib/auth-roles";
 import { Product, ProductVariant, Category } from "@/types";
 import { formatCurrency, slugify } from "@/lib/utils";
 import { auth } from "@/lib/firebase";
+
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const SUPPORTED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+function prepareImageOnBrowser(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new window.Image();
+    image.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1000;
+        canvas.height = 1000;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("El navegador no pudo preparar la imagen.");
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+
+        const scale = Math.min(canvas.width / image.naturalWidth, canvas.height / image.naturalHeight);
+        const width = image.naturalWidth * scale;
+        const height = image.naturalHeight * scale;
+        context.drawImage(image, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
+
+        const qualities = [0.82, 0.72, 0.62];
+        const dataUrl = qualities
+          .map((quality) => canvas.toDataURL("image/jpeg", quality))
+          .find((candidate) => candidate.length <= 500_000);
+
+        resolve(dataUrl ?? canvas.toDataURL("image/jpeg", 0.62));
+      } catch {
+        reject(new Error("El navegador no pudo preparar la imagen."));
+      } finally {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("El navegador no pudo leer esta imagen. Usa JPG, PNG o WebP."));
+    };
+    image.src = objectUrl;
+  });
+}
 
 export default function AdminProductsPage() {
   const { role } = useAuth();
@@ -46,6 +91,9 @@ export default function AdminProductsPage() {
   const [formImages, setFormImages] = useState<string[]>([""]);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
   const [imageError, setImageError] = useState("");
+  const [imageNotice, setImageNotice] = useState("");
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formIsFeatured, setFormIsFeatured] = useState(false);
   const [formIsOffer, setFormIsOffer] = useState(false);
   const [formHasVariants, setFormHasVariants] = useState(false);
@@ -79,6 +127,7 @@ export default function AdminProductsPage() {
     setFormDescription("");
     setFormImages(["/hero-tools.jpg"]);
     setImageError("");
+    setImageNotice("");
     setFormIsFeatured(false);
     setFormIsOffer(false);
     setFormHasVariants(false);
@@ -100,6 +149,7 @@ export default function AdminProductsPage() {
     setFormDescription(product.description);
     setFormImages(product.images.length > 0 ? product.images : [""]);
     setImageError("");
+    setImageNotice("");
     setFormIsFeatured(product.isFeatured);
     setFormIsOffer(Boolean(product.isOffer));
     setFormHasVariants(product.hasVariants);
@@ -151,6 +201,15 @@ export default function AdminProductsPage() {
     event.target.value = "";
     if (!file) return;
 
+    if (!SUPPORTED_IMAGE_TYPES.has(file.type.toLowerCase())) {
+      setImageError("Usa una imagen JPG, PNG o WebP.");
+      return;
+    }
+    if (file.size === 0 || file.size > MAX_IMAGE_BYTES) {
+      setImageError("La imagen debe pesar entre 1 byte y 8 MB.");
+      return;
+    }
+
     const currentUser = auth?.currentUser;
     if (!currentUser) {
       setImageError("Tu sesión expiró. Inicia sesión nuevamente para cargar imágenes.");
@@ -159,21 +218,51 @@ export default function AdminProductsPage() {
 
     setIsProcessingImage(true);
     setImageError("");
+    setImageNotice("");
 
     try {
-      const token = await getIdToken(currentUser, true);
-      const body = new FormData();
-      body.append("file", file);
-      const response = await fetch("/api/admin/product-image", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body,
-      });
-      const payload = (await response.json().catch(() => ({}))) as {
-        dataUrl?: string;
-        error?: string;
+      const isLocalImageProcessing = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      if (isLocalImageProcessing) {
+        setFormImages([await prepareImageOnBrowser(file)]);
+        setImageNotice("La foto quedó lista localmente con lienzo blanco para la prueba.");
+        return;
+      }
+
+      let token: string;
+      try {
+        token = await getIdToken(currentUser);
+      } catch {
+        throw new Error("Tu sesión no pudo validarse. Inicia sesión nuevamente para cargar imágenes.");
+      }
+      const sendImage = (idToken: string) => {
+        const body = new FormData();
+        body.append("file", file);
+        return fetch("/api/admin/product-image", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${idToken}` },
+          body,
+        });
       };
 
+      let response: Response | null = null;
+      try {
+        response = await sendImage(token);
+        if (response.status === 401) {
+          const refreshedToken = await getIdToken(currentUser, true);
+          response = await sendImage(refreshedToken);
+        }
+      } catch {
+        // Local development can run without Firebase Admin credentials. The browser
+        // fallback still gives the catalog a usable white-canvas preview.
+      }
+
+      if (!response || response.status >= 500) {
+        setFormImages([await prepareImageOnBrowser(file)]);
+        setImageNotice("La foto quedó lista con lienzo blanco local. Al configurar el procesamiento del servidor se quitará también el fondo original.");
+        return;
+      }
+
+      const payload = (await response.json().catch(() => ({}))) as { dataUrl?: string; error?: string };
       if (!response.ok || !payload.dataUrl) {
         throw new Error(payload.error || "No fue posible preparar la imagen.");
       }
@@ -523,14 +612,17 @@ export default function AdminProductsPage() {
                   </p>
                 </div>
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <label
-                    htmlFor="product-image-camera"
+                  <button
+                    type="button"
+                    onClick={() => cameraInputRef.current?.click()}
+                    disabled={isProcessingImage}
                     className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-2 text-xs font-extrabold text-white shadow-sm transition-colors hover:bg-orange-600 focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 dark:focus-within:ring-offset-slate-900"
                   >
                     <Camera className="h-4 w-4" />
                     Tomar foto
-                  </label>
+                  </button>
                   <input
+                    ref={cameraInputRef}
                     id="product-image-camera"
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
@@ -539,14 +631,17 @@ export default function AdminProductsPage() {
                     disabled={isProcessingImage}
                     className="sr-only"
                   />
-                  <label
-                    htmlFor="product-image-file"
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isProcessingImage}
                     className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-orange-300 bg-white px-4 py-2 text-xs font-extrabold text-orange-700 transition-colors hover:bg-orange-50 focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 dark:border-orange-700 dark:bg-slate-900 dark:text-orange-300 dark:hover:bg-orange-950/40 dark:focus-within:ring-offset-slate-900"
                   >
                     <Upload className="h-4 w-4" />
                     Seleccionar archivo
-                  </label>
+                  </button>
                   <input
+                    ref={fileInputRef}
                     id="product-image-file"
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
@@ -564,6 +659,11 @@ export default function AdminProductsPage() {
                 {imageError && (
                   <p className="text-[11px] font-semibold text-rose-700 dark:text-rose-300" role="alert">
                     {imageError}
+                  </p>
+                )}
+                {imageNotice && !imageError && (
+                  <p className="text-[11px] font-semibold text-blue-700 dark:text-blue-300" role="status">
+                    {imageNotice}
                   </p>
                 )}
                 {formImages[0] && (
@@ -588,7 +688,11 @@ export default function AdminProductsPage() {
                     type="url"
                     placeholder="https://images.unsplash.com/..."
                     value={formImages[0] || ""}
-                    onChange={(e) => setFormImages([e.target.value])}
+                    onChange={(e) => {
+                      setImageError("");
+                      setImageNotice("");
+                      setFormImages([e.target.value]);
+                    }}
                     className="w-full h-10 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                   />
                 </div>
