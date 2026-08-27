@@ -58,12 +58,13 @@ test("el chat público se reactiva mediante el ingreso seguro", async () => {
   assert.doesNotMatch(widget, /DataService/);
 });
 
-test("el pie identifica al desarrollador y enlaza su Facebook", async () => {
+test("el pie identifica al desarrollador y enlaza ALS DevStudio", async () => {
   const footer = await source("src/components/common/Footer.tsx");
 
   assert.match(footer, /2026 Ferreteria Multiogar/);
   assert.match(footer, /Desarrollado por/);
-  assert.match(footer, /https:\/\/www\.facebook\.com\/AndresLSG/);
+  assert.match(footer, /https:\/\/alsdevstudio\.vercel\.app\//);
+  assert.match(footer, /ALS DevStudio/);
   assert.match(footer, /noopener noreferrer/);
   assert.doesNotMatch(footer, /Precios de referencia en USD/);
 });

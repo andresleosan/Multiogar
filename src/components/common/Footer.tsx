@@ -110,12 +110,12 @@ export function Footer() {
       <div className="border-t border-slate-800 px-4 py-5 text-center text-xs text-slate-500">
         {"\u00A9 2026 Ferreteria Multiogar. Desarrollado por "}
         <a
-          href="https://www.facebook.com/AndresLSG"
+          href="https://alsdevstudio.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-orange-400 transition-colors hover:text-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
         >
-          {"Andr\u00E9s Santiago"}
+          {"ALS DevStudio"}
         </a>
       </div>
     </footer>
