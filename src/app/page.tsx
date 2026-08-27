@@ -110,14 +110,14 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-6 border-b border-orange-600 pb-9 dark:border-orange-500/70 lg:flex-row lg:items-end">
             <div className="max-w-2xl">
-              <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-600">
-                <span className="h-1 w-8 bg-orange-600" aria-hidden="true" />
+              <p className="mb-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.14em] text-orange-700 dark:text-white">
+                <span className="h-1 w-8 bg-orange-700 dark:bg-orange-300" aria-hidden="true" />
                 Compra asistida
               </p>
               <h2 className="text-2xl font-black tracking-tight text-slate-950 dark:text-white sm:text-3xl">
                 Del catálogo a WhatsApp en tres pasos
               </h2>
-              <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
+              <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-white/90">
                 La web organiza el pedido; el equipo de Multiogar confirma existencias, pago y despacho.
               </p>
             </div>
@@ -135,10 +135,10 @@ export default function HomePage() {
               <li key={title} className="border-b border-orange-600 pb-7 last:border-b-0 dark:border-orange-500/70 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
                 <div className="flex items-center gap-3">
                   <span className="text-4xl font-black leading-none text-blue-700 dark:text-blue-400">{index + 1}</span>
-                  <span className="h-1 w-8 bg-orange-600" aria-hidden="true" />
+                  <span className="h-1 w-8 bg-orange-700 dark:bg-orange-300" aria-hidden="true" />
                 </div>
                 <h3 className="mt-5 text-base font-extrabold text-slate-950 dark:text-white">{title}</h3>
-                <p className="mt-2 max-w-xs text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-slate-700 dark:text-white/90">{description}</p>
               </li>
             ))}
           </ol>
