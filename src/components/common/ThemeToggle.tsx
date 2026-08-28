@@ -7,8 +7,7 @@ import { useHydrated } from "@/hooks/use-hydrated";
 function getInitialTheme(): boolean {
   if (typeof window === "undefined") return false;
   const stored = localStorage.getItem("multiogar_theme");
-  return stored === "dark" ||
-    (!stored && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  return stored === "dark";
 }
 
 export const ThemeToggle: React.FC = () => {
