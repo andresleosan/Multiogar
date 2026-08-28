@@ -14,10 +14,13 @@ test("el catálogo no publica el llamado promocional heredado", async () => {
   assert.match(sync, /sanitizeProductDescription/);
 });
 
-test("el checkout público solo prepara el pedido para WhatsApp", async () => {
+test("el checkout público registra la solicitud y luego prepara WhatsApp", async () => {
   const cart = await source("src/components/cart/CartDrawer.tsx");
 
   assert.doesNotMatch(cart, /DataService\.addOrder/);
+  assert.match(cart, /fetch\("\/api\/orders"/);
+  assert.match(cart, /productId: item\.productId/);
+  assert.match(cart, /paymentMethod: wantsCashea \? "cashea" : "por_coordinar"/);
   assert.doesNotMatch(cart, /pagos@multiogar\.com|Banesco|RIF:/i);
   assert.match(cart, /Pedido listo para enviar/);
   assert.match(cart, /total estimado/i);

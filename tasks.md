@@ -37,9 +37,11 @@
 ## Fase 4: Widget de Chat en Vivo para Clientes
 - [x] **T4.1**: Reactivar el widget de chat solo después de crear un ingreso público seguro. Estado: validado en producción con cookie temporal y Route Handlers.
 - [x] **T4.2**: Implementar identidad de propietario, validación y rate limiting para chat anónimo. Estado: validado en producción; creación `200`, mensaje `201`, lectura `200`, y registro QA eliminado.
-- [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso. Estado: texto implementado; adjuntos siguen fuera de alcance y falta validación integral desplegada.
+- [ ] **T4.3**: Validar mensajería bidireccional y adjuntos con reglas y pruebas de abuso. Estado: implementación local en revisión; el bucket privado y el permiso OIDC de Storage deben verificarse antes de activar adjuntos en producción.
 
 Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 24/24, `pnpm test:rules` 4/4 con Firestore Emulator Suite, `pnpm lint` limpio, `tsc --noEmit` limpio y `pnpm build` limpio con 34 páginas y 4 Route Handlers. Smoke de producción: `/` `200`, `/api/admin/users` `401` sin token y `/api/auth/role-sync` `401` sin token. QA de navegador previo limpio en escritorio y móvil para `/`, `/login`, redirección de `/admin`, apertura del chat y respuesta segura `503` sin credenciales de servidor.
+
+Evidencia T4.3 (2026-08-27): `corepack pnpm test` 36/36, `corepack pnpm lint`, `corepack pnpm exec tsc --noEmit --incremental false`, `corepack pnpm build` y `git diff --check` limpios. El build incluye `ƒ /api/chat/sessions/[chatId]/agent-message` y `ƒ /api/chat/sessions/[chatId]/attachments/[messageId]`. Las pruebas cubren rechazo de PDF/tamaño excedido, normalización de imagen a JPEG, límites, proxy privado, autorización de propietario/personal y ausencia de `attachmentPath` en la respuesta pública. No se desplegó: falta verificar en el entorno productivo el bucket privado y el permiso OIDC de Storage; T7.6 sigue pausada y no se tocaron usuarios/correos de prueba.
 
 ## Fase 5: Panel Administrativo y CMS (Vendedor & Admin)
 - [x] **T5.1**: Implementar acceso general (`/login`) con Google y correo/contraseña; `/admin/login` conserva una redirección compatible y el RBAC decide el destino.
@@ -71,11 +73,11 @@ Evidencia local del ciclo de autocrítica (2026-08-26): `pnpm test` 24/24, `pnpm
 - [x] **T7.3**: Corregir hooks condicionales, métricas del dashboard, hidratación del catálogo y errores bloqueantes de ESLint.
 - [x] **T7.4**: Definir reglas Firestore con denegación predeterminada y permisos mínimos por rol.
 - [x] **T7.5**: Validar localmente con 12 pruebas automatizadas, ESLint sin advertencias, build de 29 rutas y recorridos E2E de los tres roles.
-- [ ] **T7.6**: Rotar credenciales expuestas, asignar custom claims y desplegar/probar reglas con Firebase Emulator Suite. Estado: reglas probadas 4/4 y desplegadas; allowlist retirado y acceso de la cuenta expuesta negado con `403` en producción. Pendiente asignar custom claims y eliminar o rotar las cuentas de prueba.
+- [ ] **T7.6**: Rotar credenciales expuestas, asignar custom claims y desplegar/probar reglas con Firebase Emulator Suite. Estado: pausado por decisión del operador mientras se sigan usando correos y usuarios de prueba; reglas probadas 4/4 y desplegadas, allowlist retirado y acceso de la cuenta expuesta negado con `403` en producción. No eliminar ni rotar cuentas de prueba hasta nueva autorización.
 - [x] **T7.7**: Rediseñar landing, contacto, nosotros y acceso con identidad específica de Multiogar y copy verificable.
 - [x] **T7.8**: Conectar inicio, catálogo, detalle, buscador y panel a suscripciones Firestore con respaldo local.
 - [x] **T7.9**: Retirar reseñas, pedidos, chats, pagos, garantías y plazos simulados de la experiencia visible.
-- [ ] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: chat implementado y validado en producción con identidad temporal, validación, rate limiting y autorización por conversación; el registro servidor de pedidos sigue pendiente.
+- [x] **T7.10**: Implementar Route Handler seguro para registrar pedidos públicos en Firestore y reactivar el chat. Estado: completado; el endpoint canónico y la conexión del checkout validan y registran la solicitud antes de preparar WhatsApp.
 - [x] **T7.11**: Configurar Cashea en landing, detalle, checkout y mensaje de WhatsApp, con condiciones y aprobación explícitas.
 - [x] **T7.12**: Refinar la home para eliminar patrones visuales genéricos de IA: hero partido con producto visible, categorías fotográficas, jerarquía comercial y responsive móvil.
 - [x] **T7.13**: Integrar la información del módulo visual del hero en una sola banda inferior, eliminar tarjetas flotantes y mejorar el recorte de la imagen de herramienta eléctrica.
@@ -99,6 +101,8 @@ Evidencia T7.24 (2026-08-26): prueba real de transporte `Uint8Array + duplex: "h
 - [x] **T7.25**: Corregir el flujo de carga/captura de fotos de productos en local, mantener la autorización server-side y preparar un fallback de lienzo blanco cuando Firebase Admin o el procesamiento remoto no estén disponibles.
 
 Evidencia T7.25 (2026-08-27): `corepack pnpm lint`, `corepack pnpm exec tsc --noEmit --incremental false` y `corepack pnpm test` (30/30) limpios; `corepack pnpm build` limpio en `.next-qa` con 35 rutas. Prueba local del catálogo con `sharp`: JPEG 1000×1000 de 127.5 KB y esquinas `[255,255,255]`; Chrome QA procesó `C:\Users\USER\Downloads\Martillo.jpeg` (1200×1600, 146,847 bytes) a JPEG 1000×1000 con esquinas `[255,255,255,255]`. Smoke HTTP en `http://localhost:3101`: home/admin `200`, multipart sin autorización `401` y token falso `401`. El flujo en `localhost` usa ahora el fallback directo del navegador y no depende de validar Firebase Admin localmente. La auditoría `corepack pnpm audit --prod` no pudo consultar npm por `EACCES` de red.
+
+Evidencia T7.10 (2026-08-27): `corepack pnpm test` 34/34, `corepack pnpm lint`, `corepack pnpm exec tsc --noEmit --incremental false`, `corepack pnpm build` limpios; build con 36 rutas e incluye `ƒ /api/orders`. El Route Handler valida JSON hasta 24 KB, limita a 5 solicitudes por IP hash cada 10 minutos, lee productos y variantes desde Firebase Admin, recalcula precios/total y crea órdenes `pendiente` con canal `whatsapp_web`. Smoke local: cuerpo `text/plain` responde `415` y payload JSON inválido responde `400`. No hubo cambios de esquema ni migraciones; las reglas Firestore existentes mantienen `orders` restringido al personal.
 
 Evidencia T7.23 (2026-08-26): `corepack pnpm audit --prod` sin vulnerabilidades conocidas; `corepack pnpm install` sincronizado con `uuid 11.1.1`; Vercel Production deployment `dpl_Gq3WESUQR3fwPAFgeTApt2Sm7E2d` en estado `READY`, alias `https://multiogar.vercel.app`, Python 3.12 detectado, `rembg[cpu]==2.0.81` instalado y función desplegada dentro del bundle optimizado de 477.40 MB. Smoke de producción: home `200`, Node sin autorización `415`, Python sin secreto `401`; la inferencia autenticada requiere iniciar sesión como SuperAdmin.
 

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LoaderCircle,
   MessageSquare,
+  Paperclip,
   Phone,
   Send,
   X,
@@ -13,6 +14,7 @@ import {
 import type { ChatMessage } from "@/types";
 import { OFFICIAL_STORE_PHONE } from "@/lib/utils";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { ChatAttachment } from "@/components/chat/ChatAttachment";
 
 const PROFILE_KEY = "multiogar_chat_profile";
 
@@ -46,6 +48,7 @@ export function LiveChatWidget() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [messageText, setMessageText] = useState("");
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [isStarting, setIsStarting] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -112,14 +115,20 @@ export function LiveChatWidget() {
     if (isOpen) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [isOpen, messages]);
 
-  const sendMessage = async (chatId: string, text: string) => {
+  const sendMessage = async (chatId: string, text: string, file?: File | null) => {
+    const hasFile = Boolean(file);
+    const body = hasFile ? new FormData() : JSON.stringify({ text });
+    if (hasFile && body instanceof FormData) {
+      body.append("text", text);
+      body.append("file", file as File);
+    }
     const response = await fetch(`/api/chat/sessions/${chatId}/messages`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
+      ...(hasFile ? {} : { headers: { "Content-Type": "application/json" } }),
+      body,
     });
-    const body = await parseApiResponse<{ message: ChatMessage }>(response);
-    setMessages((current) => [...current, body.message]);
+    const responseBody = await parseApiResponse<{ message: ChatMessage }>(response);
+    setMessages((current) => [...current, responseBody.message]);
   };
 
   const handleOpen = () => {
@@ -150,7 +159,7 @@ export function LiveChatWidget() {
 
   const handleStartChat = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!name.trim() || !messageText.trim()) return;
+    if (!name.trim() || (!messageText.trim() && !attachmentFile)) return;
 
     setError("");
     setIsStarting(true);
@@ -159,8 +168,9 @@ export function LiveChatWidget() {
         name: name.trim(),
         phone: phone.trim() || undefined,
       });
-      await sendMessage(chatId, messageText.trim());
+      await sendMessage(chatId, messageText.trim(), attachmentFile);
       setMessageText("");
+      setAttachmentFile(null);
     } catch (requestError: unknown) {
       setError(requestError instanceof Error ? requestError.message : "No fue posible iniciar el chat.");
     } finally {
@@ -170,13 +180,14 @@ export function LiveChatWidget() {
 
   const handleSendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!sessionId || !messageText.trim() || isSending) return;
+    if (!sessionId || (!messageText.trim() && !attachmentFile) || isSending) return;
 
     setError("");
     setIsSending(true);
     try {
-      await sendMessage(sessionId, messageText.trim());
+      await sendMessage(sessionId, messageText.trim(), attachmentFile);
       setMessageText("");
+      setAttachmentFile(null);
     } catch (requestError: unknown) {
       setError(requestError instanceof Error ? requestError.message : "No fue posible enviar el mensaje.");
     } finally {
@@ -279,14 +290,33 @@ export function LiveChatWidget() {
                 <label className="block space-y-1.5 font-bold text-slate-700 dark:text-slate-300">
                   Consulta
                   <textarea
-                    required
                     maxLength={1200}
                     rows={4}
                     value={messageText}
                     onChange={(event) => setMessageText(event.target.value)}
                     placeholder="Producto, cantidad o información que necesitas"
                     className="w-full resize-none rounded border border-slate-300 bg-white p-3 font-normal text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                    />
+                </label>
+                <label className="flex cursor-pointer items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <Paperclip className="h-4 w-4" />
+                  Adjuntar imagen (opcional)
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="sr-only"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0] ?? null;
+                      if (file && file.size > 5 * 1024 * 1024) {
+                        setError("La imagen no puede superar 5 MB.");
+                        event.target.value = "";
+                        return;
+                      }
+                      setError("");
+                      setAttachmentFile(file);
+                    }}
                   />
+                  {attachmentFile && <span className="font-normal text-slate-500">{attachmentFile.name}</span>}
                 </label>
                 <button
                   type="submit"
@@ -312,9 +342,10 @@ export function LiveChatWidget() {
                     <span className="mb-1 px-1 text-[10px] text-slate-500">
                       {message.senderName} · {new Date(message.createdAt).toLocaleTimeString("es-VE", { hour: "2-digit", minute: "2-digit" })}
                     </span>
-                    <p className={`max-w-[85%] whitespace-pre-wrap break-words rounded-md px-3 py-2.5 leading-5 ${message.sender === "customer" ? "bg-blue-700 text-white" : "border border-slate-200 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"}`}>
-                      {message.text}
-                    </p>
+                    <div className={`max-w-[85%] space-y-2 rounded-md px-3 py-2.5 leading-5 ${message.sender === "customer" ? "bg-blue-700 text-white" : "border border-slate-200 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"}`}>
+                      {message.attachmentUrl && <ChatAttachment url={message.attachmentUrl} />}
+                      {message.text && <p className="whitespace-pre-wrap break-words">{message.text}</p>}
+                    </div>
                   </div>
                 ))}
                 <div ref={messagesEndRef} />
@@ -332,9 +363,27 @@ export function LiveChatWidget() {
                 placeholder="Escribe tu mensaje"
                 className="h-10 min-w-0 flex-1 rounded border border-slate-300 bg-slate-50 px-3 text-xs text-slate-900 outline-none focus:ring-2 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               />
+              <label className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded border border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" title="Adjuntar imagen">
+                <Paperclip className="h-4 w-4" />
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="sr-only"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    if (file && file.size > 5 * 1024 * 1024) {
+                      setError("La imagen no puede superar 5 MB.");
+                      event.target.value = "";
+                      return;
+                    }
+                    setError("");
+                    setAttachmentFile(file);
+                  }}
+                />
+              </label>
               <button
                 type="submit"
-                disabled={isSending || !messageText.trim()}
+                disabled={isSending || (!messageText.trim() && !attachmentFile)}
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-blue-700 text-white hover:bg-blue-800 disabled:opacity-50"
                 aria-label="Enviar mensaje"
               >

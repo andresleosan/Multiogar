@@ -21,7 +21,7 @@ import {
   WalletCards
 } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
-import { formatCurrency, generateOrderId, generateOrderNumber, generateWhatsAppOrderMessage, OFFICIAL_STORE_PHONE } from "@/lib/utils";
+import { formatCurrency, generateWhatsAppOrderMessage, OFFICIAL_STORE_PHONE } from "@/lib/utils";
 import { Order } from "@/types";
 
 export const CartDrawer: React.FC = () => {
@@ -47,6 +47,7 @@ export const CartDrawer: React.FC = () => {
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [lastOrderUrl, setLastOrderUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
 
   if (!isOpen) return null;
 
@@ -58,7 +59,7 @@ export const CartDrawer: React.FC = () => {
     setStep("checkout");
   };
 
-  const handleProcessOrder = (e: React.FormEvent) => {
+  const handleProcessOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     const phoneDigits = customerPhone.replace(/\D/g, "");
     if (customerName.trim().length < 2 || phoneDigits.length < 10 || phoneDigits.length > 15) {
@@ -67,32 +68,41 @@ export const CartDrawer: React.FC = () => {
     }
     setFormError("");
 
-    const orderNumber = generateOrderNumber();
+    setIsSubmittingOrder(true);
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: {
+            name: customerName.trim(),
+            phone: customerPhone.trim(),
+            city: customerCity.trim() || "Venezuela",
+            address: customerAddress.trim(),
+            notes: customerNotes.trim(),
+          },
+          items: items.map((item) => ({
+            productId: item.productId,
+            variantId: item.variantId,
+            quantity: item.quantity,
+          })),
+          paymentMethod: wantsCashea ? "cashea" : "por_coordinar",
+        }),
+      });
+      const body = (await response.json().catch(() => ({}))) as { order?: Order; error?: string };
+      if (!response.ok || !body.order) {
+        throw new Error(body.error || "No fue posible registrar el pedido.");
+      }
 
-    const newOrder: Order = {
-      id: generateOrderId(orderNumber),
-      orderNumber: orderNumber,
-      customer: {
-        name: customerName.trim(),
-        phone: customerPhone.trim(),
-        city: customerCity.trim() || "Venezuela",
-        address: customerAddress.trim(),
-        notes: customerNotes.trim(),
-      },
-      items: [...items],
-      subtotal: subtotal,
-      total: subtotal,
-      paymentMethod: wantsCashea ? "cashea" : "por_coordinar",
-      status: "pendiente",
-      channel: "whatsapp_web",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const waUrl = generateWhatsAppOrderMessage(newOrder, OFFICIAL_STORE_PHONE);
-    setLastOrder(newOrder);
-    setLastOrderUrl(waUrl);
-    setStep("success");
+      const waUrl = generateWhatsAppOrderMessage(body.order, OFFICIAL_STORE_PHONE);
+      setLastOrder(body.order);
+      setLastOrderUrl(waUrl);
+      setStep("success");
+    } catch (error: unknown) {
+      setFormError(error instanceof Error ? error.message : "No fue posible registrar el pedido.");
+    } finally {
+      setIsSubmittingOrder(false);
+    }
   };
 
   const handleCopyOrderNumber = () => {
@@ -397,10 +407,11 @@ export const CartDrawer: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-md bg-emerald-600 py-3.5 text-xs font-extrabold text-white transition-colors hover:bg-emerald-700 sm:text-sm"
+                  disabled={isSubmittingOrder}
+                  className="flex w-full items-center justify-center gap-2 rounded-md bg-emerald-600 py-3.5 text-xs font-extrabold text-white transition-colors hover:bg-emerald-700 disabled:cursor-wait disabled:opacity-60 sm:text-sm"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Revisar pedido antes de enviarlo</span>
+                  <span>{isSubmittingOrder ? "Registrando pedido..." : "Revisar pedido antes de enviarlo"}</span>
                 </button>
               </div>
             </form>

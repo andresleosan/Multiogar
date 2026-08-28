@@ -1,8 +1,10 @@
 ﻿"use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { getIdToken } from "firebase/auth";
 import { 
   MessageSquare, 
+  Paperclip,
   Send, 
   Phone, 
   Search
@@ -10,6 +12,8 @@ import {
 import { DataService } from "@/lib/data-service";
 import { normalizeVenezuelanPhoneForWhatsApp } from "@/lib/utils";
 import { ChatMessage, ChatSession } from "@/types";
+import { ChatAttachment } from "@/components/chat/ChatAttachment";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const QUICK_REPLIES = [
   "¡Hola! Con gusto reviso tu cotización de materiales.",
@@ -19,10 +23,13 @@ const QUICK_REPLIES = [
 ];
 
 export default function AdminChatsPage() {
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [replyText, setReplyText] = useState("");
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [sendError, setSendError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -53,21 +60,43 @@ export default function AdminChatsPage() {
 
   const activeSession = sessions.find((s) => s.id === selectedSessionId);
 
-  const handleSendMessage = (e?: React.FormEvent, customText?: string) => {
+  const handleSendMessage = async (e?: React.FormEvent, customText?: string) => {
     if (e) e.preventDefault();
     const textToSend = (customText || replyText).trim();
-    if (!textToSend || !selectedSessionId) return;
+    const fileToSend = customText ? null : attachmentFile;
+    if ((!textToSend && !fileToSend) || !selectedSessionId) return;
 
-    DataService.sendChatMessage(selectedSessionId, {
-      chatId: selectedSessionId,
-      sender: "agent",
-      senderName: "Asesor Multiogar",
-      text: textToSend,
-    });
-
-    setReplyText("");
-    setMessages(DataService.getChatMessages(selectedSessionId));
-    loadSessions();
+    setSendError("");
+    try {
+      if (fileToSend) {
+        if (!user) throw new Error("La sesión administrativa expiró.");
+        const token = await getIdToken(user, true);
+        const formData = new FormData();
+        formData.append("text", textToSend);
+        formData.append("file", fileToSend);
+        const response = await fetch(`/api/chat/sessions/${selectedSessionId}/agent-message`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+        const body = (await response.json().catch(() => ({}))) as { message?: ChatMessage; error?: string };
+        if (!response.ok || !body.message) throw new Error(body.error || "No fue posible enviar el adjunto.");
+        setMessages((current) => [...current, body.message as ChatMessage]);
+        setAttachmentFile(null);
+      } else {
+        DataService.sendChatMessage(selectedSessionId, {
+          chatId: selectedSessionId,
+          sender: "agent",
+          senderName: "Asesor Multiogar",
+          text: textToSend,
+        });
+        setMessages(DataService.getChatMessages(selectedSessionId));
+      }
+      setReplyText("");
+      loadSessions();
+    } catch (error) {
+      setSendError(error instanceof Error ? error.message : "No fue posible enviar el mensaje.");
+    }
   };
 
   const filteredSessions = sessions.filter((s) => {
@@ -236,7 +265,8 @@ export default function AdminChatsPage() {
                         : "bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-bl-xs"
                     }`}
                   >
-                    {msg.text}
+                    {msg.attachmentUrl && <ChatAttachment url={msg.attachmentUrl} user={user} />}
+                    {msg.text && <p className="whitespace-pre-wrap break-words">{msg.text}</p>}
                   </div>
                 </div>
               );
@@ -268,15 +298,34 @@ export default function AdminChatsPage() {
               onChange={(e) => setReplyText(e.target.value)}
               className="flex-1 h-10 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
+            <label className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:border-blue-500 dark:border-slate-700 dark:text-slate-300" title="Adjuntar imagen">
+              <Paperclip className="h-4 w-4" />
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                onChange={(event) => {
+                  const file = event.target.files?.[0] ?? null;
+                  if (file && (file.size > 5 * 1024 * 1024 || !["image/jpeg", "image/png", "image/webp"].includes(file.type))) {
+                    setSendError("Selecciona una imagen JPG, PNG o WebP de hasta 5 MB.");
+                    event.target.value = "";
+                    return;
+                  }
+                  setSendError("");
+                  setAttachmentFile(file);
+                }}
+              />
+            </label>
             <button
               type="submit"
-              disabled={!replyText.trim()}
+              disabled={!replyText.trim() && !attachmentFile}
               className="px-5 h-10 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-sm"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Enviar</span>
             </button>
           </form>
+          {sendError && <p className="border-t border-rose-100 bg-rose-50 px-4 py-2 text-[11px] text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">{sendError}</p>}
 
         </div>
       ) : (

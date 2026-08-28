@@ -5,6 +5,10 @@ import {
   chatMessageInputSchema,
   chatSessionInputSchema,
 } from "../src/lib/chat-contracts.ts";
+import {
+  getChatAttachmentPath,
+  normalizeChatAttachment,
+} from "../src/lib/server/chat-attachments.ts";
 import { nextRateLimitState } from "../src/lib/server/rate-limit.ts";
 
 test("los contratos del chat limpian y limitan la entrada", () => {
@@ -112,4 +116,62 @@ test("Firebase Admin prioriza OIDC de Vercel sin una clave privada permanente", 
   assert.match(admin, /credential_source: \{ file: tokenPath/);
   assert.match(admin, /GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID/);
   assert.match(admin, /getVercelOidcToken\(\)/);
+});
+
+test("los adjuntos rechazan tipos o tamaños abusivos y tienen una ruta acotada", async () => {
+  const invalid = {
+    type: "application/pdf",
+    size: 12,
+    arrayBuffer: async () => new Uint8Array(12).buffer,
+  };
+  await assert.rejects(normalizeChatAttachment(invalid));
+
+  const tooLarge = {
+    type: "image/png",
+    size: 5 * 1024 * 1024 + 1,
+    arrayBuffer: async () => new ArrayBuffer(0),
+  };
+  await assert.rejects(normalizeChatAttachment(tooLarge));
+
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+    "base64",
+  );
+  const normalized = await normalizeChatAttachment({
+    type: "image/png",
+    size: png.byteLength,
+    arrayBuffer: async () => png.buffer.slice(png.byteOffset, png.byteOffset + png.byteLength),
+  });
+  assert.deepEqual([...normalized.subarray(0, 2)], [0xff, 0xd8]);
+
+  assert.equal(
+    getChatAttachmentPath("chat_" + "a".repeat(40), "message-1"),
+    "chat-attachments/chat_" + "a".repeat(40) + "/message-1.jpg",
+  );
+});
+
+test("el endpoint de adjuntos exige proxy autenticado y ruta interna", async () => {
+  const route = await readFile(
+    new URL(
+      "../src/app/api/chat/sessions/[chatId]/attachments/[messageId]/route.ts",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.match(route, /isStaffRequest/);
+  assert.match(route, /getChatVisitor/);
+  assert.match(route, /attachmentPath !== expectedPath/);
+  assert.match(route, /X-Content-Type-Options/);
+  assert.match(route, /Cache-Control.*no-store/);
+
+  const agentRoute = await readFile(
+    new URL(
+      "../src/app/api/chat/sessions/[chatId]/agent-message/route.ts",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  assert.match(agentRoute, /getStaffIdentity/);
+  assert.match(agentRoute, /chat-agent-message/);
+  assert.match(agentRoute, /unreadCustomer: FieldValue\.increment\(1\)/);
 });

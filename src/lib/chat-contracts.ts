@@ -15,5 +15,7 @@ export const chatMessageInputSchema = z.object({
   text: z.string().trim().min(1).max(1200),
 });
 
+export const chatMessageTextSchema = z.string().trim().max(1200);
+
 export type ChatSessionInput = z.infer<typeof chatSessionInputSchema>;
 export type ChatMessageInput = z.infer<typeof chatMessageInputSchema>;

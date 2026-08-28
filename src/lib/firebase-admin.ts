@@ -10,6 +10,7 @@ import {
 } from "firebase-admin/app";
 import { getAuth, type Auth } from "firebase-admin/auth";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
 import { ExternalAccountClient, type BaseExternalAccountClient } from "google-auth-library";
 import { mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -149,4 +150,10 @@ export async function getAdminFirestore(): Promise<Firestore> {
   const oidcConfig = getOidcConfig();
   if (oidcConfig) return getOidcFirestoreDb(projectId, oidcConfig);
   return getFirestore(getAdminApp());
+}
+
+export function getAdminStorageBucket() {
+  const bucketName = process.env.FIREBASE_STORAGE_BUCKET;
+  if (!bucketName) throw new FirebaseAdminConfigurationError();
+  return getStorage(getAdminApp()).bucket(bucketName);
 }
